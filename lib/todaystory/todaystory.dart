@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/details/cookinfo.dart';
+
+import '../model/lenhModel.dart';
 
 class TodayStoryTabPage extends StatefulWidget {
   @override
@@ -10,213 +13,137 @@ class TodayStoryTabPage extends StatefulWidget {
 }
 
 class TodayStoryTabPageState extends State<TodayStoryTabPage> {
+  final List<lenhModel> lenhList=[
+    lenhModel('08:00','11/07/2022','20B-00111(LVC-0000187/SPCT)','Bến xe Thái Nguyên','Bến xe Việt Trì\n(1920.1111.A)',1,false),
+    lenhModel('08:00','11/07/2022','20B-00111(LVC-0000187/SPCT)','Bến xe Thái Nguyên','Bến xe Việt Trì\n(1920.1111.A)',1,false),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Today's Story",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: CustomScrollView(
-        shrinkWrap: true,
-        slivers: <Widget>[
-          SliverPadding(
-            padding: EdgeInsets.all(20),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Recommended',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 250,
-              width: double.infinity,
-              child: ListView.separated(
-                physics: BouncingScrollPhysics(),
-                itemBuilder: ((BuildContext context, int index) {
-                  if (0 == index || 19 == index) {
-                    return VerticalDivider(
-                      width: 10,
-                      color: Colors.transparent,
-                    );
-                  } else {
-                    return GestureDetector(
-                      child: getRecommendedItemView(index),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            new CupertinoPageRoute(
-                                builder: (it) => CookInfoPage("asset/images/${index * 5 % 11}.jpg")));
-                      },
-                    );
-                  }
-                }),
-                itemCount: 10,
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: ((BuildContext context, int index) {
-                  return VerticalDivider(
-                    width: 10,
-                    color: Colors.transparent,
-                  );
-                }),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.all(20),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Recent',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          SliverFixedExtentList(
-            delegate: new SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return getRecentItemView(index);
-              },
-              childCount: 15,
-            ),
-            itemExtent: 100,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getRecentItemView(int index) {
-    return new Container(
-      padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            child: Image(
-              image: AssetImage("asset/images/${index % 11}.jpg"),
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20, bottom: 10),
-                  child: Text(
-                    'Gluten-free spaghetti with tomatoes,Sweet potato fritters with guacamole and egg',
-                    maxLines: 2,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        body: Container(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            height: MediaQuery.of(context).size.height * 0.2,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Color.fromARGB(255, 175, 211, 241), Colors.blue],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                  CircleAvatar(
+                  child: Image.asset(
+                    'asset/images/logo.png',
+                    width: 45,
+                    height: 45,
                   ),
+                  backgroundColor: Colors.white,
+                  minRadius: 10,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    '30 mint video',
-                    maxLines: 1,
-                    style: TextStyle(color: Colors.grey, fontSize: 13),
-                  ),
+                SizedBox(width: 10,),
+                Text(
+                  'Nguyễn Công Tuyến',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white,fontSize: 18),
                 ),
+                ],),
+                InkWell(
+                  child: Ink(
+                      width: 40,
+                      height: 40,
+                      // color: Colors.pink,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                          child: SvgPicture.asset('asset/icons/scan.svg',color:Colors.white,))),
+                  onTap: () {
+                    print('inkwell');
+                  },
+                )
               ],
             ),
-          )
+          ),
+
+        lenhList.length!=0? Expanded(
+          child: ListView.builder(
+            itemCount: lenhList.length,
+            itemBuilder: (context,index){
+            return Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey[400].withOpacity(0.7),),
+                boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[400].withOpacity(0.7),
+                  offset: Offset(5, 5),
+                  blurRadius: 3,
+                  spreadRadius: 0.6
+                
+                )
+              ]),
+              child: Column(
+                children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                 Row(
+                    children: [
+                    SvgPicture.asset('asset/icons/clock.svg',width: 18,height:18),
+                  SizedBox(width: 10,),
+                  Text(
+                    '${lenhList[index].time} ${lenhList[index].date}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,),
+                  ),
+                  ],),
+                  Text('Chờ bến đi ký',style: TextStyle(
+                    fontWeight: FontWeight.bold,color: Colors.orange
+                        ),)
+                
+              ],),
+              SizedBox(height: 8,),
+              Row(children: [
+                SvgPicture.asset('asset/icons/sohieu.svg',width: 18,height:18),
+                SizedBox(width: 10,),
+                Text('${lenhList[index].sohieu}',style: TextStyle(
+                        fontWeight: FontWeight.bold),)
+              ],),
+              SizedBox(height: 8,),
+              Row(children: [
+                SvgPicture.asset('asset/icons/buslocation.svg',width: 19,height:19),
+                SizedBox(width: 10,),
+                Text('${lenhList[index].diemdi} - ${lenhList[index].diemden}',style: TextStyle(
+                        fontWeight: FontWeight.bold),)
+              ],),
+              SizedBox(height: 8,),
+              Row(children: [
+                SvgPicture.asset('asset/icons/customer.svg',width: 18,height:18),
+                SizedBox(width: 10,),
+                Text('${lenhList[index].khach} khách',style: TextStyle(
+                        fontWeight: FontWeight.bold),)
+              ],),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  height: 35,
+                  width: 150,
+                  child: ElevatedButton(onPressed: (){
+                    
+                  }, child: Text('XEM LỆNH'))))
+            ],),);
+          }),
+        ): Expanded(child: Center(child: Text('Không có dữ liệu !'),))
         ],
       ),
-    );
-  }
-
-  Widget getRecommendedItemView(int index) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            child: Image(
-              image: AssetImage("asset/images/${index * 5 % 11}.jpg"),
-            ),
-          ),
-          flex: 1,
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 5, bottom: 5),
-          child: Text(
-            'The cheeses guide',
-            maxLines: 1,
-            textAlign: TextAlign.start,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 5),
-          child: Text(
-            'Best dishes to enjoy them.',
-            maxLines: 1,
-            style: TextStyle(color: Colors.grey, fontSize: 13),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 10),
-          child: Row(
-            children: <Widget>[
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.red[500],
-              ),
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.red[500],
-              ),
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.red[500],
-              ),
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.red[500],
-              ),
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.grey[500],
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+    ));
   }
 }
