@@ -9,6 +9,8 @@ import 'howtomake/howtomake.dart';
 import 'me/me.dart';
 
 class UIKitPage extends StatefulWidget {
+  int index;
+  UIKitPage(this.index);
   @override
   _UIKitPageState createState() {
     return _UIKitPageState();
@@ -17,6 +19,7 @@ class UIKitPage extends StatefulWidget {
 
 class _UIKitPageState extends State<UIKitPage> {
   var _selectedIndex = 0;
+  int temp;
   final _tabPages = [
     TodayStoryTabPage(),
     HowToMakeTabPage(),
@@ -25,9 +28,15 @@ class _UIKitPageState extends State<UIKitPage> {
     Bell(),
     MeTabPage(),
   ];
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+  }
   @override
   Widget build(BuildContext context) {
+    temp = widget.index;
     return Scaffold(
 //      appBar: AppBar(
 //        title: Text('AAAA'),
@@ -36,14 +45,44 @@ class _UIKitPageState extends State<UIKitPage> {
       body: _tabPages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(icon: SvgPicture.asset("asset/icons/homereal.svg",color: _selectedIndex == 0? Colors.black: Color.fromARGB(255, 83, 82, 82),), label: ''),
           BottomNavigationBarItem(
-              icon: SvgPicture.asset("asset/icons/ticket.svg",color:  _selectedIndex == 1? Colors.black:Color.fromARGB(255, 83, 82, 82)), label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset("asset/icons/home.svg",color: _selectedIndex == 2? Colors.black:Color.fromARGB(255, 83, 82, 82)), label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset("asset/icons/h.svg",color: _selectedIndex == 3? Colors.black:Color.fromARGB(255, 83, 82, 82)), label: ''),
-           BottomNavigationBarItem(icon: SvgPicture.asset("asset/icons/bell.svg",color: _selectedIndex == 4? Colors.black:Color.fromARGB(255, 83, 82, 82)), label: ''),
+              icon: SvgPicture.asset(
+                "asset/icons/homereal.svg",
+                color: _selectedIndex == 0
+                    ? Colors.black
+                    : Color.fromARGB(255, 83, 82, 82),
+              ),
+              label: ''),
           BottomNavigationBarItem(
-              icon: SvgPicture.asset("asset/icons/account.svg",color: _selectedIndex == 5? Colors.black:Color.fromARGB(255, 83, 82, 82)), label: ''),
+              icon: SvgPicture.asset("asset/icons/ticket.svg",
+                  color: _selectedIndex == 1
+                      ? Colors.black
+                      : Color.fromARGB(255, 83, 82, 82)),
+              label: ''),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset("asset/icons/home.svg",
+                  color: _selectedIndex == 2
+                      ? Colors.black
+                      : Color.fromARGB(255, 83, 82, 82)),
+              label: ''),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset("asset/icons/h.svg",
+                  color: _selectedIndex == 3
+                      ? Colors.black
+                      : Color.fromARGB(255, 83, 82, 82)),
+              label: ''),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset("asset/icons/bell.svg",
+                  color: _selectedIndex == 4
+                      ? Colors.black
+                      : Color.fromARGB(255, 83, 82, 82)),
+              label: ''),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset("asset/icons/account.svg",
+                  color: _selectedIndex == 5
+                      ? Colors.black
+                      : Color.fromARGB(255, 83, 82, 82)),
+              label: ''),
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.brown,
@@ -57,8 +96,14 @@ class _UIKitPageState extends State<UIKitPage> {
   }
 
   void _onItemTapped(int value) {
-    setState(() {
-      _selectedIndex = value;
-    });
+    if (temp == 3) {
+      setState(() {
+        _selectedIndex = 3;
+      });
+    } else {
+      setState(() {
+        _selectedIndex = value;
+      });
+    }
   }
 }

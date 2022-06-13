@@ -1,6 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/details/cookdetails.dart';
+
+import '../model/chuyendiList.dart';
+import '../ve/banve.dart';
+
+final moveList = [
+  chuyendiList('HNA.22.05.001', '8.00'),
+  chuyendiList('HNA.22.05.002', '9.00'),
+  chuyendiList('HNA.22.05.003', '10.00'),
+  chuyendiList('HNA.22.05.004', '11.00'),
+  chuyendiList('HNA.22.05.005', '12.00'),
+  chuyendiList('HNA.22.05.006', '13.00'),
+  chuyendiList('HNA.22.05.007', '14.00'),
+  chuyendiList('HNA.22.05.007', '14.00'),
+  chuyendiList('HNA.22.05.007', '14.00'),
+];
 
 class HowToMakeTabPage extends StatefulWidget {
   @override
@@ -12,23 +28,121 @@ class HowToMakeTabPage extends StatefulWidget {
 class HowToMakeTabPageState extends State<HowToMakeTabPage> {
   var _articleTitle = ['Knife Skills', 'Everyday basics', 'Some beautiful'];
 
+  int choose = 0;
+  String title = moveList.first.name;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "How to Make",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+        title: GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(builder: (context, setState) {
+                    return Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                      height: 350,
+                      child: Column(
+                        children: [
+                          Text('Lịch sử chuyến đi',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18)),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      choose = index;
+                                      title = moveList[index].name;
+                                      print(title);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  child: Container(
+                                      height: 45,
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            'asset/icons/bus.svg',
+                                            color: choose == index
+                                                ? Colors.blue
+                                                : Colors.black,
+                                            width: 17,
+                                            height: 17,
+                                          ),
+                                          Text(
+                                            ' ${moveList[index].name}',
+                                            style: TextStyle(
+                                                color: choose == index
+                                                    ? Colors.blue
+                                                    : Colors.black),
+                                          ),
+                                          Text(' | ',
+                                              style: TextStyle(
+                                                  color: choose == index
+                                                      ? Colors.blue
+                                                      : Colors.black)),
+                                          Text('${moveList[index].time}',
+                                              style: TextStyle(
+                                                  color: choose == index
+                                                      ? Colors.blue
+                                                      : Colors.black))
+                                        ],
+                                      )),
+                                );
+                              },
+                              itemCount: moveList.length,
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  });
+                });
+          },
+          child: Row(
+            children: [
+              Text(
+                "PTH.22.06.0009",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: RotatedBox(
+                    quarterTurns: 3,
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 25,
+                      color: Colors.white,
+                    ),
+                  ))
+            ],
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         elevation: 0,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.tune),
+            icon: Icon(
+              Icons.qr_code_scanner_rounded,
+              color: Colors.white,
+            ),
             onPressed: () {},
           ),
         ],
@@ -36,139 +150,34 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
           color: Colors.grey,
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: ((BuildContext context, int index) {
-          return getArticleItem(index);
-        }),
-        itemCount: 3,
-        scrollDirection: Axis.vertical,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Xe của bạn chưa có trên sơ đồ ghế.'),
+            Text('Vui lòng liên hệ Công ty của bạn để được cập nhật !')
+          ],
+        ),
       ),
-    );
-  }
-
-  Widget getArticleItem(int index) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            _articleTitle.elementAt(index % _articleTitle.length),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>banve()));
+        },
+        label: Text(
+          'BÁN VÉ',
+          style: TextStyle(
+            color: Colors.blue,
           ),
         ),
-        Container(
-          height: 230,
-          width: double.infinity,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: 10,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: ((BuildContext context, int position) {
-              if (0 == position || 19 == position) {
-                return VerticalDivider(
-                  width: 10,
-                  color: Colors.transparent,
-                );
-              } else {
-                return GestureDetector(
-                  child: getSectionItem(index, position),
-                  onTap: () {
-                    Navigator.push(context, new CupertinoPageRoute(builder: (context) => CookDetailsPage("asset/images/${((index + 1) * position) % 11}.jpg")));
-                  },
-                );
-              }
-            }),
-            separatorBuilder: ((BuildContext context, int index) {
-              return VerticalDivider(
-                width: 10,
-                color: Colors.transparent,
-              );
-            }),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget getSectionItem(int index, int position) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Expanded(
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              child: Stack(
-                alignment: AlignmentDirectional.center,
-                children: <Widget>[
-                  Image(
-                    image: AssetImage("asset/images/${((index + 1) * position) % 11}.jpg"),
-                  ),
-                  Icon(
-                    Icons.play_circle_filled,
-                    color: Colors.white70,
-                    size: 35,
-                  )
-                ],
-              )),
-          flex: 1,
+        icon: SvgPicture.asset(
+          'asset/icons/ticket.svg',
+          color: Colors.blue,
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 5, bottom: 5),
-          child: Text(
-            'The cheeses guide',
-            maxLines: 1,
-            textAlign: TextAlign.start,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 10),
-          child: Row(
-            children: <Widget>[
-              Icon(
-                Icons.watch_later,
-                size: 15,
-                color: Colors.grey,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 5, right: 10),
-                child: Text(
-                  '2 mint',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.remove_red_eye,
-                size: 15,
-                color: Colors.grey,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 5, right: 10),
-                child: Text(
-                  '2k',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
+        backgroundColor: Colors.white,
+      ),
     );
   }
 }

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: UIKitPage(),
+      home: UIKitPage(0),
     );
   }
 }
