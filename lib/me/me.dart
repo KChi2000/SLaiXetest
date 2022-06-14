@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ui_kit/CameraPage.dart';
+import 'package:flutter_ui_kit/Login.dart';
 import 'package:flutter_ui_kit/other/constant.dart';
 import 'package:flutter_ui_kit/other/imgConst.dart';
 import 'package:image_picker/image_picker.dart';
@@ -481,6 +482,7 @@ class MeTabPageState extends State<MeTabPage> {
              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
              onPressed: (){
                print('Đăng xuất');
+               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Login()));
              }, child: Text('Đăng Xuất',style: TextStyle(color: Colors.white)),
              color: Colors.blue,
              )

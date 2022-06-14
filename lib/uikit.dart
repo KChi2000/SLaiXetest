@@ -32,7 +32,9 @@ class _UIKitPageState extends State<UIKitPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var _selectedIndex = widget.index;
+    if(widget.index== 2){
+      _selectedIndex = 2;
+    }
   }
 
   @override
@@ -100,10 +102,7 @@ class _UIKitPageState extends State<UIKitPage> {
     setState(() {
       _selectedIndex = value;
     });
+   
   }
-  void clickButton() {
-    setState(() {
-      _selectedIndex = 3;
-    });
-  }
+ 
 }
