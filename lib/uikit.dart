@@ -9,7 +9,7 @@ import 'howtomake/howtomake.dart';
 import 'me/me.dart';
 
 class UIKitPage extends StatefulWidget {
-  int index;
+  int index=0;
   UIKitPage(this.index);
   @override
   _UIKitPageState createState() {
@@ -18,8 +18,8 @@ class UIKitPage extends StatefulWidget {
 }
 
 class _UIKitPageState extends State<UIKitPage> {
-  var _selectedIndex = 0;
-  int temp;
+  var _selectedIndex=0;
+
   final _tabPages = [
     TodayStoryTabPage(),
     HowToMakeTabPage(),
@@ -28,15 +28,16 @@ class _UIKitPageState extends State<UIKitPage> {
     Bell(),
     MeTabPage(),
   ];
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    var _selectedIndex = widget.index;
   }
+
   @override
   Widget build(BuildContext context) {
-    temp = widget.index;
+
     return Scaffold(
 //      appBar: AppBar(
 //        title: Text('AAAA'),
@@ -86,7 +87,7 @@ class _UIKitPageState extends State<UIKitPage> {
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.brown,
-        onTap: _onItemTapped,
+        onTap: (_onItemTapped),
         showSelectedLabels: false,
         showUnselectedLabels: false,
         unselectedItemColor: Colors.grey,
@@ -96,14 +97,13 @@ class _UIKitPageState extends State<UIKitPage> {
   }
 
   void _onItemTapped(int value) {
-    if (temp == 3) {
-      setState(() {
-        _selectedIndex = 3;
-      });
-    } else {
-      setState(() {
-        _selectedIndex = value;
-      });
-    }
+    setState(() {
+      _selectedIndex = value;
+    });
+  }
+  void clickButton() {
+    setState(() {
+      _selectedIndex = 3;
+    });
   }
 }
