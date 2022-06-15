@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_ui_kit/details/cookdetails.dart';
-
+import 'package:flutter_ui_kit/other/homeConstant.dart';
 import '../model/chuyendiList.dart';
 import '../ve/banve.dart';
 
@@ -18,14 +17,14 @@ final moveList = [
   chuyendiList('HNA.22.05.007', '14.00'),
 ];
 
-class HowToMakeTabPage extends StatefulWidget {
+class Ve extends StatefulWidget {
   @override
-  HowToMakeTabPageState createState() {
-    return HowToMakeTabPageState();
+  VeState createState() {
+    return VeState();
   }
 }
 
-class HowToMakeTabPageState extends State<HowToMakeTabPage> {
+class VeState extends State<Ve> {
   var _articleTitle = ['Knife Skills', 'Everyday basics', 'Some beautiful'];
 
   int choose = 0;
@@ -42,17 +41,17 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
                   return StatefulBuilder(builder: (context, setState) {
                     return Container(
                       padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                      height: 350,
+                          EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHori),
+                      height: bottomSheetHeight,
                       child: Column(
                         children: [
-                          Text('Lịch sử chuyến đi',
+                          Text(titleBottomSheet,
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18)),
+                                  fontWeight: fontStyle,
+                                  fontSize: fontSize)),
                           SizedBox(
-                            height: 10,
+                            height: spaceBetween,
                           ),
                           Expanded(
                             child: ListView.builder(
@@ -71,30 +70,30 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
                                       child: Row(
                                         children: [
                                           SvgPicture.asset(
-                                            'asset/icons/bus.svg',
+                                            iconBottomSheet,
                                             color: choose == index
-                                                ? Colors.blue
-                                                : Colors.black,
-                                            width: 17,
-                                            height: 17,
+                                                ? selectedColor
+                                                : unselectedColor,
+                                            width: iconSizeBottomSheet,
+                                            height: iconSizeBottomSheet,
                                           ),
                                           Text(
                                             ' ${moveList[index].name}',
                                             style: TextStyle(
                                                 color: choose == index
-                                                    ? Colors.blue
-                                                    : Colors.black),
+                                                    ? selectedColor
+                                                    : unselectedColor),
                                           ),
                                           Text(' | ',
                                               style: TextStyle(
                                                   color: choose == index
-                                                      ? Colors.blue
-                                                      : Colors.black)),
+                                                      ? selectedColor
+                                                      : unselectedColor)),
                                           Text('${moveList[index].time}',
                                               style: TextStyle(
                                                   color: choose == index
-                                                      ? Colors.blue
-                                                      : Colors.black))
+                                                      ? selectedColor
+                                                      : unselectedColor))
                                         ],
                                       )),
                                 );
@@ -115,8 +114,8 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
               Text(
                 "PTH.22.06.0009",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  color: appBartextColor,
+                  fontWeight: fontStyleappBar,
                 ),
               ),
               SizedBox(
@@ -127,9 +126,9 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
                   child: RotatedBox(
                     quarterTurns: 3,
                     child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 25,
-                      color: Colors.white,
+                      arrowDown,
+                      size: arrowDownSize,
+                      color: arrowDownColor,
                     ),
                   ))
             ],
@@ -167,16 +166,16 @@ class HowToMakeTabPageState extends State<HowToMakeTabPage> {
           Navigator.push(context, MaterialPageRoute(builder: (context)=>banve()));
         },
         label: Text(
-          'BÁN VÉ',
+          buttonText,
           style: TextStyle(
-            color: Colors.blue,
+            color: buttonColorText,
           ),
         ),
         icon: SvgPicture.asset(
-          'asset/icons/ticket.svg',
-          color: Colors.blue,
+          iconButton,
+          color: buttonColor,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: buttonBackground,
       ),
     );
   }

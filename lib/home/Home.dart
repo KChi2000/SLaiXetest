@@ -1,22 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_ui_kit/details/cookinfo.dart';
-
-import '../browsing/browsing.dart';
-import '../filters/filters.dart';
+import 'package:flutter_ui_kit/other/homeConstant.dart';
 import '../model/lenhModel.dart';
 import '../uikit.dart';
 
-class TodayStoryTabPage extends StatefulWidget {
+class Home extends StatefulWidget {
 
   @override
-  TodayStoryTabPageState createState() {
-    return TodayStoryTabPageState();
+  HomeState createState() {
+    return HomeState();
   }
 }
 
-class TodayStoryTabPageState extends State<TodayStoryTabPage> {
+class HomeState extends State<Home> {
   final List<lenhModel> lenhList = [
     lenhModel('08:00', '11/07/2022', '20B-00111(LVC-0000187/SPCT)',
         'Bến xe Thái Nguyên', 'Bến xe Việt Trì\n(1920.1111.A)', 1, false),
@@ -30,16 +27,16 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            height: MediaQuery.of(context).size.height * 0.2,
+            padding: EdgeInsets.symmetric(horizontal: padding),
+            height: MediaQuery.of(context).size.height * itemListHeight,
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Color.fromARGB(255, 175, 211, 241), Colors.blue],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter),
                 borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25))),
+                    bottomLeft: Radius.circular(itemListRadius),
+                    bottomRight: Radius.circular(itemListRadius))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -48,28 +45,28 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
                     CircleAvatar(
                       child: Image.asset(
                         'asset/images/logo.png',
-                        width: 45,
-                        height: 45,
+                        width: sizeLogoImage,
+                        height: sizeLogoImage,
                       ),
                       backgroundColor: Colors.white,
                       minRadius: 10,
                     ),
                     SizedBox(
-                      width: 10,
+                      width: spaceBetween,
                     ),
                     Text(
                       'Nguyễn Công Tuyến',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 18),
+                          color: mainColor,
+                          fontSize: fontSize),
                     ),
                   ],
                 ),
                 InkWell(
                   child: Ink(
-                      width: 40,
-                      height: 40,
+                      width: ScannerQRSize,
+                      height: ScannerQRSize,
                       // color: Colors.pink,
                       child: CircleAvatar(
                           backgroundColor: Colors.transparent,
@@ -90,19 +87,19 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
                       itemCount: lenhList.length,
                       itemBuilder: (context, index) {
                         return Container(
-                          margin: EdgeInsets.all(10),
-                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(padding),
+                          padding: EdgeInsets.all(padding),
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: mainColor,
                               border: Border.all(
-                                color: Colors.grey[400].withOpacity(0.7),
+                                color: borderColor,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                    color: Colors.grey[400].withOpacity(0.7),
-                                    offset: Offset(5, 5),
-                                    blurRadius: 3,
-                                    spreadRadius: 0.6)
+                                    color: borderColor,
+                                    offset: Offset(offsetX, offsetY),
+                                    blurRadius: blurRadius,
+                                    spreadRadius: spreadRadius)
                               ]),
                           child: Column(
                             children: [
@@ -113,14 +110,14 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
                                   Row(
                                     children: [
                                       SvgPicture.asset('asset/icons/clock.svg',
-                                          width: 18, height: 18),
+                                          width: sizeListIcon, height: sizeListIcon),
                                       SizedBox(
-                                        width: 10,
+                                        width: spaceBetween,
                                       ),
                                       Text(
                                         '${lenhList[index].time} ${lenhList[index].date}',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: fontStyleListItem,
                                         ),
                                       ),
                                     ],
@@ -128,69 +125,69 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
                                   Text(
                                     'Chờ bến đi ký',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.orange),
+                                        fontWeight: fontStyleListStatus,
+                                        color: statusText),
                                   )
                                 ],
                               ),
                               SizedBox(
-                                height: 8,
+                                height: spaceListItem,
                               ),
                               Row(
                                 children: [
                                   SvgPicture.asset('asset/icons/sohieu.svg',
-                                      width: 18, height: 18),
+                                      width: sizeListIcon, height: sizeListIcon),
                                   SizedBox(
-                                    width: 10,
+                                    width: spaceBetween,
                                   ),
                                   Text(
                                     '${lenhList[index].sohieu}',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: fontStyleListItem),
                                   )
                                 ],
                               ),
                               SizedBox(
-                                height: 8,
+                                height: spaceListItem,
                               ),
                               Row(
                                 children: [
                                   SvgPicture.asset(
                                       'asset/icons/buslocation.svg',
-                                      width: 19,
-                                      height: 19),
+                                      width: sizeListIcon,
+                                      height: sizeListIcon),
                                   SizedBox(
-                                    width: 10,
+                                    width: spaceBetween,
                                   ),
                                   Text(
                                     '${lenhList[index].diemdi} - ${lenhList[index].diemden}',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: fontStyleListItem),
                                   )
                                 ],
                               ),
                               SizedBox(
-                                height: 8,
+                                height: spaceListItem,
                               ),
                               Row(
                                 children: [
                                   SvgPicture.asset('asset/icons/customer.svg',
-                                      width: 18, height: 18),
+                                      width: sizeListIcon, height: sizeListIcon),
                                   SizedBox(
-                                    width: 10,
+                                    width: spaceBetween,
                                   ),
                                   Text(
                                     '${lenhList[index].khach} khách',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: fontStyleListItem),
                                   )
                                 ],
                               ),
                               Align(
                                   alignment: Alignment.bottomRight,
                                   child: SizedBox(
-                                      height: 35,
-                                      width: 150,
+                                      height: buttomHeight,
+                                      width: buttomWidth,
                                       child: ElevatedButton(
                                           onPressed: () {
                                             // UIKitPage ui = new UIKitPage(2);
@@ -205,7 +202,7 @@ class TodayStoryTabPageState extends State<TodayStoryTabPage> {
                 )
               : Expanded(
                   child: Center(
-                  child: Text('Không có dữ liệu !'),
+                  child: Text(noDataText),
                 ))
         ],
       ),

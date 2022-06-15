@@ -2,23 +2,23 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ui_kit/CameraPage.dart';
 import 'package:flutter_ui_kit/Login.dart';
 import 'package:flutter_ui_kit/other/constant.dart';
+import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/other/imgConst.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 
-class MeTabPage extends StatefulWidget {
-  const MeTabPage({Key key}) : super(key: key);
+class Taikhoan extends StatefulWidget {
+  const Taikhoan({Key key}) : super(key: key);
   @override
-  MeTabPageState createState() {
-    return MeTabPageState();
+  TaikhoanState createState() {
+    return TaikhoanState();
   }
 }
 
-class MeTabPageState extends State<MeTabPage> {
+class TaikhoanState extends State<Taikhoan> {
   final formkey = GlobalKey<FormState>();
   DateTime datetime = DateTime.now();
   String formattedDate;
@@ -79,12 +79,12 @@ class MeTabPageState extends State<MeTabPage> {
         title: Text(
           "Profile",
           style: TextStyle(
-            color: Colors.black,
+            color: titleColor,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -319,7 +319,6 @@ class MeTabPageState extends State<MeTabPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Container(
-                                      // height: 45,
                                       child: DropdownButtonFormField(
                                         decoration: InputDecoration(
                                             labelText: 'tỉnh(*)'),

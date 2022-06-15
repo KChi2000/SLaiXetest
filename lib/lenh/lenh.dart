@@ -4,29 +4,31 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../lenh/chuyendoilenh.dart';
 import '../lenh/lenhvanchuyenList.dart';
+import '../other/homeConstant.dart';
 
-class FiltersTabPage extends StatefulWidget {
+class Lenh extends StatefulWidget {
   @override
-  FiltersTabPageState createState() {
-    return FiltersTabPageState();
+  LenhState createState() {
+    return LenhState();
   }
 }
 
-class FiltersTabPageState extends State<FiltersTabPage> {
+class LenhState extends State<Lenh> {
   bool activefab = false;
   XFile imageitem;
+  final formkey = GlobalKey<FormState>();
+  final lidoController = TextEditingController();
   // final image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "LỆNH VẬN CHUYỂN",
+            appbarTitle,
             style: TextStyle(
-              color: Colors.white,
+              color: titleColor,
             ),
           ),
           centerTitle: true,
@@ -34,9 +36,9 @@ class FiltersTabPageState extends State<FiltersTabPage> {
           leading: IconButton(
               icon: SvgPicture.asset(
                 'asset/icons/close.svg',
-                color: Colors.white,
-                width: 30,
-                height: 30,
+                color: appbarIconColor,
+                width: appbarIconSize,
+                height: appbarIconSize,
               ),
               onPressed: () {
                 Navigator.push(
@@ -47,8 +49,8 @@ class FiltersTabPageState extends State<FiltersTabPage> {
         ),
         body: Banner(
           message: 'Chờ bến đi kí',
-          location: BannerLocation.topEnd,
-          color: Colors.orange,
+          location: bannerLocation,
+          color: bannerColor,
           child: Container(
             padding: EdgeInsets.all(15),
             width: MediaQuery.of(context).size.width,
@@ -79,35 +81,35 @@ class FiltersTabPageState extends State<FiltersTabPage> {
                 SizedBox(
                   height: 10,
                 ),
-                itemRowLenh('Mã tuyến', '1920.1111.A', Colors.black),
+                itemRowLenh('Mã tuyến', '1920.1111.A', valueTextColor),
                 SizedBox(
-                  height: 8,
+                  height: spacerItem,
                 ),
-                itemRowLenh('Tên bến đi', 'TT TP Thái Nguyên', Colors.black),
+                itemRowLenh('Tên bến đi', 'TT TP Thái Nguyên', valueTextColor),
                 SizedBox(
-                  height: 8,
+                  height: spacerItem,
                 ),
-                itemRowLenh('Tên bến đến', 'Bến xe Thanh Sơn', Colors.black),
+                itemRowLenh('Tên bến đến', 'Bến xe Thanh Sơn', valueTextColor),
                 SizedBox(
-                  height: 8,
+                  height: spacerItem,
                 ),
-                itemRowLenh('Số khách đã mua vé', '0', Colors.green),
+                itemRowLenh('Số khách đã mua vé', '0', numberPassengerBuyTicketColor),
                 SizedBox(
-                  height: 8,
+                  height: spacerItem,
                 ),
-                itemRowLenh('Số khách trên xe', '0', Colors.blue),
+                itemRowLenh('Số khách trên xe', '0', numberPassengeronBusColor),
               ],
             ),
           ),
         ),
         floatingActionButton: SpeedDial(
           overlayColor: Colors.grey,
-          backgroundColor: Colors.blue,
-          activeBackgroundColor: Colors.red,
-          activeIcon: Icons.close,
+          backgroundColor: activeColor,
+          activeBackgroundColor: inactiveColor,
+          activeIcon: activeIcon,
           animationAngle: 3.14 / 2,
-          buttonSize: activefab ? Size(60, 60) : Size(50, 50),
-          icon: Icons.menu,
+          buttonSize: activefab ? Size(activeButtonSize, activeButtonSize) : Size(inactiveButtonSize, inactiveButtonSize),
+          icon: inactiveIcon,
           onOpen: () {
             setState(() {
               activefab = true;
@@ -120,7 +122,7 @@ class FiltersTabPageState extends State<FiltersTabPage> {
           },
           children: [
             SpeedDialChild(
-                backgroundColor: Colors.green,
+                backgroundColor: chuyendoilenhButtonColor,
                 onTap: () {
                   print('chuyn doi lenh');
                   Navigator.push(context,
@@ -129,7 +131,7 @@ class FiltersTabPageState extends State<FiltersTabPage> {
                 label: 'Chuyển đổi lệnh',
                 child: Icon(
                   Icons.change_circle_sharp,
-                  color: Colors.white,
+                  color: stopButtonColor,
                 )),
             SpeedDialChild(
                 // backgroundColor: Colors.red,
@@ -164,9 +166,18 @@ class FiltersTabPageState extends State<FiltersTabPage> {
                                 Text('LCV-0000187/SPCT',
                                     style: TextStyle(fontSize: 16)),
                               ]),
-                              TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'Dừng vì lí do()*'),
+                              Form(
+                                key: formkey,
+                                child: TextFormField(
+                                  controller: lidoController,
+                                  decoration: InputDecoration(
+                                      labelText: 'Dừng vì lí do()*'),
+                                      validator: (vl){
+                                        if(vl==null || vl.isEmpty){
+                                          return 'Chưa nhập lí do';
+                                        } else return null;
+                                      },
+                                ),
                               ),
                               Align(
                                   alignment: Alignment.topLeft,
@@ -328,7 +339,9 @@ class FiltersTabPageState extends State<FiltersTabPage> {
                                 ],
                               ),
                               RaisedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  formkey.currentState.validate();
+                                },
                                 child: Text('XÁC NHẬN',style: TextStyle(color: Colors.white,)),
                                 color: Colors.blue,
                               )

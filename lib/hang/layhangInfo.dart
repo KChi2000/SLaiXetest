@@ -210,7 +210,7 @@ class _layhangInfoState extends State<layhangInfo> {
                     });
                   }
                   time =
-                      await showTimePicker(context: context, initialTime: time);
+                      await showTimePicker(context: context, initialTime: time,hourLabelText: 'Giờ',minuteLabelText: 'phút');
                   if (time == null) {
                     setState(() {
                       time = TimeOfDay.now();

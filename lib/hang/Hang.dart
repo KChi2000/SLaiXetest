@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/model/chuyendiList.dart';
 import 'package:image_picker/image_picker.dart';
-import '../hangComponent/hangDetail.dart';
-import '../hangComponent/layhangInfo.dart';
+import '../other/homeConstant.dart';
+import 'hangDetail.dart';
+import 'hangDetail.dart';
+import 'layhangInfo.dart';
 import '../model/hangList.dart';
 
 final moveList = [
@@ -20,16 +22,16 @@ final moveList = [
   chuyendiList('HNA.22.05.007', '14.00'),
 ];
 
-class BrowsingTabPage extends StatefulWidget {
+class Hang extends StatefulWidget {
   @override
-  BrowsingTabPageState createState() {
-    return BrowsingTabPageState();
+  HangState createState() {
+    return HangState();
   }
 }
 
-class BrowsingTabPageState extends State<BrowsingTabPage> {
+class HangState extends State<Hang> {
   int choose = 0;
-  String title = moveList.first.name;
+  String title;
   XFile imageitem;
   final image = [];
   final List<hangList> itemList = [
@@ -37,6 +39,8 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
     hangList('Bến xe Hà Nội', '100,000', '0986747472', false),
   ];
   int count, itemclick;
+  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -47,28 +51,29 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
 
   @override
   Widget build(BuildContext context) {
+    title = moveList.first.name;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
         child: AppBar(
           title: Container(
-              height: 40,
-              width: MediaQuery.of(context).size.width * 0.7,
+              height: itemListHeightHang,
+              width: MediaQuery.of(context).size.width * itemListwidthtHang,
               child: TextField(
                 // autofocus: true,
                 // textAlign: TextAlign.start,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(0),
-                    prefixIcon: Icon(Icons.search),
+                    prefixIcon: Icon(searchIcon),
                     enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(searchBoxRadius)),
                       borderSide: const BorderSide(
-                        color: Colors.grey,
+                        color: searchBoxColor,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      borderSide: BorderSide(color: Colors.grey),
+                      borderSide: BorderSide(color: Colors.blue),
                     ),
                     hintText: 'nhập để tìm kiếm'),
               )),
@@ -132,7 +137,7 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                               context: context,
                               builder: (context) {
                                 return StatefulBuilder(
-                                    builder: (context, setState) {
+                                    builder: (context, setstate) {
                                   return Container(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 30),
@@ -142,8 +147,8 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                                         Text('Lịch sử chuyến đi',
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18)),
+                                                fontWeight: fontStyleTitleBottomSheet,
+                                                fontSize: fontsizetitleBottomSheet)),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -165,7 +170,7 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                                                     child: Row(
                                                       children: [
                                                         SvgPicture.asset(
-                                                          'asset/icons/bus.svg',
+                                                         iconBottomSheet,
                                                           color: choose == index
                                                               ? Colors.blue
                                                               : Colors.black,
@@ -177,27 +182,22 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                                                           style: TextStyle(
                                                               color: choose ==
                                                                       index
-                                                                  ? Colors.blue
-                                                                  : Colors
-                                                                      .black),
+                                                                  ? selectedColor
+                                                                  : unselectedColor),
                                                         ),
                                                         Text(' | ',
                                                             style: TextStyle(
                                                                 color: choose ==
                                                                         index
-                                                                    ? Colors
-                                                                        .blue
-                                                                    : Colors
-                                                                        .black)),
+                                                                    ? selectedColor
+                                                                    : unselectedColor)),
                                                         Text(
                                                             '${moveList[index].time}',
                                                             style: TextStyle(
                                                                 color: choose ==
                                                                         index
-                                                                    ? Colors
-                                                                        .blue
-                                                                    : Colors
-                                                                        .black))
+                                                                    ? selectedColor
+                                                                    : unselectedColor))
                                                       ],
                                                     )),
                                               );
@@ -225,8 +225,8 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                               child: RotatedBox(
                                   quarterTurns: 3,
                                   child: Icon(
-                                    Icons.arrow_back_ios,
-                                    size: 15,
+                                    arrowDown,
+                                    size: arrowDownSizehang,
                                   )),
                             )
                           ]),
@@ -240,7 +240,7 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                         TextSpan(
                             text: '100,000đ',
                             style: TextStyle(
-                                color: Colors.black,
+                                color: tongtienColor,
                                 fontWeight: FontWeight.bold)),
                       ]))
                     ],
@@ -250,9 +250,9 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                           itemCount: itemList.length,
                           itemBuilder: (context, index) {
                             return Container(
-                              margin: EdgeInsets.only(top: 15),
+                              margin: EdgeInsets.only(top: marginItemList),
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: itemListColor,
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors.grey.withOpacity(0.5),
@@ -266,8 +266,8 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                                   top: 10, left: 10, right: 10, bottom: 0),
                               child: Banner(
                                 message: 'Chưa thu',
-                                location: BannerLocation.topEnd,
-                                color: Colors.pink[800],
+                                location: bannerLocation,
+                                color: bannerColorhang,
                                 child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -279,7 +279,7 @@ class BrowsingTabPageState extends State<BrowsingTabPage> {
                                             },
                                             child: Image.asset(
                                               'asset/images/11.jpg',
-                                              width: 65,
+                                              width: imageItemListWidth,
                                               height: 80,
                                               fit: BoxFit.cover,
                                             ),

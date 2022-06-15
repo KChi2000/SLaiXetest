@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_ui_kit/ringing/bell.dart';
-import 'package:flutter_ui_kit/todaystory/todaystory.dart';
-
-import 'browsing/browsing.dart';
-import 'filters/filters.dart';
-import 'howtomake/howtomake.dart';
-import 'me/me.dart';
+import 'Taikhoan/Taikhoan.dart';
+import 'hang/Hang.dart';
+import 'home/Home.dart';
+import 'lenh/lenh.dart';
+import 'thongbao/Thongbao.dart';
+import 've/Ve.dart';
 
 class UIKitPage extends StatefulWidget {
   int index=0;
@@ -21,12 +20,12 @@ class _UIKitPageState extends State<UIKitPage> {
   var _selectedIndex=0;
 
   final _tabPages = [
-    TodayStoryTabPage(),
-    HowToMakeTabPage(),
-    FiltersTabPage(),
-    BrowsingTabPage(),
-    Bell(),
-    MeTabPage(),
+    Home(),
+    Ve(),
+    Lenh(),
+    Hang(),
+    Thongbao(),
+    Taikhoan(),
   ];
   @override
   void initState() {

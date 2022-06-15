@@ -93,6 +93,7 @@ class _MyWidgetState extends State<Login> {
                     SizedBox(
                       width: screenWidth * 0.8,
                       child: TextFormField(
+                        obscuringCharacter: '*',
                         decoration: InputDecoration(
                             isDense: true,
                             labelText: 'Mật khẩu',
