@@ -31,7 +31,8 @@ class Hang extends StatefulWidget {
 
 class HangState extends State<Hang> {
   int choose = 0;
-  String title;
+  String title='';
+  String value=moveList.first.name;
   XFile imageitem;
   final image = [];
   final List<hangList> itemList = [
@@ -51,7 +52,7 @@ class HangState extends State<Hang> {
 
   @override
   Widget build(BuildContext context) {
-    title = moveList.first.name;
+    // title = moveList.first.name;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
@@ -211,12 +212,17 @@ class HangState extends State<Hang> {
                                     ),
                                   );
                                 });
+                              }).whenComplete(() {
+                                setState(() {
+                                  value = title;
+                                  print('value: '+title);
+                                });
                               });
                         },
                         child: Container(
                           decoration: BoxDecoration(),
                           child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Text(title),
+                            Text(value),
                             SizedBox(
                               width: 5,
                             ),
