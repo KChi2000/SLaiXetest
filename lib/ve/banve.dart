@@ -4,6 +4,9 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/other/homeConstant.dart';
+
+import '../componentsFuture/bottomshetHK.dart';
 
 class banve extends StatefulWidget {
   const banve({Key key}) : super(key: key);
@@ -15,6 +18,8 @@ class banve extends StatefulWidget {
 class _banveState extends State<banve> {
   final formkey = GlobalKey<FormState>();
   final formkey1 = GlobalKey<FormState>();
+  final formTTHK = GlobalKey<FormState>();
+  final abc = GlobalKey<FormState>();
   final diemxuong = ['Bến xe Việt Trì'];
   final lowPrice =
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
@@ -23,6 +28,8 @@ class _banveState extends State<banve> {
   // bool xacnhan= false;
   String ve = '1', sdt = null, giave = '0,00VNĐ';
   final veController = TextEditingController(text: '1');
+   final phoneController = TextEditingController();
+    final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +122,7 @@ class _banveState extends State<banve> {
                 },
               ),
               Form(
-                // key: formkey,
+                key: formTTHK,
                 child: TextFormField(
                   decoration:
                       InputDecoration(hintText: '', label: Text('Giá vé(*)')),
@@ -237,8 +244,169 @@ class _banveState extends State<banve> {
               ElevatedButton(
                 onPressed: xacnhan()
                     ? () {
-                        formkey.currentState.validate();
-                        formkey1.currentState.validate();
+                        // formkey.currentState.validate();
+                        // formkey1.currentState.validate();
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                padding: EdgeInsets.all(20),
+                                height: 400,
+                                child: Column(
+                                  // mainAxisAlignment:
+                                      // MainAxisAlignment.spaceAround,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text('Hủy',
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 15)),
+                                      ),
+                                    ),
+                                    Text('Thông tin hành khách',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18)),
+                                    Form(
+                                      // key: formkey1,
+                                      child:  Column(children: [
+                                      TextFormField(
+                                        controller: phoneController,
+                                        decoration: InputDecoration(
+                                            // hintText: 'nhập số điện thoại',
+                                            labelText: 'Số điện thoại',
+                                           ),
+
+                                        // controller: sdtNhanController,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[0-9]')),
+                                          FilteringTextInputFormatter.deny(
+                                              RegExp(r'^[1-9]+')),
+                                          LengthLimitingTextInputFormatter(10)
+                                        ],
+                                        validator: (sodt) {
+                                          if (sodt == null || sodt.isEmpty) {
+                                            return 'Điện thoại không được để trống';
+                                          } else if (sodt.length <= 10) {
+                                            return 'Sai định dạng số điện thoại';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (vl1) {
+                                          setState(() {
+                                            sdt = vl1;
+                                          });
+                                        },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                      ),
+                                    
+                                   
+                                      TextFormField(
+                                        controller: nameController,
+                                        decoration: InputDecoration(
+                                            // hintText: 'nhập số điện thoại',
+                                            labelText: 'Họ tên: ',
+                                           ),
+
+                                        // controller: sdtNhanController,
+                                        inputFormatters: [
+                                          // FilteringTextInputFormatter.allow(
+                                          //     RegExp(r'[0-9]')),
+                                          FilteringTextInputFormatter.deny(
+                                              RegExp(r'[0-9]+')),
+                                          // LengthLimitingTextInputFormatter(10)
+                                        ],
+                                        validator: (ht) {
+                                          if (ht == null || ht.isEmpty) {
+                                            return 'Họ tên không được để trống';
+                                          } 
+                                          return null;
+                                        },
+                                        onChanged: (vl1) {
+                                          setState(() {
+                                            sdt = vl1;
+                                          });
+                                        },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                      ),])
+                                    ),
+                                     SizedBox(
+                                      height: 15,
+                                    ),
+                                     Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                        SvgPicture.asset('asset/icons/currency-usd.svg',
+                                          width: 24, height: 24),
+                                     
+                                      SizedBox(
+                                        width: spaceBetween,
+                                      ),
+                                      Text(
+                                        'Thanh toán',
+                                        style: TextStyle(
+                                          // fontWeight: fontStyleListItem,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    'Đã thanh toán',
+                                    style: TextStyle(
+                                        // fontWeight: fontStyleListStatus,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                     Icon(Icons.location_on,size: 24,),
+                                      SizedBox(
+                                        width: spaceBetween,
+                                      ),
+                                      Text(
+                                        'Điểm xuống',
+                                        style: TextStyle(
+                                          // fontWeight: fontStyleListItem,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    'Yên Nghĩa',
+                                    style: TextStyle(
+                                        // fontWeight: fontStyleListStatus,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                               SizedBox(
+                                      height: 20,
+                                    ),
+                              FlatButton(onPressed: (){
+                                formTTHK.currentState.validate();
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> componentArea(nameController.text,phoneController.text)));
+                              }, child: Text('XÁC NHẬN',style: TextStyle(color: Colors.white),),color: Colors.blue,)
+                                   
+                                  ],
+                                ),
+                              );
+                            });
                       }
                     : null,
                 child: Text(

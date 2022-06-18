@@ -69,7 +69,7 @@ const Color inactiveColor = Colors.red;
 const IconData activeIcon = Icons.close;
 const IconData inactiveIcon = Icons.menu;
 const Color stopButtonColor = Colors.white;
-const Color chuyendoilenhButtonColor = Colors.green;
+const Color chuyendoilenhButtonColor = Colors.white;
 
 
 //hang

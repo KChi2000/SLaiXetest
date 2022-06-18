@@ -1,8 +1,15 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/model/tang.dart';
+import 'package:flutter_ui_kit/model/tangJson.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/chuyendiList.dart';
+import '../model/sodocho.dart';
+import '../model/sodochoJson.dart';
 import '../ve/banve.dart';
 
 final moveList = [
@@ -26,12 +33,28 @@ class Ve extends StatefulWidget {
 
 class VeState extends State<Ve> {
   var _articleTitle = ['Knife Skills', 'Everyday basics', 'Some beautiful'];
-double spacebetween = 20;
-double spaceRow = 20; 
-double marginRowLeft = 15;
-bool flag=false;
+  double spacebetween = 20;
+  double spaceRow = 20;
+  double marginRowLeft = 15;
+  bool flag = false;
   int choose = 0;
+  bool seat = false;
+  bool activefab = false;
   String title = moveList.first.name;
+  List<sodocho> sodoList = [];
+  List<tang> tangList = [tang.fromJson(tangJson)];
+ 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    sodo.forEach((element) {
+      sodoList.add(sodocho.fromJson(element));
+      print(sodoList.first.tenCho);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double widthScreen = MediaQuery.of(context).size.width;
@@ -142,13 +165,51 @@ bool flag=false;
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: <Widget>[
-          IconButton(
+          Row(children: [
+            IconButton(
             icon: Icon(
               Icons.qr_code_scanner_rounded,
               color: Colors.white,
             ),
             onPressed: () {},
           ),
+           GestureDetector(
+                child: Container(
+                  margin: EdgeInsets.only(right: 5),
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black54),
+                  child: Center(
+                      child: Text(
+                    '0',
+                    style: TextStyle(color: Colors.white),
+                  )),
+                ),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 30),
+                            height: 250,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                itemBottomSheet(
+                                    Colors.green, 'Đang thanh toán: ', '0'),
+                                itemBottomSheet(
+                                    Colors.amber[800], 'Đã đặt chỗ: ', '0'),
+                                itemBottomSheet(Colors.blue, 'Có người ngồi: ', '0'),
+                                itemBottomSheet(Colors.grey[700], 'Đã mua vé: ', '0'),
+                              ],
+                            ));
+                      });
+                })
+          ],)
         ],
         actionsIconTheme: IconThemeData(
           color: Colors.grey,
@@ -173,7 +234,7 @@ bool flag=false;
                 child: Column(
               children: [
                 Row(
-                  children: [Text('aaaa')],
+                  children: [Text('aaa')],
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -271,313 +332,20 @@ bool flag=false;
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 0,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      seatItem('LX',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                                    ],
-                                  ),
-                                  Positioned(
-                                      bottom: 35,
-                                      left: 12,
-                                      child: Image.asset(
-                                        'asset/images/volant.png',
-                                        width: 20,
-                                        height: 20,
-                                      ))
-                                ],
-                              ),
-                              SizedBox(
-                                width: 150,
-                              ),
-                              seatItem('17',(){
-                                          setState(() {
-                                            flag= !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('23',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('2',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('9',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: 150,
-                              ),
-                              seatItem('24',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('3',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('10',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('4',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('11',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: 85,
-                              ),
-                              seatItem('18',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('25',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('5',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('12',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: 85,
-                              ),
-                              seatItem('19',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('26',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('6',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('13',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: 85,
-                              ),
-                              seatItem('20',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('27',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('7',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('14',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: 85,
-                              ),
-                              seatItem('21',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('28',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
-                          SizedBox(
-                            height: spaceRow,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              seatItem('8',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('15',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('16',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('22',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag),
-                              SizedBox(
-                                width: spacebetween,
-                              ),
-                              seatItem('29',(){
-                                          setState(() {
-                                            flag== !flag;
-                                          });
-                                      },flag)
-                            ],
-                          ),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
+                          Container(
+                            width: widthScreen - 35 - 20 - 20,
+                            height: heightScreen * 0.65 - 50,
+                            color: Colors.white,
+                            child: GridView(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: tangList.first.soCot,
+                                        crossAxisSpacing: 0),
+                                children: abc()),
+                          )
                         ],
                       ),
                     ),
@@ -613,88 +381,309 @@ bool flag=false;
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => banve()));
-        },
-        label: Text(
-          buttonText,
-          style: TextStyle(
-            color: buttonColorText,
-          ),
-        ),
-        icon: SvgPicture.asset(
-          iconButton,
-          color: buttonColor,
-        ),
-        backgroundColor: buttonBackground,
-      ),
+       floatingActionButton: SpeedDial(
+          overlayColor: Colors.grey,
+          backgroundColor: activeColor,
+          activeBackgroundColor: inactiveColor,
+          activeIcon: activeIcon,
+          animationAngle: 3.14 / 2,
+          buttonSize: activefab ? Size(activeButtonSize, activeButtonSize) : Size(inactiveButtonSize, inactiveButtonSize),
+          icon: inactiveIcon,
+          onOpen: () {
+            setState(() {
+              activefab = true;
+            });
+          },
+          onClose: () {
+            setState(() {
+              activefab = false;
+            });
+          },
+          children: [
+            SpeedDialChild(
+                backgroundColor: chuyendoilenhButtonColor,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>banve()));
+                },
+                label: 'Bán vé ghế phụ',
+                child: SvgPicture.asset('asset/icons/ticket.svg',width: 20,height: 20,)),
+            SpeedDialChild(
+                // backgroundColor: Colors.red,
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          padding: EdgeInsets.all(15),
+                          height: 250,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text('Hủy',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 15)),
+                                ),
+                              ),
+                              Text('Khách mua vé ghế phụ',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                             Row(children: [
+                               Column(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                  Row(children: [
+                                Text('Số điện thoại: ',
+                                    style: TextStyle(fontSize: 13)),
+                                Text('0595757463',
+                                    style: TextStyle(fontSize: 16)),
+                              ]),
+                             Row(children: [
+                                Text('Giá vé: ',
+                                    style: TextStyle(fontSize: 13)),
+                                Text('15000đ',
+                                    style: TextStyle(fontSize: 16,color: Colors.red)),
+                              ]),
+                              Row(children: [
+                                Text('Điểm xuống: ',
+                                    style: TextStyle(fontSize: 13)),
+                                Text('Yên Nghĩa',
+                                    style: TextStyle(fontSize: 16,color: Colors.orange)),
+                              ]),
+                               ],),
+                               SizedBox(width: 40,),
+                               Row(children: [
+                                 Icon(Icons.print),
+                                  SizedBox(width: 10,),
+                                 SvgPicture.asset('asset/icons/arrowdown.svg',width: 20,height: 20,)
+                               ],)
+                             ],),
+                              
+                              SizedBox(height: 40,),
+                             
+                            ],
+                          ),
+                        );
+                      });
+                  print('dung hanh trinh');
+                },
+                label: 'Khách ngồi ghế phụ',
+                child: Icon(Icons.chair_alt, color: Colors.black))
+          ],
+        )
     );
   }
 
-  Stack seatItem(String num, VoidCallback click,bool fla) {
-    return Stack(
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              height: 5,
-            ),
-            Container(
-              height: 35,
-              width: 45,
-              decoration: BoxDecoration(
-                color: Colors.grey[350],
+  Column seatItem(String num, String status,int cot,int hang) {
+    return Column(children: [
+      SizedBox(
+        height: 15,
+      ),
+      Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 7,
               ),
-            ),
-          ],
-        ),
-        Positioned(
-            left: 3,
-            child: Stack(
-              children: [
-                InkWell(
-                  onTap: click,
-                  child: fla == true?Container(
-                    height: 35,
-                    width: 39,
-                    decoration: BoxDecoration(
-                        color: Colors.blue[600],
-                        // border: Border.all(color: Colors.grey[350]),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Center(child: SvgPicture.asset('asset/icons/account-check.svg',color: Colors.white,)),
-                  ) :Container(
-                    height: 35,
-                    width: 39,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey[350]),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Center(child: Text(num)),
-                  ),
+              Container(
+                height: 32,
+                width: 45,
+                decoration: BoxDecoration(
+                  color: Colors.grey[350],
                 ),
-                Positioned(
-                    top: 30,
-                    left: 7,
-                    child: Container(
-                      height: 5,
-                      width: 24,
-                      decoration: BoxDecoration(
+              ),
+            ],
+          ),
+          Positioned(
+              left: 3,
+              child: Stack(
+                children: [
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        var index = sodoList.indexWhere((element) => element.viTriCot == cot && element.viTriHang==hang);
+                        // pos = index;
+                        print('index: $index');
+                      
+
+                      });
+                    },
+                    child: seat == true
+                        ? Container(
+                            height: 35,
+                            width: 39,
+                            decoration: BoxDecoration(
+                                color: Colors.blue[600],
+                                // border: Border.all(color: Colors.grey[350]),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Center(
+                                child: SvgPicture.asset(
+                              'asset/icons/account-check.svg',
+                              color: Colors.white,
+                            )),
+                          )
+                        : Container(
+                            height: 35,
+                            width: 39,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey[350]),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Center(child: Text(num)),
+                          ),
+                  ),
+                  Positioned(
+                      top: 30,
+                      left: 7,
+                      child: Container(
+                        height: 5,
+                        width: 24,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[350],
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(3),
+                                topRight: Radius.circular(3))),
+                      )),
+                ],
+              )),
+        ],
+      ),
+    ]);
+  }
+
+  List<Widget> abc() {
+    print(tangList.first.soHang);
+    print(tangList.first.soCot);
+ List<Widget> list = [];
+    for (int vtH = 1; vtH <= tangList.first.soHang; vtH++) {
+      for (int vtC = 1; vtC <= tangList.first.soCot; vtC++) {
+        var tmp =
+            sodoList.where((vt) => vt.viTriHang == vtH && vt.viTriCot == vtC);
+        if (tmp.length >= 1) {
+          if (tmp.first.viTriCot == 1 && tmp.first.viTriHang == 1) {
+            list.add(seatItemLX('${tmp.first.tenCho}'));
+          } else
+            list.add(seatItem('${tmp.first.tenCho}', '${tmp.first.trangThai.tenTrangThai}',tmp.first.viTriCot,tmp.first.viTriHang));
+        } else {
+          list.add(Text(''));
+        }
+      }
+    }
+    print('abc.list.length = ${list.length}');
+    return list;
+  }
+}
+
+Row seatItemLX(String num) {
+  return Row(
+    children: [
+      SizedBox(
+        width: 10,
+      ),
+      Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 15,
+              ),
+              Stack(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        height: 35,
+                        width: 45,
+                        decoration: BoxDecoration(
                           color: Colors.grey[350],
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(3),
-                              topRight: Radius.circular(3))),
-                    )),
-              ],
-            )),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                      left: 3,
+                      child: Stack(
+                        children: [
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              height: 35,
+                              width: 39,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.grey[350]),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Center(child: Text(num)),
+                            ),
+                          ),
+                          Positioned(
+                              top: 30,
+                              left: 7,
+                              child: Container(
+                                height: 5,
+                                width: 24,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[350],
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(3),
+                                        topRight: Radius.circular(3))),
+                              )),
+                        ],
+                      )),
+                ],
+              )
+            ],
+          ),
+          Positioned(
+              bottom: 42,
+              left: 12,
+              child: Image.asset(
+                'asset/images/volant.png',
+                width: 20,
+                height: 20,
+              ))
+        ],
+      ),
+    ],
+  );
+  
+}
+Row itemBottomSheet(Color color, String title, String value) {
+    return Row(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: 5),
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10),
+              color: color),
+          child: Center(
+              child: Text(
+            '0',
+            style: TextStyle(color: Colors.white),
+          )),
+        ),
+        Text(
+          title,
+          style: TextStyle(color: Colors.black),
+        ),
+        Text(
+          value,
+          style: TextStyle(color: Colors.black),
+        ),
       ],
     );
   }
-}
-// Column(
-            //   children: [
-            //     Text('Xe của bạn chưa có trên sơ đồ ghế.'),
-            //     Text('Vui lòng liên hệ Công ty của bạn để được cập nhật !')
-            //   ],
-            // )

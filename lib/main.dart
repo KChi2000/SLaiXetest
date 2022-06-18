@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_kit/Login.dart';
+import 'package:flutter_ui_kit/componentsFuture/thanhtoanbanve.dart';
+import 'package:flutter_ui_kit/home/Home.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 
 void main() => runApp(MyApp());
