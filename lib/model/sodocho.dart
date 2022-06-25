@@ -12,7 +12,7 @@ class sodocho {
   bool kichHoatGhePhu;
 
   sodocho(
-      {this.id,
+      this.id,
       this.idTang,
       this.kieuCho,
       this.loaiCho,
@@ -22,7 +22,7 @@ class sodocho {
       this.giaTien,
       this.trangThai,
       this.soDienThoaiKhachHang,
-      this.kichHoatGhePhu});
+      this.kichHoatGhePhu);
 
   sodocho.fromJson(Map<String, dynamic> json) {
     id = json['id'];

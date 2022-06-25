@@ -29,21 +29,7 @@ class _SignUpState extends State<SignUp> {
       ),
       body: Container(
         child: Stack(children: [
-          Column(
-            children: [
-              SizedBox(
-                height: screenHeight * 0.12,
-              ),
-              SizedBox(
-                child: Image.asset(
-                  'asset/images/logo.png',
-                  color: Colors.white.withOpacity(0.3),
-                  colorBlendMode: BlendMode.modulate,
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-            ],
-          ),
+          
           Positioned(
               child: Container(
             width: screenWidth,
@@ -206,6 +192,9 @@ class _SignUpState extends State<SignUp> {
                   color: Colors.blue,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8))),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -4,18 +4,18 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/other/homeConstant.dart';
 
 import '../componentsFuture/bottomshetHK.dart';
-import '../other/homeConstant.dart';
 
-class banve extends StatefulWidget {
-  const banve({Key key}) : super(key: key);
+class banveghephu extends StatefulWidget {
+  const banveghephu({Key key}) : super(key: key);
 
   @override
-  State<banve> createState() => _banveState();
+  State<banveghephu> createState() => _banveState();
 }
 
-class _banveState extends State<banve> {
+class _banveState extends State<banveghephu> {
   final formkey = GlobalKey<FormState>();
   final formkey1 = GlobalKey<FormState>();
   final formTTHK = GlobalKey<FormState>();
@@ -25,23 +25,49 @@ class _banveState extends State<banve> {
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
   bool cash = true;
   bool bank = false;
-  bool checkbox=false;
   // bool xacnhan= false;
   String ve = '1', sdt = null, giave = '0,00VNĐ';
   final veController = TextEditingController(text: '1');
-  final phoneController = TextEditingController();
-  final nameController = TextEditingController();
+   final phoneController = TextEditingController();
+    final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('THANH TOÁN BÁN VÉ'),
+        centerTitle: true,
       ),
       body: Container(
           padding: EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Form(
+                key: formkey,
+                child: TextFormField(
+                  controller: veController,
+                  autofocus: true,
+                  decoration: InputDecoration(labelText: 'Số lượng vé'),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    FilteringTextInputFormatter.deny(RegExp(r'^0+')),
+                    LengthLimitingTextInputFormatter(2)
+                  ],
+                  validator: (sodt) {
+                    if (sodt == null || sodt.isEmpty) {
+                      return 'Vé không được để trống';
+                    }
+
+                    return null;
+                  },
+                  onChanged: (vl) {
+                    setState(() {
+                      ve = vl;
+                    });
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                ),
+              ),
               Form(
                 key: formkey1,
                 child: TextFormField(
@@ -120,12 +146,11 @@ class _banveState extends State<banve> {
               Row(
                 children: [
                   Checkbox(
-                      value: checkbox,
+                      value: true,
                       activeColor: Color.fromARGB(255, 21, 128, 216),
                       onChanged: (value) {
                         setState(() {
-                          checkbox = value;
-                          print(checkbox);
+                          // flag = value;
                         });
                       }),
                   Text('Phát hành & In vé'),
@@ -229,7 +254,7 @@ class _banveState extends State<banve> {
                                 height: 400,
                                 child: Column(
                                   // mainAxisAlignment:
-                                  // MainAxisAlignment.spaceAround,
+                                      // MainAxisAlignment.spaceAround,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -248,14 +273,14 @@ class _banveState extends State<banve> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18)),
                                     Form(
-                                        // key: formkey1,
-                                        child: Column(children: [
+                                      // key: formkey1,
+                                      child:  Column(children: [
                                       TextFormField(
                                         controller: phoneController,
                                         decoration: InputDecoration(
-                                          // hintText: 'nhập số điện thoại',
-                                          labelText: 'Số điện thoại',
-                                        ),
+                                            // hintText: 'nhập số điện thoại',
+                                            labelText: 'Số điện thoại',
+                                           ),
 
                                         // controller: sdtNhanController,
                                         inputFormatters: [
@@ -281,12 +306,14 @@ class _banveState extends State<banve> {
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
                                       ),
+                                    
+                                   
                                       TextFormField(
                                         controller: nameController,
                                         decoration: InputDecoration(
-                                          // hintText: 'nhập số điện thoại',
-                                          labelText: 'Họ tên: ',
-                                        ),
+                                            // hintText: 'nhập số điện thoại',
+                                            labelText: 'Họ tên: ',
+                                           ),
 
                                         // controller: sdtNhanController,
                                         inputFormatters: [
@@ -299,7 +326,7 @@ class _banveState extends State<banve> {
                                         validator: (ht) {
                                           if (ht == null || ht.isEmpty) {
                                             return 'Họ tên không được để trống';
-                                          }
+                                          } 
                                           return null;
                                         },
                                         onChanged: (vl1) {
@@ -309,89 +336,73 @@ class _banveState extends State<banve> {
                                         },
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
-                                      ),
-                                    ])),
-                                    SizedBox(
+                                      ),])
+                                    ),
+                                     SizedBox(
                                       height: 15,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                                'asset/icons/currency-usd.svg',
-                                                width: 24,
-                                                height: 24),
-                                            SizedBox(
-                                              width: spaceBetween,
-                                            ),
-                                            Text(
-                                              'Thanh toán',
-                                              style: TextStyle(
-                                                  // fontWeight: fontStyleListItem,
-                                                  ),
-                                            ),
-                                          ],
+                                     Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                        SvgPicture.asset('asset/icons/currency-usd.svg',
+                                          width: 24, height: 24),
+                                     
+                                      SizedBox(
+                                        width: spaceBetween,
+                                      ),
+                                      Text(
+                                        'Thanh toán',
+                                        style: TextStyle(
+                                          // fontWeight: fontStyleListItem,
                                         ),
-                                        Text(
-                                          'Đã thanh toán',
-                                          style: TextStyle(
-                                              // fontWeight: fontStyleListStatus,
-                                              color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              size: 24,
-                                            ),
-                                            SizedBox(
-                                              width: spaceBetween,
-                                            ),
-                                            Text(
-                                              'Điểm xuống',
-                                              style: TextStyle(
-                                                  // fontWeight: fontStyleListItem,
-                                                  ),
-                                            ),
-                                          ],
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    'Đã thanh toán',
+                                    style: TextStyle(
+                                        // fontWeight: fontStyleListStatus,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                     Icon(Icons.location_on,size: 24,),
+                                      SizedBox(
+                                        width: spaceBetween,
+                                      ),
+                                      Text(
+                                        'Điểm xuống',
+                                        style: TextStyle(
+                                          // fontWeight: fontStyleListItem,
                                         ),
-                                        Text(
-                                          'Yên Nghĩa',
-                                          style: TextStyle(
-                                              // fontWeight: fontStyleListStatus,
-                                              color: Colors.black),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    'Yên Nghĩa',
+                                    style: TextStyle(
+                                        // fontWeight: fontStyleListStatus,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                               SizedBox(
                                       height: 20,
                                     ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        formTTHK.currentState.validate();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    componentArea(
-                                                        nameController.text,
-                                                        phoneController.text)));
-                                      },
-                                      child: Text(
-                                        'XÁC NHẬN',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      color: Colors.blue,
-                                    )
+                              FlatButton(onPressed: (){
+                                formTTHK.currentState.validate();
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> componentArea(nameController.text,phoneController.text)));
+                              }, child: Text('XÁC NHẬN',style: TextStyle(color: Colors.white),),color: Colors.blue,)
+                                   
                                   ],
                                 ),
                               );
@@ -409,7 +420,11 @@ class _banveState extends State<banve> {
   }
 
   bool xacnhan() {
-    if (giave == '0,00VNĐ' || sdt == null || sdt.isEmpty) {
+    if (giave == '0,00VNĐ' ||
+        ve == null ||
+        ve.isEmpty ||
+        sdt == null ||
+        sdt.isEmpty) {
       return false;
     } else
       return true;

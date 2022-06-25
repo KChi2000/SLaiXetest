@@ -131,7 +131,7 @@ class LenhState extends State<Lenh> {
                 label: 'Chuyển đổi lệnh',
                 child: Icon(
                   Icons.change_circle_sharp,
-                  color: stopButtonColor,
+                  color: Colors.black,
                 )),
             SpeedDialChild(
                 // backgroundColor: Colors.red,
