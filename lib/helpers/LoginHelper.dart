@@ -12,10 +12,12 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class LoginHelper {
+  static const Base64Codec base64Url = Base64Codec.urlSafe();
+  //https://dangnhap.qc03.qlbx.sonphat.dev/auth
 // Cái này tạo thông tin chung, cấu hình theo mặc định, để toàn bộ chương trình, chố nào cũng có thể dung
 // Đoạn này cũng áp dụng tương đối theo mô hình signleton, nhưng anh không lock hàm khởi tạo của class
   static LoginHelper Default = LoginHelper(
-      "https://dangnhap.qc03.qlbx.sonphat.dev/auth", "Sbus.vn", "BanVeTaiBen");
+      "https://dangnhap.sbus.vn/auth", "Sbus.vn", "BanVeTaiBen");
 
   String URL; // Thông tin server đăng nhập
   String Realm; // Thông tin cấu hình vùng dữ liệu đăng nhập
@@ -107,9 +109,10 @@ class LoginHelper {
               "grant_type=refresh_token&client_id=$ClientId&refresh_token=$refresh_token");
 
       if (resp.statusCode == 200) {
+        print('aaa ${resp.body.toString()}');
         // tương tự ở trên
         parseTokenResult(resp.body);
-        print('aaa ${resp.body}');
+        
       } else {
         throw Exception("Phiên đăng nhập không hợp lệ.");
       }
@@ -128,7 +131,6 @@ class LoginHelper {
 
       // đọc dữ liệu json mà api đăng nhập trả về
     Map<String, dynamic> data = jsonDecode(result);
-  print('data $data');
 // lấy 2 thuộc tính token tương ứng.
     access_token = data['access_token'];
     refresh_token = data['refresh_token'];
@@ -142,10 +144,10 @@ class LoginHelper {
     if (b64.length % 4 > 0) {
       b64 = b64.padRight(b64.length + 4 - b64.length % 4, '=');
     }
-
+var decoded = base64Url.decode("$b64");
 // Chuyển đổi và đọc dữ liệu từ base64 trong phân đoạn dữ liệu của token.
-    Map<String, dynamic> tokenParsed =
-        jsonDecode(String.fromCharCodes(base64Decode(b64)));
+    Map<String, dynamic> tokenParsed =jsonDecode(utf8.decode(decoded));
+        //jsonDecode(String.fromCharCodes(base64Decode(b64)));
 
 
     // lưu trữ thông tin cần lấy của tài khoản vào dùng nhớ.

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
 import '../model/lenhModel.dart';
 import '../uikit.dart';
@@ -55,7 +56,7 @@ class HomeState extends State<Home> {
                       width: spaceBetween,
                     ),
                     Text(
-                      'Nguyễn Công Tuyến',
+                      '${LoginHelper.Default.userToken.given_name}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: mainColor,

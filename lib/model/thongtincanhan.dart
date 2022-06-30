@@ -1,38 +1,46 @@
 class thongtincanhan {
+  bool status;
+  String message;
+  int errorCode;
   Data data;
 
-  thongtincanhan({this.data});
+  thongtincanhan({this.status, this.message, this.errorCode, this.data});
 
   thongtincanhan.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    status = json['status'];
+    message = json['message'].toString();
+    errorCode = json['errorCode'];
+    data = Data.fromJson(json['data']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
+    data['status'] = this.status;
+    data['message'] = this.message;
+    data['errorCode'] = this.errorCode;
+    data['data'] = this.data.toJson();
+    
     return data;
   }
 }
 
 class Data {
-  Null hoTen;
-  Null ngaySinh;
-  Null soDienThoai;
-  Null email;
-  Null idTinh;
-  Null idHuyen;
-  Null diaChi;
-  Null diaChiThuongTru;
+  String hoTen;
+  String ngaySinh;
+  String soDienThoai;
+  String email;
+  String idTinh;
+  String idHuyen;
+  String diaChi;
+  String diaChiThuongTru;
   int namBatDauHanhNghe;
   int soNamKinhNghiem;
-  Null soGPLX;
-  Null hangBang;
-  Null ngayBatDauHieuLuc;
-  Null thoiHanHieuLuc;
-  Null coQuanCap;
-  Null ngayCap;
+  String soGPLX;
+  String hangBang;
+  String ngayBatDauHieuLuc;
+  String thoiHanHieuLuc;
+  String coQuanCap;
+  String ngayCap;
 
   Data(
       {this.hoTen,
@@ -53,42 +61,42 @@ class Data {
       this.ngayCap});
 
   Data.fromJson(Map<String, dynamic> json) {
-    hoTen = json['hoTen'];
-    ngaySinh = json['ngaySinh'];
-    soDienThoai = json['soDienThoai'];
-    email = json['email'];
-    idTinh = json['idTinh'];
-    idHuyen = json['idHuyen'];
-    diaChi = json['diaChi'];
-    diaChiThuongTru = json['diaChiThuongTru'];
+    hoTen = json['hoTen'].toString();
+    ngaySinh = json['ngaySinh'].toString();
+    soDienThoai = json['soDienThoai'].toString();
+    email = json['email'].toString();
+    idTinh = json['idTinh'].toString();
+    idHuyen = json['idHuyen'].toString();
+    diaChi = json['diaChi'].toString();
+    diaChiThuongTru = json['diaChiThuongTru'].toString();
     namBatDauHanhNghe = json['namBatDauHanhNghe'];
     soNamKinhNghiem = json['soNamKinhNghiem'];
-    soGPLX = json['soGPLX'];
-    hangBang = json['hangBang'];
-    ngayBatDauHieuLuc = json['ngayBatDauHieuLuc'];
-    thoiHanHieuLuc = json['thoiHanHieuLuc'];
-    coQuanCap = json['coQuanCap'];
-    ngayCap = json['ngayCap'];
+    soGPLX = json['soGPLX'].toString();
+    hangBang = json['hangBang'].toString();
+    ngayBatDauHieuLuc = json['ngayBatDauHieuLuc'].toString();
+    thoiHanHieuLuc = json['thoiHanHieuLuc'].toString();
+    coQuanCap = json['coQuanCap'].toString();
+    ngayCap = json['ngayCap'].toString();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['hoTen'] = this.hoTen;
-    data['ngaySinh'] = this.ngaySinh;
-    data['soDienThoai'] = this.soDienThoai;
-    data['email'] = this.email;
-    data['idTinh'] = this.idTinh;
-    data['idHuyen'] = this.idHuyen;
-    data['diaChi'] = this.diaChi;
-    data['diaChiThuongTru'] = this.diaChiThuongTru;
+    data['hoTen'] = this.hoTen.toString();
+    data['ngaySinh'] = this.ngaySinh.toString();
+    data['soDienThoai'] = this.soDienThoai.toString();
+    data['email'] = this.email.toString();
+    data['idTinh'] = this.idTinh.toString();
+    data['idHuyen'] = this.idHuyen.toString();
+    data['diaChi'] = this.diaChi.toString();
+    data['diaChiThuongTru'] = this.diaChiThuongTru.toString();
     data['namBatDauHanhNghe'] = this.namBatDauHanhNghe;
     data['soNamKinhNghiem'] = this.soNamKinhNghiem;
-    data['soGPLX'] = this.soGPLX;
-    data['hangBang'] = this.hangBang;
-    data['ngayBatDauHieuLuc'] = this.ngayBatDauHieuLuc;
-    data['thoiHanHieuLuc'] = this.thoiHanHieuLuc;
-    data['coQuanCap'] = this.coQuanCap;
-    data['ngayCap'] = this.ngayCap;
+    data['soGPLX'] = this.soGPLX.toString();
+    data['hangBang'] = this.hangBang.toString();
+    data['ngayBatDauHieuLuc'] = this.ngayBatDauHieuLuc.toString();
+    data['thoiHanHieuLuc'] = this.thoiHanHieuLuc.toString();
+    data['coQuanCap'] = this.coQuanCap.toString();
+    data['ngayCap'] = this.ngayCap.toString();
     return data;
   }
 }
