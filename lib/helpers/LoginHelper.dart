@@ -85,7 +85,7 @@ class LoginHelper {
       throw Exception("Thông tin đăng nhập không hợp lệ");
      
     } else {
-      error='Lỗi không xác định';
+      error='Không kết có kết nối';
       // Theo quy ước riêng, api trên chỉ trả về mã hợp lệ là 200, tất cả mã khác được coi như không hợp lệ
       throw Exception(
           "Lỗi không xác định"); // Gọi là lỗi không xác định vì tạm tời chưa tách rõ lỗi, khi nào có thời gian thì tách rõ từng lỗi của api đăng nhập sau.

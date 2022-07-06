@@ -70,13 +70,13 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadInfo() async {
     datafuture = ApiHelper.get(
-        'https://api-dnvt.sbus.vn/api/Driver/lay-thong-tin-ca-nhan');
+        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-thong-tin-ca-nhan');
     data = await datafuture;
     tinh = '';
     idTinh = data['data']['idTinh'];
     print('ttttt ${data['data']['idTinh']}');
     tinhfuture = ApiHelper.getProvince(
-        "https://api-dnvt.sbus.vn/api/Driver/lay-danh-sach-tinh");
+        "http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tinh");
     dataTinh = await tinhfuture;
     province = dataTinh.data;
     if (idTinh != null) {
@@ -86,7 +86,7 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadHuyen() async {
     huyenfuture = ApiHelper.getDistrict(
-        "https://api-dnvt.sbus.vn/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
+        "http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
     setState(() {

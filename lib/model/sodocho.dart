@@ -1,4 +1,36 @@
 class sodocho {
+  bool status;
+  String message;
+  int errorCode;
+  List<sodochoData> data;
+
+  sodocho({this.status, this.message, this.errorCode, this.data});
+
+  sodocho.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    errorCode = json['errorCode'];
+    if (json['data'] != null) {
+      data = <sodochoData>[];
+      json['data'].forEach((v) {
+        data.add(new sodochoData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    data['errorCode'] = this.errorCode;
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class sodochoData {
   String id;
   String idTang;
   KieuCho kieuCho;
@@ -6,13 +38,13 @@ class sodocho {
   int viTriHang;
   int viTriCot;
   String tenCho;
-  int giaTien;
+  double giaTien;
   TrangThai trangThai;
   String soDienThoaiKhachHang;
   bool kichHoatGhePhu;
 
-  sodocho(
-      this.id,
+  sodochoData(
+      {this.id,
       this.idTang,
       this.kieuCho,
       this.loaiCho,
@@ -22,9 +54,9 @@ class sodocho {
       this.giaTien,
       this.trangThai,
       this.soDienThoaiKhachHang,
-      this.kichHoatGhePhu);
+      this.kichHoatGhePhu});
 
-  sodocho.fromJson(Map<String, dynamic> json) {
+  sodochoData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     idTang = json['idTang'];
     kieuCho =

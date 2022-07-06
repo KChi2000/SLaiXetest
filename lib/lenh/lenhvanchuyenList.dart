@@ -1,10 +1,15 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+
+import 'package:flutter_ui_kit/model/customModel.dart';
 import 'package:flutter_ui_kit/model/lenhvanchuyen.dart';
 import 'package:intl/intl.dart';
+
+import '../model/lenhModel.dart';
 
 class lenhvanchuyenList extends StatefulWidget {
   const lenhvanchuyenList({Key key}) : super(key: key);
@@ -25,23 +30,50 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
   final diem = ['không có dữ liệu'];
   String dropdownValue;
   String dateString = '';
-  final vanchuyenList = [
-    lenhvanchuyen(
-        '11:00',
-        '11/06/2022',
-        '20B-00111',
-        'LVC-0000202/SPCT',
-        'Bến xe Thái Nguyên',
-        'Bến xe Việt trì',
-        'TT TP Thái Nguyên',
-        'Nguyễn Công Tuyến',
-        'Chờ kích hoạt')
-  ];
+
   final formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
   final timeController = TextEditingController(
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
   final lidoController = TextEditingController();
+  var DSLenhFuture;
+  DSLenh maplenh;
+  // List<DSLenhData> lenhldata;
+  Map<String, dynamic> postdata = {
+    'custom': {
+      'danhSachGioXuatBen': [],
+      'idLuongTuyen': null,
+      'ngayXuatBenKeHoach': '2022-07-04T17:00:00.000Z',
+      'timKiem': null,
+    },
+    'loadOptions': {
+      'searchOperation': 'contains',
+      'searchValue': null,
+      'skip': 0,
+      'take': 20,
+      'userData': {}
+    },
+  };
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadDSLenh();
+  }
+
+  void loadDSLenh() async {
+    DSLenhFuture = ApiHelper.postDsLenh(
+        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tat-ca-lenh-cua-lai-xe',
+        postdata);
+    maplenh = await DSLenhFuture;
+    setState(() {});
+    if (maplenh != null) {
+      // lenhldata = maplenh['data']['data'];
+      // print('postttt ${lenhldata.groupCount}');
+      print('postttt ${maplenh.message}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double widthScreen = MediaQuery.of(context).size.width;
@@ -228,315 +260,340 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               icon: Icon(Icons.filter_list))
         ],
       ),
-      body: vanchuyenList.length != 0
-          ? Container(
-              padding: EdgeInsets.all(0),
-              margin: EdgeInsets.all(0),
-              child: ListView.builder(
-                  itemCount: vanchuyenList.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.grey[400].withOpacity(0.7),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey[400].withOpacity(0.7),
-                                offset: Offset(5, 5),
-                                blurRadius: 3,
-                                spreadRadius: 0.6)
-                          ]),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  SvgPicture.asset('asset/icons/clock.svg',
-                                      width: 18, height: 18),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    '${vanchuyenList[index].time} ${vanchuyenList[index].date}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              SvgPicture.asset('asset/icons/sohieu.svg',
-                                  width: 18, height: 18),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              RichText(
-                                  text: TextSpan(children: [
-                                TextSpan(
-                                    text: '${vanchuyenList[index].bienso}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
-                                TextSpan(
-                                    text: '(',
-                                    style: TextStyle(
-                                        // fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
-                                TextSpan(
-                                    text: '${vanchuyenList[index].sohieu}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue)),
-                                TextSpan(
-                                    text: ')',
-                                    style: TextStyle(
-                                        // fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
-                              ])),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              SvgPicture.asset('asset/icons/buslocation.svg',
-                                  width: 19, height: 19),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '${vanchuyenList[index].diemdi} - ${vanchuyenList[index].diemden}\n(1920.1111.A)',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              SvgPicture.asset('asset/icons/bus-stop.svg',
-                                  width: 18, height: 18),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '${vanchuyenList[index].diadiem}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              SvgPicture.asset(
-                                  'asset/icons/card-account-details-outline.svg',
-                                  width: 18,
-                                  height: 18),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '${vanchuyenList[index].laixe}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              SvgPicture.asset(
-                                  'asset/icons/format-list-checks.svg',
-                                  width: 18,
-                                  height: 18),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '${vanchuyenList[index].status}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Divider(
-                            thickness: 1.5,
-                            height: 1,
-                          ),
-                          IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              // crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: FutureBuilder<DSLenh>(
+        future: DSLenhFuture,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Lỗi'),
+            );
+          } else if (snapshot.hasData) {
+            DSLenh getdata = snapshot.data;
+            Data datatemp = getdata.data;
+            List<Lenh> listdata = datatemp.list;
+            // print('tttttt: ${listdata[0].bienKiemSoat}');
+            return ListView.builder(
+                itemCount: listdata.length,
+                itemBuilder: (context, index) {
+                  var time;
+
+                  time = DateTime.parse(listdata[index].thoiGianXuatBenKeHoach)
+                      .toLocal();
+
+                  String timeHieuLuc =
+                      DateFormat('kk:mm dd/MM/yyyy').format(time);
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey[400].withOpacity(0.7),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey[400].withOpacity(0.7),
+                              offset: Offset(5, 5),
+                              blurRadius: 3,
+                              spreadRadius: 0.6)
+                        ]),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                FlatButton(
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return StatefulBuilder(
-                                              builder: (context, setState) {
-                                            return Container(
-                                              padding: EdgeInsets.all(15),
-                                              height: 250,
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: widthScreen *
-                                                                0.32),
-                                                        child: Text(
-                                                            'Từ chối lệnh',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 18)),
-                                                      ),
-                                                      Expanded(
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .topRight,
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Text('Hủy',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    fontSize:
-                                                                        15)),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  Row(children: [
-                                                    Text('Mã số lệnh: ',
-                                                        style: TextStyle(
-                                                            fontSize: 13)),
-                                                    Text('LCV-0000187/SPCT',
-                                                        style: TextStyle(
-                                                            fontSize: 16)),
-                                                  ]),
-                                                  Form(
-                                                    key: formKey,
-                                                    child: TextFormField(
-                                                      controller: lidoController,
-                                                      decoration: InputDecoration(
-                                                          labelText: 'Lí do(*)'),
-                                                      validator: (vl) {
-                                                        if (vl == null ||
-                                                            vl.isEmpty) {
-                                                          return 'Lí do không được để trống';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  RaisedButton(
-                                                    onPressed: () {
-                                                      formKey.currentState.validate();
-                                                    },
-                                                    child: Text(
-                                                      'XÁC NHẬN',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    color: Colors.blue,
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          });
-                                        });
-                                  },
-                                  child: Text('TỪ CHỐI',
-                                      style: TextStyle(color: Colors.red)),
-                                  height: 18,
-                                  // color: Colors.black,
+                                SvgPicture.asset('asset/icons/clock.svg',
+                                    width: 18, height: 18),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                VerticalDivider(
-                                  width: 2,
-                                  thickness: 1.5,
+                                Text(
+                                  '${timeHieuLuc}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                FlatButton(
-                                    onPressed: () {
-                                      showDialog(context: context, builder: (context){
-                                        return AlertDialog(
-                                          title: Text('Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${vanchuyenList[index].sohieu} không?'),
-                                          actions: [
-                                            TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Hủy'),
-                                child: const Text('Hủy',style: TextStyle(color: Colors.red),),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  
-                                },
-                                child: const Text('Xác nhận'),
-                              ),
-                                          ],
-                                        );
-                                      });
-                                    },
-                                    child: Text('TIẾP NHẬN',
-                                        style: TextStyle(color: Colors.blue)),
-                                    height: 18)
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-            )
-          : Center(
-              child: Text('Không có dữ liệu !'),
-            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset('asset/icons/sohieu.svg',
+                                width: 18, height: 18),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text: '${listdata[index].bienKiemSoat}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              TextSpan(
+                                  text: '(',
+                                  style: TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              TextSpan(
+                                  text: '${listdata[index].maLenh}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue)),
+                              TextSpan(
+                                  text: ')',
+                                  style: TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                            ])),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset('asset/icons/buslocation.svg',
+                                width: 19, height: 19),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '${listdata[index].tenTuyen}\n(${listdata[index].maTuyen})',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset('asset/icons/bus-stop.svg',
+                                width: 18, height: 18),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '${listdata[index].tenBenXe}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                                'asset/icons/card-account-details-outline.svg',
+                                width: 18,
+                                height: 18),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '${listdata[index].tenLaiXe}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                                'asset/icons/format-list-checks.svg',
+                                width: 18,
+                                height: 18),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '${listdata[index].tenTrangThai}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Divider(
+                          thickness: 1.5,
+                          height: 1,
+                        ),
+                        IntrinsicHeight(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            // crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              FlatButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return StatefulBuilder(
+                                            builder: (context, setState) {
+                                          return Container(
+                                            padding: EdgeInsets.all(15),
+                                            height: 250,
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          left: widthScreen *
+                                                              0.32),
+                                                      child: Text(
+                                                          'Từ chối lệnh',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 18)),
+                                                    ),
+                                                    Expanded(
+                                                      child: Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text('Hủy',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize:
+                                                                      15)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+                                                Row(children: [
+                                                  Text('Mã số lệnh: ',
+                                                      style: TextStyle(
+                                                          fontSize: 13)),
+                                                  Text('LCV-0000187/SPCT',
+                                                      style: TextStyle(
+                                                          fontSize: 16)),
+                                                ]),
+                                                Form(
+                                                  key: formKey,
+                                                  child: TextFormField(
+                                                    controller: lidoController,
+                                                    decoration: InputDecoration(
+                                                        labelText: 'Lí do(*)'),
+                                                    validator: (vl) {
+                                                      if (vl == null ||
+                                                          vl.isEmpty) {
+                                                        return 'Lí do không được để trống';
+                                                      }
+                                                      return null;
+                                                    },
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                RaisedButton(
+                                                  onPressed: () {
+                                                    formKey.currentState
+                                                        .validate();
+                                                  },
+                                                  child: Text(
+                                                    'XÁC NHẬN',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  color: Colors.blue,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                      });
+                                },
+                                child: Text('TỪ CHỐI',
+                                    style: TextStyle(color: Colors.red)),
+                                height: 18,
+                                // color: Colors.black,
+                              ),
+                              VerticalDivider(
+                                width: 2,
+                                thickness: 1.5,
+                              ),
+                              FlatButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maTuyen} không?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Hủy'),
+                                                child: const Text(
+                                                  'Hủy',
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {},
+                                                child: const Text('Xác nhận'),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Text('TIẾP NHẬN',
+                                      style: TextStyle(color: Colors.blue)),
+                                  height: 18)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                });
+          }
+          return Center(
+            child: Text('Không có dữ liệu'),
+          );
+        }),
+      ),
     );
   }
 }

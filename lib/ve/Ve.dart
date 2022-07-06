@@ -4,27 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/tang.dart';
 import 'package:flutter_ui_kit/model/tangJson.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/ve/banve.dart';
 import 'package:flutter_ui_kit/ve/banveghephu.dart';
 import 'package:image_picker/image_picker.dart';
+import '../model/LichSuChuyenDi.dart';
+import '../model/ThongTinThem.dart';
 import '../model/chuyendiList.dart';
+import '../model/chuyendiganday.dart';
 import '../model/sodocho.dart';
 import '../model/sodochoJson.dart';
+import 'package:intl/intl.dart';
 
-final moveList = [
-  chuyendiList('HNA.22.05.001', '8.00'),
-  chuyendiList('HNA.22.05.002', '9.00'),
-  chuyendiList('HNA.22.05.003', '10.00'),
-  chuyendiList('HNA.22.05.004', '11.00'),
-  chuyendiList('HNA.22.05.005', '12.00'),
-  chuyendiList('HNA.22.05.006', '13.00'),
-  chuyendiList('HNA.22.05.007', '14.00'),
-  chuyendiList('HNA.22.05.007', '14.00'),
-  chuyendiList('HNA.22.05.007', '14.00'),
-];
 List<String> trangthai = ['Còn trống', 'Có khách'];
 
 class Ve extends StatefulWidget {
@@ -35,29 +29,80 @@ class Ve extends StatefulWidget {
 }
 
 class VeState extends State<Ve> {
-  var _articleTitle = ['Knife Skills', 'Everyday basics', 'Some beautiful'];
   double spacebetween = 20;
   double spaceRow = 20;
   double marginRowLeft = 15;
   bool flag = false;
   int choose = 0;
+  String value = '';
   bool seat = false;
   bool activefab = false;
-  String title = moveList.first.name;
-  List<sodocho> sodoList = [];
-  List<tang> tangList = [tang.fromJson(tangJson)];
+  String title = '';
+  bool hasTangdata=false;
+  List<tangData> tangList = [];
   int pos;
-  List<sodocho> temp = [];
+
+  var chuyendigandayFuture;
+  chuyendiganday chuyendiGanday;
+  var LichSuChuyenDiFuture;
+  LichSuChuyenDi lichsuChuyenDi;
+  var tangxeFuture;
+  tang tangxe;
+  var sodochoFuture;
+  var thongtinthemFuture;
+  ThongTinThem thongtinthem;
+  String changeSodocho;
+  sodocho sodoCho;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    loadLichSuChuyenDi();
+  }
 
-    sodo.forEach((element) {
-      sodoList.add(sodocho.fromJson(element));
-      // print(sodoList.first.tenCho);
+  void loadLichSuChuyenDi() async {
+    chuyendigandayFuture = ApiHelper.getchuyendiganday();
+    chuyendiGanday = await chuyendigandayFuture;
+    if (chuyendiGanday != null) {
+      value = chuyendiGanday.data.maChuyenDi;
+      changeSodocho = chuyendiGanday.data.guidChuyenDi;
+      LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
+          'http://vedientu.nguyencongtuyen.local:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+      lichsuChuyenDi = await LichSuChuyenDiFuture;
+      loadchongoi();
+      if (this.mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  void LichSuChuyenDiNotify() {
+    List<DataLichSuChuyenDi> lichsulist = lichsuChuyenDi.data;
+    var temp = lichsulist.where((element) => element.maChuyenDi == value);
+    setState(() {
+      changeSodocho = temp.first.guidChuyenDi;
+
+      loadchongoi();
     });
-    test();
+  }
+
+  void loadchongoi() async {
+    tangxeFuture = ApiHelper.gettang(changeSodocho);
+    tangxe = await tangxeFuture;
+    hasTangdata = tangxe.status;
+    if (tangxe.status) {
+      tangList = tangxe.data;
+      List<tangData> datatemp = tangxe.data??[];
+      //  print('aaaa ${chuyendiGanday.data.guidChuyenDi}   ${datatemp[0].idTang}');
+      sodochoFuture = ApiHelper.getsodocho(changeSodocho, datatemp[0].idTang);
+      sodoCho = await sodochoFuture;
+      setState(() {});
+    }
+    else{
+      setState(() {
+        sodochoFuture = null;
+      });
+    }
   }
 
   @override
@@ -72,80 +117,118 @@ class VeState extends State<Ve> {
                   context: context,
                   builder: (context) {
                     return StatefulBuilder(builder: (context, setState) {
-                      return Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: paddingVertical, horizontal: paddingHori),
-                        height: bottomSheetHeight,
-                        child: Column(
-                          children: [
-                            Text(titleBottomSheet,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: fontStyle,
-                                    fontSize: fontSize)),
-                            SizedBox(
-                              height: spaceBetween,
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        choose = index;
-                                        title = moveList[index].name;
-                                        print(title);
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: Container(
-                                        height: 45,
-                                        child: Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              iconBottomSheet,
-                                              color: choose == index
-                                                  ? selectedColor
-                                                  : unselectedColor,
-                                              width: iconSizeBottomSheet,
-                                              height: iconSizeBottomSheet,
-                                            ),
-                                            Text(
-                                              ' ${moveList[index].name}',
-                                              style: TextStyle(
-                                                  color: choose == index
-                                                      ? selectedColor
-                                                      : unselectedColor),
-                                            ),
-                                            Text(' | ',
-                                                style: TextStyle(
-                                                    color: choose == index
-                                                        ? selectedColor
-                                                        : unselectedColor)),
-                                            Text('${moveList[index].time}',
-                                                style: TextStyle(
-                                                    color: choose == index
-                                                        ? selectedColor
-                                                        : unselectedColor))
-                                          ],
-                                        )),
-                                  );
-                                },
-                                itemCount: moveList.length,
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
+                      return FutureBuilder(
+                          future: LichSuChuyenDiFuture,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasData) {
+                              LichSuChuyenDi data = snapshot.data;
+                              List<DataLichSuChuyenDi> lichsulist = data.data;
+
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: paddingVertical,
+                                    horizontal: paddingHori),
+                                height: bottomSheetHeight,
+                                child: Column(
+                                  children: [
+                                    Text(titleBottomSheet,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: fontStyle,
+                                            fontSize: fontSize)),
+                                    SizedBox(
+                                      height: spaceBetween,
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemBuilder: (context, index) {
+                                          var time;
+
+                                          time = DateTime.parse(
+                                                  lichsulist[index].gioXuatBen)
+                                              .toLocal();
+
+                                          String timeHieuLuc =
+                                              DateFormat('kk:mm').format(time);
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                choose = index;
+                                                title = lichsulist[index]
+                                                    .maChuyenDi;
+                                                print(title);
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            child: Container(
+                                                height: 45,
+                                                child: Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      iconBottomSheet,
+                                                      color: choose == index
+                                                          ? selectedColor
+                                                          : unselectedColor,
+                                                      width:
+                                                          iconSizeBottomSheet,
+                                                      height:
+                                                          iconSizeBottomSheet,
+                                                    ),
+                                                    Text(
+                                                      ' ${lichsulist[index].maChuyenDi}',
+                                                      style: TextStyle(
+                                                          color: choose == index
+                                                              ? selectedColor
+                                                              : unselectedColor),
+                                                    ),
+                                                    Text(' | ',
+                                                        style: TextStyle(
+                                                            color: choose ==
+                                                                    index
+                                                                ? selectedColor
+                                                                : unselectedColor)),
+                                                    Text('$timeHieuLuc',
+                                                        style: TextStyle(
+                                                            color: choose ==
+                                                                    index
+                                                                ? selectedColor
+                                                                : unselectedColor))
+                                                  ],
+                                                )),
+                                          );
+                                        },
+                                        itemCount: lichsulist.length,
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                            return Center(
+                              child: Text('Lỗi'),
+                            );
+                          });
                     });
-                  });
+                  }).whenComplete(() {
+                setState(() {
+                  value = title;
+                   sodochoFuture = null;
+                  print('value: ' + title);
+                });
+                LichSuChuyenDiNotify();
+               
+              });
             },
             child: Row(
               children: [
                 Text(
-                  "PTH.22.06.0009",
+                  "$value",
                   style: TextStyle(
                     color: appBartextColor,
                     fontWeight: fontStyleappBar,
@@ -179,7 +262,7 @@ class VeState extends State<Ve> {
                   ),
                   onPressed: () {},
                 ),
-                GestureDetector(
+               GestureDetector(
                     child: Container(
                       margin: EdgeInsets.only(right: 5),
                       width: 30,
@@ -235,167 +318,215 @@ class VeState extends State<Ve> {
               SizedBox(
                 height: 10,
               ),
-              Text('Sơ đồ chỗ xe khách',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 18)),
+              // Text('Sơ đồ chỗ xe khách',
+              //     style: TextStyle(
+              //         fontWeight: FontWeight.bold,
+              //         color: Colors.black,
+              //         fontSize: 18)),
               Expanded(
-                  child: Column(
-                children: [
-                  Row(
-                    children: [Text('aaa')],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
+                  child: FutureBuilder<sodocho>(
+                future: sodochoFuture,
+                builder: (context, snapshot) {
+                 if(hasTangdata){
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Lỗi'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    sodocho datatemp = snapshot.data;
+
+                    if (datatemp.status) {
+                    
+                      List<sodochoData> sodoList = datatemp.data;
+                      return Column(
                         children: [
-                          Container(
-                            height: 50,
-                            width: 6,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    bottomLeft: Radius.circular(8))),
+                          Row(
+                            children: [Text('aaa')],
                           ),
-                          SizedBox(
-                            height: 230,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 6,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    bottomLeft: Radius.circular(8))),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        width: widthScreen - 35,
-                        height: heightScreen * 0.65,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.grey[400], width: 3.5),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 2,
-                            ),
-                            Container(
-                              width: widthScreen - 35 - 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[350],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30))),
-                              child: Row(
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
                                 children: [
-                                  SizedBox(
-                                    width: 5,
-                                  ),
                                   Container(
-                                    height: 15,
-                                    width: 15,
+                                    height: 50,
+                                    width: 6,
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(8),
+                                            bottomLeft: Radius.circular(8))),
                                   ),
                                   SizedBox(
-                                    width: 5,
+                                    height: 230,
                                   ),
                                   Container(
-                                      height: 15,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10),
-                                              topRight: Radius.circular(10)))),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    height: 15,
-                                    width: 15,
+                                    height: 50,
+                                    width: 6,
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(8),
+                                            bottomLeft: Radius.circular(8))),
                                   ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Container(
-                                      height: 13,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      )),
                                 ],
                               ),
-                            ),
-                            // SizedBox(
-                            //   height: 10,
-                            // ),
-                            Container(
-                              width: widthScreen - 35 - 20 - 20,
-                              height: heightScreen * 0.65 - 50,
-                              color: Colors.white,
-                              child: GridView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 5),
-                                  itemBuilder: (context, index) {
-                                    // print('jdskfj: ${temp[index].tenCho}');
+                              Container(
+                                width: widthScreen - 35,
+                                height: heightScreen * 0.65,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey[400], width: 3.5),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    Container(
+                                      width: widthScreen - 35 - 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[350],
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30))),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                            height: 15,
+                                            width: 15,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))),
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                              height: 15,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10)))),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                            height: 15,
+                                            width: 15,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Container(
+                                              height: 13,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                    // SizedBox(
+                                    //   height: 10,
+                                    // ),
 
-                                    print('index: $index');
-                                    print('${temp.length}');
-                                    return abc(index)[index];
-                                    // test();
-                                    // return seatItem(temp[index].tenCho);
-                                  },
-                                  itemCount: abc(0).length),
-                            )
-                          ],
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            height: 50,
-                            width: 6,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    bottomRight: Radius.circular(8))),
-                          ),
-                          SizedBox(
-                            height: 230,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 6,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    bottomRight: Radius.circular(8))),
-                          ),
+                                    Container(
+                                      width: widthScreen - 35 - 20 - 20,
+                                      height: heightScreen * 0.65 - 50,
+                                      color: Colors.white,
+                                      child: GridView.builder(
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 5),
+                                          itemBuilder: (context, index) {
+                                            // print('jdskfj: ${temp[index].tenCho}');
+
+                                            // print('index: $index');
+                                            // print('${temp.length}');
+                                            return abc(index, sodoList)[index];
+                                            // test();
+                                            // return seatItem(temp[index].tenCho);
+                                          },
+                                          itemCount: abc(0, sodoList).length),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 6,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(8),
+                                            bottomRight: Radius.circular(8))),
+                                  ),
+                                  SizedBox(
+                                    height: 230,
+                                  ),
+                                  Container(
+                                    height: 50,
+                                    width: 6,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(8),
+                                            bottomRight: Radius.circular(8))),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
                         ],
-                      ),
-                    ],
-                  )
-                ],
+                      );
+                    }
+                   
+                  }
+                  return Center(
+                        child: Column(children: [
+                          Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
+                          Text(
+                              'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
+                        ]),
+                      );
+                 }
+                 return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                          Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
+                          Text(
+                              'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
+                        ]),
+                      );
+                },
               ))
             ],
           ),
@@ -552,9 +683,9 @@ class VeState extends State<Ve> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        var index = sodoList.indexWhere((element) =>
-                            element.viTriCot == cot &&
-                            element.viTriHang == hang);
+                        // var index = sodoList.indexWhere((element) =>
+                        //     element.viTriCot == cot &&
+                        //     element.viTriHang == hang);
                         // pos = index;
                         // print('index: $index');
                         //  print('poss: $pos');
@@ -611,15 +742,15 @@ class VeState extends State<Ve> {
     ]);
   }
 
-  List<Widget> abc(int index) {
-    print(tangList.first.soHang);
-    print(tangList.first.soCot);
+  List<Widget> abc(int index, List<sodochoData> listparam) {
+    // print(tangList.first.soHang);
+    // print(tangList.first.soCot);
     List<Widget> list = [];
 
     for (int vtH = 1; vtH <= tangList.first.soHang; vtH++) {
       for (int vtC = 1; vtC <= tangList.first.soCot; vtC++) {
         var tmp =
-            sodoList.where((vt) => vt.viTriHang == vtH && vt.viTriCot == vtC);
+            listparam.where((vt) => vt.viTriHang == vtH && vt.viTriCot == vtC);
         if (tmp.length >= 1) {
           if (tmp.first.viTriCot == 1 && tmp.first.viTriHang == 1) {
             list.add(seatItemLX('${tmp.first.tenCho}'));
@@ -632,86 +763,42 @@ class VeState extends State<Ve> {
       }
     }
 
-    print('abc.list.length = ${list.length}');
+    // print('abc.list.length = ${list.length}');
     return list;
   }
 
-  void test() {
-    for (int vtH = 1; vtH <= tangList.first.soHang; vtH++) {
-      for (int vtC = 1; vtC <= tangList.first.soCot; vtC++) {
-        var tmp =
-            sodoList.where((vt) => vt.viTriHang == vtH && vt.viTriCot == vtC);
-        if (tmp.length >= 1) {
-          if (tmp.first.viTriCot == 1 && tmp.first.viTriHang == 1) {
-            sodocho sdc = sodocho(
-                tmp.first.id,
-                tmp.first.idTang,
-                tmp.first.kieuCho,
-                tmp.first.loaiCho,
-                tmp.first.viTriHang,
-                tmp.first.viTriCot,
-                tmp.first.tenCho,
-                tmp.first.giaTien,
-                tmp.first.trangThai,
-                tmp.first.soDienThoaiKhachHang,
-                tmp.first.kichHoatGhePhu);
-            temp.add(sdc);
-          } else {
-            sodocho sdc = sodocho(
-                tmp.first.id,
-                tmp.first.idTang,
-                tmp.first.kieuCho,
-                tmp.first.loaiCho,
-                tmp.first.viTriHang,
-                tmp.first.viTriCot,
-                tmp.first.tenCho,
-                tmp.first.giaTien,
-                tmp.first.trangThai,
-                tmp.first.soDienThoaiKhachHang,
-                tmp.first.kichHoatGhePhu);
-            temp.add(sdc);
-          }
-        } else {
-          sodocho sdc = sodocho(
-              null, null, null, null, 1, 1, 'abc', null, null, null, null);
-          temp.add(sdc);
-        }
-      }
-    }
-  }
-
-  Container checkStatus(int ind, String num) {
-    if (temp[ind].trangThai.tenTrangThai == null) {
-      return Container(
-        height: 35,
-        width: 39,
-      );
-    } else if (temp[ind].trangThai.tenTrangThai == 'Có khách') {
-      return Container(
-        height: 35,
-        width: 39,
-        decoration: BoxDecoration(
-            color: Colors.blue[600],
-            // border: Border.all(color: Colors.grey[350]),
-            borderRadius: BorderRadius.circular(4)),
-        child: Center(
-            child: SvgPicture.asset(
-          'asset/icons/account-check.svg',
-          color: Colors.white,
-        )),
-      );
-    } else {
-      Container(
-        height: 35,
-        width: 39,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey[350]),
-            borderRadius: BorderRadius.circular(4)),
-        child: Center(child: Text(num)),
-      );
-    }
-  }
+  // Container checkStatus(int ind, String num) {
+  //   if (temp[ind].trangThai.tenTrangThai == null) {
+  //     return Container(
+  //       height: 35,
+  //       width: 39,
+  //     );
+  //   } else if (temp[ind].trangThai.tenTrangThai == 'Có khách') {
+  //     return Container(
+  //       height: 35,
+  //       width: 39,
+  //       decoration: BoxDecoration(
+  //           color: Colors.blue[600],
+  //           // border: Border.all(color: Colors.grey[350]),
+  //           borderRadius: BorderRadius.circular(4)),
+  //       child: Center(
+  //           child: SvgPicture.asset(
+  //         'asset/icons/account-check.svg',
+  //         color: Colors.white,
+  //       )),
+  //     );
+  //   } else {
+  //     Container(
+  //       height: 35,
+  //       width: 39,
+  //       decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           border: Border.all(color: Colors.grey[350]),
+  //           borderRadius: BorderRadius.circular(4)),
+  //       child: Center(child: Text(num)),
+  //     );
+  //   }
+  // }
 }
 
 Row seatItemLX(String num) {
