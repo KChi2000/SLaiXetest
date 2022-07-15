@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/extensions/extensions.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/model/TrangThaiChoNgoi.dart';
 import 'package:flutter_ui_kit/model/tang.dart';
 import 'package:flutter_ui_kit/model/tangJson.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
@@ -38,9 +40,10 @@ class VeState extends State<Ve> {
   bool seat = false;
   bool activefab = false;
   String title = '';
-  bool hasTangdata=false;
+  String hasTangdata = 'loading';
   List<tangData> tangList = [];
   int pos;
+  var TrangThaiChoNgoiFuture;
 
   var chuyendigandayFuture;
   chuyendiganday chuyendiGanday;
@@ -66,9 +69,11 @@ class VeState extends State<Ve> {
     if (chuyendiGanday != null) {
       value = chuyendiGanday.data.maChuyenDi;
       changeSodocho = chuyendiGanday.data.guidChuyenDi;
+      print('changesodocho $changeSodocho');
       LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
           'http://vedientu.nguyencongtuyen.local:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
       lichsuChuyenDi = await LichSuChuyenDiFuture;
+      loadTrangThaiChoNgoi(changeSodocho);
       loadchongoi();
       if (this.mounted) {
         setState(() {});
@@ -81,28 +86,31 @@ class VeState extends State<Ve> {
     var temp = lichsulist.where((element) => element.maChuyenDi == value);
     setState(() {
       changeSodocho = temp.first.guidChuyenDi;
-
       loadchongoi();
+      loadTrangThaiChoNgoi(changeSodocho);
     });
   }
 
   void loadchongoi() async {
     tangxeFuture = ApiHelper.gettang(changeSodocho);
     tangxe = await tangxeFuture;
-    hasTangdata = tangxe.status;
+    hasTangdata = tangxe.message;
     if (tangxe.status) {
       tangList = tangxe.data;
-      List<tangData> datatemp = tangxe.data??[];
-      //  print('aaaa ${chuyendiGanday.data.guidChuyenDi}   ${datatemp[0].idTang}');
+      List<tangData> datatemp = tangxe.data ?? [];
       sodochoFuture = ApiHelper.getsodocho(changeSodocho, datatemp[0].idTang);
       sodoCho = await sodochoFuture;
       setState(() {});
-    }
-    else{
+    } else {
       setState(() {
         sodochoFuture = null;
       });
     }
+  }
+
+  void loadTrangThaiChoNgoi(String guidChuyenDi) async {
+    TrangThaiChoNgoiFuture = ApiHelper.getTrangThaiChoNgoi(guidChuyenDi);
+    // trangthaichongoi = await TrangThaiChoNgoiFuture;
   }
 
   @override
@@ -218,11 +226,10 @@ class VeState extends State<Ve> {
                   }).whenComplete(() {
                 setState(() {
                   value = title;
-                   sodochoFuture = null;
+                  sodochoFuture = null;
                   print('value: ' + title);
                 });
                 LichSuChuyenDiNotify();
-               
               });
             },
             child: Row(
@@ -262,45 +269,83 @@ class VeState extends State<Ve> {
                   ),
                   onPressed: () {},
                 ),
-               GestureDetector(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 5),
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.black54),
-                      child: Center(
-                          child: Text(
-                        '0',
-                        style: TextStyle(color: Colors.white),
-                      )),
-                    ),
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 30),
-                                height: 250,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    itemBottomSheet(
-                                        Colors.green, 'Đang thanh toán: ', '0'),
-                                    itemBottomSheet(
-                                        Colors.amber[800], 'Đã đặt chỗ: ', '0'),
-                                    itemBottomSheet(
-                                        Colors.blue, 'Có người ngồi: ', '0'),
-                                    itemBottomSheet(
-                                        Colors.grey[700], 'Đã mua vé: ', '0'),
-                                  ],
-                                ));
-                          });
-                    })
+                FutureBuilder(
+                  future: TrangThaiChoNgoiFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      TrangThaiChoNgoi trangthaichongoi = snapshot.data;
+                      if (trangthaichongoi.status) {
+                        return GestureDetector(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 5),
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.black54),
+                              child: Center(
+                                  child: Text(
+                                '0',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                            ),
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    List<TrangThaiData> listTrangThai =
+                                        trangthaichongoi.data;
+                                    return Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 25, vertical: 30),
+                                        height: 250,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            itemBottomSheet(
+                                                HexColor.fromHex(
+                                                    listTrangThai[0].maMau),
+                                                '${listTrangThai[0].tenTrangThai}: ',
+                                                '${listTrangThai[0].soLuong}',
+                                                '${listTrangThai[0].soLuong}',
+                                                true,
+                                                Colors.black),
+                                            itemBottomSheet(
+                                                HexColor.fromHex(
+                                                    listTrangThai[1].maMau),
+                                                '${listTrangThai[1].tenTrangThai}: ',
+                                                '${listTrangThai[1].soLuong}',
+                                                '${listTrangThai[1].soLuong}',
+                                                false,
+                                                Colors.white),
+                                            itemBottomSheet(
+                                                HexColor.fromHex(
+                                                    listTrangThai[2].maMau),
+                                                '${listTrangThai[2].tenTrangThai}: ',
+                                                '${listTrangThai[2].soLuong}',
+                                                '${listTrangThai[2].soLuong}',
+                                                false,
+                                                Colors.white),
+                                            itemBottomSheet(
+                                                HexColor.fromHex(
+                                                    listTrangThai[3].maMau),
+                                                '${listTrangThai[3].tenTrangThai}: ',
+                                                '${listTrangThai[3].soLuong}',
+                                                '${listTrangThai[3].soLuong}',
+                                                false,
+                                                Colors.white),
+                                          ],
+                                        ));
+                                  });
+                            });
+                      } else
+                        return Text('');
+                    }
+                    return Text('');
+                  },
+                )
               ],
             )
           ],
@@ -313,7 +358,6 @@ class VeState extends State<Ve> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 height: 10,
@@ -327,205 +371,197 @@ class VeState extends State<Ve> {
                   child: FutureBuilder<sodocho>(
                 future: sodochoFuture,
                 builder: (context, snapshot) {
-                 if(hasTangdata){
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (hasTangdata == 'loading') {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Lỗi'),
-                    );
                   }
-                  if (snapshot.hasData) {
-                    sodocho datatemp = snapshot.data;
+                  if (hasTangdata == 'Thành công') {
+                    if (snapshot.hasData) {
+                      sodocho datatemp = snapshot.data;
 
-                    if (datatemp.status) {
-                    
-                      List<sodochoData> sodoList = datatemp.data;
-                      return Column(
-                        children: [
-                          Row(
-                            children: [Text('aaa')],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            // crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(8),
-                                            bottomLeft: Radius.circular(8))),
-                                  ),
-                                  SizedBox(
-                                    height: 230,
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    width: 6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(8),
-                                            bottomLeft: Radius.circular(8))),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                width: widthScreen - 35,
-                                height: heightScreen * 0.65,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey[400], width: 3.5),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
+                      if (datatemp.status) {
+                        List<sodochoData> sodoList = datatemp.data;
+                        
+                        print(sodoList.length);
+                        return Column(
+                          children: [
+                            Row(
+                              children: [Text('aaa')],
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
                                   children: [
+                                    Container(
+                                      height: 50,
+                                      width: 6,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8))),
+                                    ),
                                     SizedBox(
-                                      height: 2,
+                                      height: 230,
                                     ),
                                     Container(
-                                      width: widthScreen - 35 - 20,
-                                      height: 20,
+                                      height: 50,
+                                      width: 6,
                                       decoration: BoxDecoration(
-                                          color: Colors.grey[350],
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(30))),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Container(
-                                            height: 15,
-                                            width: 15,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Container(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8))),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  width: widthScreen - 35,
+                                  height: heightScreen * 0.65,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey[400], width: 3.5),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Container(
+                                        width: widthScreen - 35 - 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[350],
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30))),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
                                               height: 15,
-                                              width: 20,
+                                              width: 15,
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10)))),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Container(
-                                            height: 15,
-                                            width: 15,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Container(
-                                              height: 13,
-                                              width: 20,
+                                                      BorderRadius.all(
+                                                          Radius.circular(20))),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
+                                                height: 15,
+                                                width: 20,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(10),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    10)))),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
+                                              height: 15,
+                                              width: 15,
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
-                                              )),
-                                        ],
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(20))),
+                                            ),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Container(
+                                                height: 13,
+                                                width: 20,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                )),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    // SizedBox(
-                                    //   height: 10,
-                                    // ),
+                                      // SizedBox(
+                                      //   height: 10,
+                                      // ),
 
+                                      Container(
+                                        width: widthScreen - 35 - 20 - 20,
+                                        height: heightScreen * 0.65 - 50,
+                                        color: Colors.white,
+                                        child: GridView.builder(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 5),
+                                            itemBuilder: (context, index) {
+                                              return abc(
+                                                  index, sodoList)[index];
+                                            },
+                                            itemCount: abc(0, sodoList).length),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: [
                                     Container(
-                                      width: widthScreen - 35 - 20 - 20,
-                                      height: heightScreen * 0.65 - 50,
-                                      color: Colors.white,
-                                      child: GridView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 5),
-                                          itemBuilder: (context, index) {
-                                            // print('jdskfj: ${temp[index].tenCho}');
-
-                                            // print('index: $index');
-                                            // print('${temp.length}');
-                                            return abc(index, sodoList)[index];
-                                            // test();
-                                            // return seatItem(temp[index].tenCho);
-                                          },
-                                          itemCount: abc(0, sodoList).length),
-                                    )
+                                      height: 50,
+                                      width: 6,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(8),
+                                              bottomRight: Radius.circular(8))),
+                                    ),
+                                    SizedBox(
+                                      height: 230,
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      width: 6,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(8),
+                                              bottomRight: Radius.circular(8))),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(8),
-                                            bottomRight: Radius.circular(8))),
-                                  ),
-                                  SizedBox(
-                                    height: 230,
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    width: 6,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(8),
-                                            bottomRight: Radius.circular(8))),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      );
+                              ],
+                            )
+                          ],
+                        );
+                      }
+                      //   return Center(
+                      //   child: Column(children: [
+                      //     Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
+                      //     Text(
+                      //         'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
+                      //   ]),
+                      // );
                     }
-                   
                   }
                   return Center(
-                        child: Column(children: [
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
                           Text(
                               'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
                         ]),
-                      );
-                 }
-                 return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                          Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
-                          Text(
-                              'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
-                        ]),
-                      );
+                  );
                 },
               ))
             ],
@@ -655,7 +691,7 @@ class VeState extends State<Ve> {
         ));
   }
 
-  Column seatItem(String num, int ind, int cot, int hang) {
+  Column seatItem(String num,List<sodochoData> listdata,int index) {
     return Column(children: [
       SizedBox(
         height: 15,
@@ -683,7 +719,7 @@ class VeState extends State<Ve> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        // var index = sodoList.indexWhere((element) =>
+                        // var index = listdata.indexWhere((element) =>
                         //     element.viTriCot == cot &&
                         //     element.viTriHang == hang);
                         // pos = index;
@@ -696,10 +732,10 @@ class VeState extends State<Ve> {
                         //   sodoList[index].trangThai.tenTrangThai = 'Có khách';
                         // }
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => banve()));
+                            MaterialPageRoute(builder: (context) => banve(chuyendiGanday.data.guidLoTrinh)));
                       });
                     },
-                    child: seat
+                    child: listdata[index].trangThai.idTrangThai==4
                         ? Container(
                             height: 35,
                             width: 39,
@@ -746,7 +782,7 @@ class VeState extends State<Ve> {
     // print(tangList.first.soHang);
     // print(tangList.first.soCot);
     List<Widget> list = [];
-
+  
     for (int vtH = 1; vtH <= tangList.first.soHang; vtH++) {
       for (int vtC = 1; vtC <= tangList.first.soCot; vtC++) {
         var tmp =
@@ -755,7 +791,7 @@ class VeState extends State<Ve> {
           if (tmp.first.viTriCot == 1 && tmp.first.viTriHang == 1) {
             list.add(seatItemLX('${tmp.first.tenCho}'));
           } else {
-            list.add(seatItem('${tmp.first.tenCho}', index, vtC, vtH));
+            list.add(seatItem('${tmp.first.tenCho}', listparam, index));
           }
         } else {
           list.add(Text(''));
@@ -878,7 +914,8 @@ Row seatItemLX(String num) {
   );
 }
 
-Row itemBottomSheet(Color color, String title, String value) {
+Row itemBottomSheet(Color color, String title, String value1, String value2,
+    bool border, Color LetterColor) {
   return Row(
     children: [
       Container(
@@ -888,11 +925,14 @@ Row itemBottomSheet(Color color, String title, String value) {
         decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color: color),
+            color: color,
+            border: border
+                ? Border.all(color: Colors.black, width: 0.3)
+                : Border.all(color: Colors.white, width: 0.0)),
         child: Center(
             child: Text(
-          '0',
-          style: TextStyle(color: Colors.white),
+          value2,
+          style: TextStyle(color: LetterColor),
         )),
       ),
       Text(
@@ -900,9 +940,20 @@ Row itemBottomSheet(Color color, String title, String value) {
         style: TextStyle(color: Colors.black),
       ),
       Text(
-        value,
+        value1,
         style: TextStyle(color: Colors.black),
       ),
     ],
   );
 }
+
+
+
+
+// fetch all items from api trang thai ghe
+// ListView.builder(
+//                 itemCount: listTrangThai.length,
+//                 itemBuilder: (context, index) {
+//                     return itemBottomSheet(HexColor.fromHex(listTrangThai[index].maMau), listTrangThai[index].tenTrangThai, '${listTrangThai[index].soLuong}', '${listTrangThai[index].soLuong}');
+                
+//               })

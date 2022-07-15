@@ -9,12 +9,14 @@ import 'package:flutter_ui_kit/model/tang.dart';
 import 'package:flutter_ui_kit/model/thongtincanhan.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/DSDiemXuong.dart';
 import '../model/DSHHTheoChuyenDi.dart';
 import '../model/DSTrangThai.dart';
 import '../model/KhachTrenXe.dart';
 import '../model/LenhHienTai.dart';
 import '../model/LichSuChuyenDi.dart';
 import '../model/ThongTinThem.dart';
+import '../model/TrangThaiChoNgoi.dart';
 import '../model/chuyendiganday.dart';
 import '../model/sodocho.dart';
 
@@ -160,6 +162,28 @@ class ApiHelper {
       if (resp.body.isNotEmpty) 
         print('infoapi ${resp.body.toString()}');
         return sodocho.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+  // get trang thai cho ngoi
+  static Future<TrangThaiChoNgoi> getTrangThaiChoNgoi(String guidchuyendi) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/doi-soat/lay-trang-thai-cho-ngoi-soat-ve?GuidChuyenDi=${guidchuyendi}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi trang thai ${resp.body.toString()}');
+        return TrangThaiChoNgoi.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+   // get danh sach diem xuong
+  static Future<DSDiemXuong> getDSDiemXuong(String guidlotrinh) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi ds diem xuong    ${resp.body.toString()}');
+        return DSDiemXuong.fromJson(jsonDecode(resp.body));
       
     });
   }
