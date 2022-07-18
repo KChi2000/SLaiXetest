@@ -223,7 +223,7 @@ class HangState extends State<Hang> {
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
                                     return  Center(
-                                      child: Text('Không có dữ liệu')
+                                      child: Text('Không có dữ liệu',style: TextStyle(color: Colors.black),)
                                      
                                     );
                                   } else if (snapshot.hasError) {
@@ -382,7 +382,13 @@ class HangState extends State<Hang> {
                   } else if (snapshot.hasData) {
                     DSHHTheoChuyenDi data = snapshot.data;
                     List<DataDSHH> list = data.data;
-
+                    if(!data.status){
+                      return Expanded(
+                      child: Center(
+                        child: Text('Không có hàng trên xe'),
+                      ),
+                    );
+                    }
                     return Expanded(
                         child: ListView.builder(
                             itemCount: list.length,
@@ -453,7 +459,7 @@ class HangState extends State<Hang> {
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             hangDetail(
-                                                                itemclick)));
+                                                                itemclick,list[index].idNhatKy)));
                                                 print(itemclick);
                                               },
                                               child: Container(

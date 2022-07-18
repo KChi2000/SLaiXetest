@@ -12,7 +12,9 @@ import 'package:http/http.dart' as http;
 import '../model/DSDiemXuong.dart';
 import '../model/DSHHTheoChuyenDi.dart';
 import '../model/DSTrangThai.dart';
+import '../model/DSTuyenVanChuyenTheoNgay.dart';
 import '../model/KhachTrenXe.dart';
+import '../model/LayChiTietNhatKyVanChuyen.dart';
 import '../model/LenhHienTai.dart';
 import '../model/LichSuChuyenDi.dart';
 import '../model/ThongTinThem.dart';
@@ -184,6 +186,28 @@ class ApiHelper {
       if (resp.body.isNotEmpty) 
         print('infoapi ds diem xuong    ${resp.body.toString()}');
         return DSDiemXuong.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+   // get danh sach tuyen van chuyen theo ngay
+  static Future<DSTuyenVanChuyenTheoNgay> getDSTuyenVanChuyenTheoNgay(String ngay) async {
+    return await http.get(Uri.parse('http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tuyen-van-chuyen-theo-ngay?Ngay=${ngay}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi dstuyen theo ngay   ${resp.body.toString()}');
+        return DSTuyenVanChuyenTheoNgay.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+   // get chi tiet nhat ky van chuyen
+  static Future<LayChiTietNhatKyVanChuyen> getLayChiTietNhatKyVanChuyen(String idnhatky) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/HangHoa/lay-chi-tiet-nhat-ky-van-chuyen?idNhatKy=${idnhatky}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi didnhatky   ${resp.body.toString()}');
+        return LayChiTietNhatKyVanChuyen.fromJson(jsonDecode(resp.body));
       
     });
   }

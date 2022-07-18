@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/model/DSTuyenVanChuyenTheoNgay.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -28,83 +31,88 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
     'Đã hoàn thành',
     'Không hoàn thành'
   ];
-  final tuyen = ['không có dữ liệu'];
+  List<DataTuyenTheoNgay> listTuyenTheoNgay = [
+    new DataTuyenTheoNgay('', 'Không có dữ liệu')
+  ];
   final diem = ['không có dữ liệu'];
   String dropdownValue;
-  String dateString = '';
-
+  DateTime pickDatetime = DateTime.now();
+  DateTime initDateTime = DateTime.now();
   final formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
   final timeController = TextEditingController(
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
+  final searchController = TextEditingController();
   final lidoController = TextEditingController();
   var DSLenhFuture;
   DSLenh maplenh;
-  // List<DSLenhData> lenhldata;
-  var datePostFormat = DateFormat('dd-MM-yyyy kk:mm').format(DateTime.now());
-
+  var DSTuyenVanChuyenTheoNgayFuture;
+  DSTuyenVanChuyenTheoNgay dstuyentheongay;
   Map<String, dynamic> postdata = {
-    'custom': {
-      'danhSachGioXuatBen': [],
-      'idLuongTuyen': null,
-      'ngayXuatBenKeHoach': '2022-07-04T17:00:00.000Z',
-      'timKiem': null,
-    },
-    'loadOptions': {
-      'searchOperation': 'contains',
-      'searchValue': null,
-      'skip': 0,
-      'take': 20,
-      'userData': {}
-    },
+    
   };
+  var datetemp;
+  var datetime = DateTime.now();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    var aaa= _getPSTTime();
-    // var abb = DateFormat('yyyy/MM/dd kk:mm').format(aaa);
-    // DateTime ccc= DateTime.parse(abb);
-    
-    // print(abb);
-    print(' aaa: ${DateTime.now().toIso8601String()}');
-    // getForeignTime();
+    // var aaa= _getPSTTime();
+
+    datetemp =
+        new DateTime(datetime.year, datetime.month, datetime.day, 0, 0, 0)
+            .toUtc()
+            .toIso8601String();
+   
 
     loadDSLenh();
   }
 
-  // void getForeignTime() async {
-  //   await tz.initializeTimeZone();
-  //   var detroit = tz.getLocation('America/Detroit');
-  //   var now = tz.TZDateTime.now(detroit);
-  //   print('now  $now');
-  // }
+  void loadDSTuyenVanChuyenTheoNgay(String day) async {
+    DSTuyenVanChuyenTheoNgayFuture = ApiHelper.getDSTuyenVanChuyenTheoNgay(day);
+    dstuyentheongay = await DSTuyenVanChuyenTheoNgayFuture;
+    checkdropdownTuyen();
+  }
 
   void loadDSLenh() async {
+    postdata = {
+      'custom': {
+        'danhSachGioXuatBen': [],
+        'idLuongTuyen': null,
+        'ngayXuatBenKeHoach': '${datetemp.toString()}',
+        'timKiem': searchController.text,
+      },
+      'loadOptions': {
+        'searchOperation': 'contains',
+        'searchValue': null,
+        'skip': 0,
+        'take': 20,
+        'userData': {}
+      },
+    };
     DSLenhFuture = ApiHelper.postDsLenh(
         'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tat-ca-lenh-cua-lai-xe',
         postdata);
     maplenh = await DSLenhFuture;
     setState(() {});
     if (maplenh != null) {
-     
       print('postttt ${maplenh.message}');
     }
   }
 
-DateTime _getPSTTime() {
-  tz.initializeTimeZones();
+  void checkdropdownTuyen() {
+    if (dstuyentheongay.message != 'Không tìm thấy dữ liệu') {
+      listTuyenTheoNgay = dstuyentheongay.data;
+    } else {
+      listTuyenTheoNgay = [new DataTuyenTheoNgay('', 'Không có dữ liệu')];
+    }
+  }
 
-  final DateTime now = DateTime.now();
-  final pacificTimeZone = tz.getLocation('America/Los_Angeles');
-
-  return tz.TZDateTime.from(now, pacificTimeZone);
-}
   @override
   Widget build(BuildContext context) {
 //      var todatetime = DateTime.parse(datePostFormat);
 //  var datePost = todatetime.toUtc();
-   
+
     double widthScreen = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -116,10 +124,12 @@ DateTime _getPSTTime() {
         actions: [
           IconButton(
               onPressed: () {
+                loadDSTuyenVanChuyenTheoNgay(
+                    Uri.encodeComponent(datetime.toUtc().toIso8601String()));
                 showModalBottomSheet(
                     context: context,
                     builder: (context) {
-                      return StatefulBuilder(builder: (context, setState) {
+                      return StatefulBuilder(builder: (context, setStateModal) {
                         return Container(
                           padding: EdgeInsets.all(15),
                           height: 450,
@@ -174,7 +184,6 @@ DateTime _getPSTTime() {
                                     // tinh = t1;
                                   });
                                 },
-                                hint: Text('chọn tỉnh'),
                                 menuMaxHeight: 200,
                                 validator: (vl1) {
                                   if (vl1 == null || vl1.isEmpty) {
@@ -184,6 +193,7 @@ DateTime _getPSTTime() {
                                 },
                               ),
                               TextFormField(
+                                controller: searchController,
                                 decoration:
                                     InputDecoration(labelText: 'Tìm kiếm'),
                               ),
@@ -199,34 +209,50 @@ DateTime _getPSTTime() {
                                   // Show Date Picker Here
                                   await showDatePicker(
                                           context: context,
-                                          initialDate: DateTime.now(),
+                                          initialDate: initDateTime,
                                           firstDate: DateTime(1900),
                                           lastDate: DateTime(3000))
                                       .then((value) {
                                     if (value == null) {
-                                      setState(() {
+                                      setStateModal(() {
                                         timeController.text =
-                                            '${date.day}-${date.month}-${date.year}';
+                                            '${pickDatetime.day}-${pickDatetime.month}-${pickDatetime.year}';
                                       });
                                     } else {
-                                      setState(() {
+                                      setStateModal(() {
+                                        // pickDatetime = value;
+                                        initDateTime = value;
+                                        print('pickdatetime    $pickDatetime');
+                                        pickDatetime = new DateTime(value.year,
+                                            value.month, value.day, 23, 59, 59);
+                                        // print('pickdatetime    ${aa}');
+                                        var exdatetime = pickDatetime
+                                            .toUtc()
+                                            .toIso8601String();
+                                        print(
+                                            ' jsonendcode: ${Uri.encodeComponent(exdatetime)}');
+                                        loadDSTuyenVanChuyenTheoNgay(
+                                            Uri.encodeComponent(exdatetime));
+                                        // checkdropdownTuyen();
                                         timeController.text =
                                             '${value.day}-${value.month}-${value.year}';
                                       });
+                                   
                                     }
                                   });
                                 },
                                 onFieldSubmitted: (vl) {
-                                  setState() {}
+                                  // setState() {}
                                 },
                               ),
                               DropdownButtonFormField(
                                 decoration: InputDecoration(
                                     labelText: 'Tuyến vận chuyển'),
-                                items: tuyen.map((String text) {
+                                items: listTuyenTheoNgay
+                                    .map((DataTuyenTheoNgay text) {
                                   return new DropdownMenuItem(
                                     child: Container(
-                                        child: Text(text,
+                                        child: Text(text.tenTuyen,
                                             style: TextStyle(fontSize: 15))),
                                     value: text,
                                   );
@@ -237,7 +263,7 @@ DateTime _getPSTTime() {
                                     // tinh = t1;
                                   });
                                 },
-                                hint: Text('Lựa chọn...'),
+                                hint: Text('Chọn tuyến'),
                                 menuMaxHeight: 200,
                                 validator: (vl1) {
                                   if (vl1 == null || vl1.isEmpty) {
@@ -271,7 +297,21 @@ DateTime _getPSTTime() {
                                 height: 15,
                               ),
                               RaisedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    datetemp = new DateTime(
+                                            pickDatetime.year,
+                                            pickDatetime.month,
+                                            pickDatetime.day,
+                                            0,
+                                            0,
+                                            0)
+                                        .toUtc()
+                                        .toIso8601String();
+                                    loadDSLenh();
+                                  });
+                                  Navigator.pop(context);
+                                },
                                 child: Text(
                                   'XÁC NHẬN',
                                   style: TextStyle(
@@ -305,6 +345,13 @@ DateTime _getPSTTime() {
             Data datatemp = getdata.data;
             List<Lenh> listdata = datatemp.list;
             // print('tttttt: ${listdata[0].bienKiemSoat}');
+            print(listdata.length);
+            if (listdata.length == 0) {
+              print('aheeeeeeee');
+              return Center(
+                child: Text('Không có dữ liệu'),
+              );
+            }
             return ListView.builder(
                 itemCount: listdata.length,
                 itemBuilder: (context, index) {
