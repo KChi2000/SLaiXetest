@@ -118,8 +118,10 @@ class HomeState extends State<Home> {
               future: khachTrenXeFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 } else if (snapshot.hasError) {
                   return Expanded(

@@ -193,7 +193,7 @@ void convertDateTime() {
                 onTap: () {
                   print('chuyn doi lenh');
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => chuyndoilenh()));
+                      MaterialPageRoute(builder: (context) => chuyndoilenh(chitietlenh.data.guidLenh)));
                 },
                 label: 'Chuyển đổi lệnh',
                 child: Icon(

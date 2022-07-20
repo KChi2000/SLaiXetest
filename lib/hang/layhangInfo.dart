@@ -7,11 +7,15 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../model/DSDiemxuongLotrinh.dart';
+
 class layhangInfo extends StatefulWidget {
-  layhangInfo({Key key}) : super(key: key);
+  String guidlotrinh;
+  layhangInfo(this.guidlotrinh);
 
   @override
   State<layhangInfo> createState() => _layhangInfoState();
@@ -22,7 +26,8 @@ class _layhangInfoState extends State<layhangInfo> {
   bool checkbox = false;
   final formkey1 = GlobalKey<FormState>();
   final formkey2 = GlobalKey<FormState>();
-  final diemtrahang = ['Bến xe Hà Nam', 'Bến xe Bắc Ninh'];
+  int errorCode;
+  List<DataDSDiemXuongLoTrinh> diemtrahang = [];
   final sdtNhanController = TextEditingController();
   final timeController = TextEditingController(
       text: DateFormat(' kk:mm, dd-MM-yyyy').format(DateTime.now()));
@@ -36,6 +41,16 @@ class _layhangInfoState extends State<layhangInfo> {
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
   final List<XFile> image = [];
   int count = 0;
+  var dsdiemxuongFuture;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadDSdiemxuong();
+  }
+  void loadDSdiemxuong(){
+    dsdiemxuongFuture = ApiHelper.getDSDiemXuongLoTrinh(widget.guidlotrinh);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +58,22 @@ class _layhangInfoState extends State<layhangInfo> {
         title: Text('THÔNG TIN GỬI HÀNG', style: TextStyle(fontSize: 16)),
         centerTitle: true,
       ),
-      body: Container(
+      body: FutureBuilder(future: dsdiemxuongFuture,
+      builder: ((context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(child: CircularProgressIndicator(),);
+        }
+        else if(snapshot.hasError){
+
+        }
+        else if(snapshot.hasData){
+          int errorCode;
+          DSDiemXuongLoTrinh dsdiemxuong = snapshot.data;
+          diemtrahang = dsdiemxuong.data;
+          if(diemtrahang.length ==0){
+            diemtrahang = [DataDSDiemXuongLoTrinh('','Không có dữ liệu')];
+          }
+          return Container(
           padding: EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -102,14 +132,14 @@ class _layhangInfoState extends State<layhangInfo> {
               ),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: 'Điểm trả hàng(*)'),
-                items: diemtrahang.map((String text) {
+                items: diemtrahang.map((DataDSDiemXuongLoTrinh text) {
                   return new DropdownMenuItem(
                     child: Container(
-                        child: Text(text, style: TextStyle(fontSize: 15))),
+                        child: Text(text.tenDiemXuong, style: TextStyle(fontSize: 15))),
                     value: text,
                   );
                 }).toList(),
-                value: 'Bến xe Hà Nam',
+                // value: 'Bến xe Hà Nam',
                 onChanged: (t1) {
                   setState(() {
                     // tinh = t1;
@@ -422,7 +452,10 @@ class _layhangInfoState extends State<layhangInfo> {
                 height: 30,
               )
             ],
-          )),
+          ));
+        }
+        return Center(child: Text('Không có dữ liệu'),);
+      }),),
     );
   }
 

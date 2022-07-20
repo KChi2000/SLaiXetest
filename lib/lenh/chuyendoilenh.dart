@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_ui_kit/model/DSHanhKhachMuaVe.dart';
 import 'package:intl/intl.dart';
 
 import '../helpers/ApiHelper.dart';
 import '../model/lenhModel.dart';
 
 class chuyndoilenh extends StatefulWidget {
-  const chuyndoilenh({Key key}) : super(key: key);
+  String idLenhdientu;
+  chuyndoilenh(this.idLenhdientu);
 
   @override
   State<chuyndoilenh> createState() => _chuyndoilenhState();
@@ -21,6 +23,11 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
   Map<String, dynamic> postdata = {};
   var datetemp;
   var datetime = DateTime.now();
+  List<DataDSHangKhachMuaVe> listCheck = [];
+  var DshanhkhachmuaveFuture;
+  void Function(void Function()) setstatecheck;
+  bool AllChecked = false;
+  //DSHangKhachMuaVe
   @override
   void initState() {
     // TODO: implement initState
@@ -31,8 +38,9 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
             .toIso8601String();
 
     loadDSLenh();
+    print(widget.idLenhdientu);
   }
-
+  
   void loadDSLenh() async {
     postdata = {
       'custom': {
@@ -56,11 +64,26 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
     // }
   }
 
+  void loadDSHanhKhachTrenXe() {
+    DshanhkhachmuaveFuture = ApiHelper.getDSHanhKhachMuaVe(widget.idLenhdientu);
+  }
+  void setAllChecked(bool vl){
+      setstatecheck(() {
+        AllChecked = vl;
+        listCheck.forEach((element) {
+          setstatecheck(() {
+            element.check = vl;
+          });
+         });
+
+      });
+  }
   @override
   Widget build(BuildContext context) {
     double widthScreen = MediaQuery.of(context).size.width;
     Size sizeScreen = MediaQuery.of(context).size;
     dateString = DateFormat('dd-MM-yyyy').format(date);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('CHUYỂN ĐỔI LỆNH'),
@@ -334,10 +357,12 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
             height: 40,
             child: FlatButton(
               onPressed: () {
+                loadDSHanhKhachTrenXe();
                 showModalBottomSheet(
                     context: context,
                     builder: (context) {
                       return StatefulBuilder(builder: (context, setState) {
+                        setstatecheck = setState;
                         return Container(
                           padding: EdgeInsets.all(15),
                           height: 400,
@@ -351,9 +376,63 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20),
                               ),
-                              ListView.builder(itemBuilder: (context,index){
-                                    return 
-                              }),
+                              FutureBuilder<DSHanhKhachMuaVe>(
+                                  future: DshanhkhachmuaveFuture,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    if (snapshot.hasData) {
+                                      DSHanhKhachMuaVe dshanhkhachmuave =
+                                          snapshot.data;
+                                      List<DataDSHangKhachMuaVe> data =
+                                          dshanhkhachmuave.data;
+                                      if (data.length != 0) {
+                                        listCheck = data;
+                                      }
+                                      return Expanded(
+                                        child: ListView(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Checkbox(
+                                                        value: AllChecked,
+                                                        onChanged: setAllChecked),
+                                                    Text('Tất cả(${listCheck.length})')
+                                                  ],
+                                                ),
+                                                Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.7,
+                                                    child: Divider(
+                                                      color: Colors.black,
+                                                    ))
+                                              ],
+                                            ),
+                                            ...listCheck
+                                                .map(itemChuyenDoiLenh)
+                                                .toList()
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text('Lỗi'),
+                                      );
+                                    }
+                                    return Center(
+                                      child: Text('Không có dữ liệu'),
+                                    );
+                                  }),
                               Divider(
                                 thickness: 1.5,
                                 height: 1,
@@ -365,7 +444,9 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                   // crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
                                     FlatButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
                                       child: Text('HỦY',
                                           style: TextStyle(color: Colors.red)),
                                       height: 18,
@@ -421,6 +502,53 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           ),
         ],
       ),
+    );
+  }
+
+  Column itemChuyenDoiLenh(DataDSHangKhachMuaVe vl) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Checkbox(value: vl.check, onChanged: (value) {
+                setstatecheck(() {
+                  print(value);
+                  vl.check = value;
+                });
+            }),
+            SizedBox(width: 10,),
+            Column(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Số điện thoại: ', style: TextStyle(color: Colors.black)),
+                SizedBox(height: 5,),
+                Text('Giá vé: ', style: TextStyle(color: Colors.black)),
+                SizedBox(height: 5,),
+                Text('Điểm xuống: ', style: TextStyle(color: Colors.black)),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${vl.soDienThoai}',
+                    style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
+                    SizedBox(height: 5,),
+                Text('${vl.thanhTien}đ', style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold)),
+                SizedBox(height: 5,),
+                Text('${vl.tenDiemXuong}',
+                    style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold)),
+              ],
+            )
+          ],
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Divider(
+              color: Colors.black,
+            ))
+      ],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/extensions/extensions.dart';
@@ -13,7 +14,10 @@ import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/ve/banve.dart';
 import 'package:flutter_ui_kit/ve/banveghephu.dart';
 import 'package:image_picker/image_picker.dart';
+import '../componentsFuture/bottomshetHK.dart';
+import '../model/DSHanhKhachGhePhu.dart';
 import '../model/LichSuChuyenDi.dart';
+import '../model/ThongTinHanhKhachGhe.dart';
 import '../model/ThongTinThem.dart';
 import '../model/chuyendiList.dart';
 import '../model/chuyendiganday.dart';
@@ -53,14 +57,26 @@ class VeState extends State<Ve> {
   tang tangxe;
   var sodochoFuture;
   var thongtinthemFuture;
+  var thongtinhanhkhachFuture;
   ThongTinThem thongtinthem;
   String changeSodocho;
   sodocho sodoCho;
+  var dshanhkhachghephuFuture;
+  final phoneController = TextEditingController();
+  final nameController = TextEditingController();
+
+  String sdt = null;
+  String ten;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     loadLichSuChuyenDi();
+  }
+
+  void loadThongTinKhachNgoi(String maChuyendi, guidChongoi) {
+    thongtinhanhkhachFuture =
+        ApiHelper.getThongTinHanhKhachGhe(maChuyendi, guidChongoi);
   }
 
   void loadLichSuChuyenDi() async {
@@ -111,6 +127,10 @@ class VeState extends State<Ve> {
   void loadTrangThaiChoNgoi(String guidChuyenDi) async {
     TrangThaiChoNgoiFuture = ApiHelper.getTrangThaiChoNgoi(guidChuyenDi);
     // trangthaichongoi = await TrangThaiChoNgoiFuture;
+  }
+
+  void loadDSGhePhu() {
+    dshanhkhachghephuFuture = ApiHelper.getDSHanhKhachGhePhu(changeSodocho);
   }
 
   @override
@@ -297,47 +317,20 @@ class VeState extends State<Ve> {
                                     List<TrangThaiData> listTrangThai =
                                         trangthaichongoi.data;
                                     return Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 25, vertical: 30),
-                                        height: 250,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            itemBottomSheet(
-                                                HexColor.fromHex(
-                                                    listTrangThai[0].maMau),
-                                                '${listTrangThai[0].tenTrangThai}: ',
-                                                '${listTrangThai[0].soLuong}',
-                                                '${listTrangThai[0].soLuong}',
-                                                true,
-                                                Colors.black),
-                                            itemBottomSheet(
-                                                HexColor.fromHex(
-                                                    listTrangThai[1].maMau),
-                                                '${listTrangThai[1].tenTrangThai}: ',
-                                                '${listTrangThai[1].soLuong}',
-                                                '${listTrangThai[1].soLuong}',
-                                                false,
-                                                Colors.white),
-                                            itemBottomSheet(
-                                                HexColor.fromHex(
-                                                    listTrangThai[2].maMau),
-                                                '${listTrangThai[2].tenTrangThai}: ',
-                                                '${listTrangThai[2].soLuong}',
-                                                '${listTrangThai[2].soLuong}',
-                                                false,
-                                                Colors.white),
-                                            itemBottomSheet(
-                                                HexColor.fromHex(
-                                                    listTrangThai[3].maMau),
-                                                '${listTrangThai[3].tenTrangThai}: ',
-                                                '${listTrangThai[3].soLuong}',
-                                                '${listTrangThai[3].soLuong}',
-                                                false,
-                                                Colors.white),
-                                          ],
-                                        ));
+                                      padding: EdgeInsets.all(20),
+                                      height: 225,
+                                      child: ListView.builder(
+                                          itemCount: listTrangThai.length,
+                                          itemBuilder: (context, index) {
+                                            return itemBottomSheet(
+                                              HexColor.fromHex(
+                                                  listTrangThai[index].maMau),
+                                              listTrangThai[index].tenTrangThai,
+                                              '${listTrangThai[index].soLuong}',
+                                              '${listTrangThai[index].soLuong}',
+                                            );
+                                          }),
+                                    );
                                   });
                             });
                       } else
@@ -382,7 +375,7 @@ class VeState extends State<Ve> {
 
                       if (datatemp.status) {
                         List<sodochoData> sodoList = datatemp.data;
-                        
+
                         print(sodoList.length);
                         return Column(
                           children: [
@@ -496,21 +489,17 @@ class VeState extends State<Ve> {
                                       // ),
 
                                       Container(
-                                        width: widthScreen - 35 - 20 - 20,
-                                        height: heightScreen * 0.65 - 50,
-                                        color: Colors.white,
-                                        child: GridView.builder(
+                                          width: widthScreen - 35 - 20 - 20,
+                                          height: heightScreen * 0.65 - 50,
+                                          color: Colors.white,
+                                          child: GridView(
                                             physics:
                                                 NeverScrollableScrollPhysics(),
                                             gridDelegate:
                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 5),
-                                            itemBuilder: (context, index) {
-                                              return abc(
-                                                  index, sodoList)[index];
-                                            },
-                                            itemCount: abc(0, sodoList).length),
-                                      )
+                                            children: abc(sodoList),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -591,8 +580,11 @@ class VeState extends State<Ve> {
             SpeedDialChild(
                 backgroundColor: chuyendoilenhButtonColor,
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => banveghephu()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              banveghephu(chuyendiGanday.data.guidLoTrinh)));
                 },
                 label: 'Bán vé ghế phụ',
                 child: SvgPicture.asset(
@@ -603,12 +595,14 @@ class VeState extends State<Ve> {
             SpeedDialChild(
                 // backgroundColor: Colors.red,
                 onTap: () {
+                  loadDSGhePhu();
                   showModalBottomSheet(
                       context: context,
                       builder: (context) {
                         return Container(
-                          padding: EdgeInsets.all(15),
-                          height: 250,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
+                          height: 300,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -627,55 +621,130 @@ class VeState extends State<Ve> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18)),
-                              Row(
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(children: [
-                                        Text('Số điện thoại: ',
-                                            style: TextStyle(fontSize: 13)),
-                                        Text('0595757463',
-                                            style: TextStyle(fontSize: 16)),
-                                      ]),
-                                      Row(children: [
-                                        Text('Giá vé: ',
-                                            style: TextStyle(fontSize: 13)),
-                                        Text('15000đ',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.red)),
-                                      ]),
-                                      Row(children: [
-                                        Text('Điểm xuống: ',
-                                            style: TextStyle(fontSize: 13)),
-                                        Text('Yên Nghĩa',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.orange)),
-                                      ]),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 40,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.print),
-                                      SizedBox(
-                                        width: 10,
+                              FutureBuilder(
+                                  future: dshanhkhachghephuFuture,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text('Lỗi'),
+                                      );
+                                    } else if (snapshot.hasData) {
+                                      DSHanhKhachGhePhu dshanhkhachghephu =
+                                          snapshot.data;
+                                      List<DataDSHanhKhachGhePhu> listds =
+                                          dshanhkhachghephu.data;
+                                      if (listds.length == 0) {
+                                        return Center(
+                                          child: Text('Không có dữ liệu'),
+                                        );
+                                      }
+                                      return Expanded(
+                                        child: ListView.builder(
+                                            itemCount: listds.length,
+                                            itemBuilder: (context, index) {
+                                              return Row(
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      Row(children: [
+                                                        Text('Số điện thoại: ',
+                                                            style: TextStyle(
+                                                                fontSize: 13)),
+                                                        Text(
+                                                            '${listds[index].soDienThoai}',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .green,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ]),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Row(children: [
+                                                        Text('Giá vé: ',
+                                                            style: TextStyle(
+                                                                fontSize: 13)),
+                                                        Text(
+                                                            '${listds[index].giaVe}đ',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color:
+                                                                    Colors.red,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ]),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Row(children: [
+                                                        Text('Điểm xuống: ',
+                                                            style: TextStyle(
+                                                                fontSize: 13)),
+                                                        Text(
+                                                            '${listds[index].diemXuong}',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .orange,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ]),
+                                                      Divider(
+                                                        color: Colors.black,
+                                                        height: 1,
+                                                        thickness: 0.5,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    width: 40,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.print,
+                                                        color: Colors.black54,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SvgPicture.asset(
+                                                          'asset/icons/arrowdown.svg',
+                                                          width: 20,
+                                                          height: 20,
+                                                          color: Colors.black54)
+                                                    ],
+                                                  )
+                                                ],
+                                              );
+                                            }),
+                                      );
+                                    }
+                                    return Expanded(
+                                      child: Center(
+                                        child: Text('Không có dữ liệu'),
                                       ),
-                                      SvgPicture.asset(
-                                        'asset/icons/arrowdown.svg',
-                                        width: 20,
-                                        height: 20,
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
+                                    );
+                                  }),
                               SizedBox(
                                 height: 40,
                               ),
@@ -691,7 +760,7 @@ class VeState extends State<Ve> {
         ));
   }
 
-  Column seatItem(String num,List<sodochoData> listdata,int index) {
+  Column seatItem1(String num, List<sodochoData> listdata, int cot, int hang) {
     return Column(children: [
       SizedBox(
         height: 15,
@@ -719,45 +788,34 @@ class VeState extends State<Ve> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        // var index = listdata.indexWhere((element) =>
-                        //     element.viTriCot == cot &&
-                        //     element.viTriHang == hang);
+                        var index = listdata.indexWhere((element) =>
+                            element.viTriCot == cot &&
+                            element.viTriHang == hang);
                         // pos = index;
-                        // print('index: $index');
-                        //  print('poss: $pos');
+                        print('index: ${listdata[index].id}');
+                        print('poss: ${listdata[index].tenCho}');
                         // if (sodoList[index].trangThai.tenTrangThai ==
                         //     'Có khách') {
                         //   sodoList[index].trangThai.tenTrangThai = 'Còn trống';
                         // } else {
                         //   sodoList[index].trangThai.tenTrangThai = 'Có khách';
                         // }
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => banve(chuyendiGanday.data.guidLoTrinh)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    banve(chuyendiGanday.data.guidLoTrinh)));
                       });
                     },
-                    child: listdata[index].trangThai.idTrangThai==4
-                        ? Container(
-                            height: 35,
-                            width: 39,
-                            decoration: BoxDecoration(
-                                color: Colors.blue[600],
-                                // border: Border.all(color: Colors.grey[350]),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Center(
-                                child: SvgPicture.asset(
-                              'asset/icons/account-check.svg',
-                              color: Colors.white,
-                            )),
-                          )
-                        : Container(
-                            height: 35,
-                            width: 39,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.grey[350]),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Center(child: Text(num)),
-                          ),
+                    child: Container(
+                      height: 35,
+                      width: 39,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey[350]),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Center(child: Text(num)),
+                    ),
                   ),
                   Positioned(
                       top: 30,
@@ -778,11 +836,480 @@ class VeState extends State<Ve> {
     ]);
   }
 
-  List<Widget> abc(int index, List<sodochoData> listparam) {
+  Column seatItem2(String num, List<sodochoData> listdata, int cot, int hang) {
+    return Column(children: [
+      SizedBox(
+        height: 15,
+      ),
+      Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 7,
+              ),
+              Container(
+                height: 32,
+                width: 45,
+                decoration: BoxDecoration(
+                  color: Colors.grey[350],
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+              left: 3,
+              child: Stack(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        setState(() {
+                          var index = listdata.indexWhere((element) =>
+                              element.viTriCot == cot &&
+                              element.viTriHang == hang);
+                          // pos = index;
+                          loadThongTinKhachNgoi(value, listdata[index].id);
+                          print('index: ${listdata[index].id}');
+                          print('poss: $value');
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return FutureBuilder<ThongTinHanhKhachGhe>(
+                                    future: thongtinhanhkhachFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else if (snapshot.hasData) {
+                                        ThongTinHanhKhachGhe thongtin =
+                                            snapshot.data;
+                                        DataThongTinHanhKhachGhe data =
+                                            thongtin.data;
+                                        return Container(
+                                          padding: EdgeInsets.all(20),
+                                          height: 300,
+                                          child: Column(
+                                            // mainAxisAlignment:
+                                            // MainAxisAlignment.spaceAround,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text('Hủy',
+                                                      style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 15)),
+                                                ),
+                                              ),
+                                              Text('Thông tin hành khách',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18)),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        'asset/icons/card-account-phone-outline.svg',
+                                                        color: Colors.blue,
+                                                      ),
+                                                      SizedBox(
+                                                        width: spaceBetween,
+                                                      ),
+                                                      Text(
+                                                        '${data.soDienThoai}',
+                                                        style: TextStyle(
+                                                            // fontWeight: fontStyleListItem,
+                                                            fontSize: 11),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        phoneController.text =
+                                                            data.soDienThoai;
+                                                        nameController.text =
+                                                            data.hoTen;
+                                                        Navigator.pop(context);
+                                                        showModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return Container(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            20),
+                                                                height: 400,
+                                                                child: Column(
+                                                                  // mainAxisAlignment:
+                                                                  // MainAxisAlignment.spaceAround,
+                                                                  children: [
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child:
+                                                                          Align(
+                                                                        alignment:
+                                                                            Alignment.topLeft,
+                                                                        child: Text(
+                                                                            'Hủy',
+                                                                            style:
+                                                                                TextStyle(color: Colors.red, fontSize: 15)),
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                        'Thông tin hành khách',
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize: 18)),
+                                                                    Form(
+                                                                        // key: formkey1,
+                                                                        child: Column(
+                                                                            children: [
+                                                                          TextFormField(
+                                                                            autofocus:
+                                                                                true,
+                                                                            controller:
+                                                                                phoneController,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              // hintText: 'nhập số điện thoại',
+                                                                              labelText: 'Số điện thoại',
+                                                                            ),
+
+                                                                            // controller: sdtNhanController,
+                                                                            inputFormatters: [
+                                                                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                                                              FilteringTextInputFormatter.deny(RegExp(r'^[1-9]+')),
+                                                                              LengthLimitingTextInputFormatter(10)
+                                                                            ],
+                                                                            validator:
+                                                                                (sodt) {
+                                                                              if (sodt == null || sodt.isEmpty) {
+                                                                                return 'Điện thoại không được để trống';
+                                                                              } else if (sodt.length <= 10) {
+                                                                                return 'Sai định dạng số điện thoại';
+                                                                              }
+                                                                              return null;
+                                                                            },
+                                                                            onChanged:
+                                                                                (vl1) {
+                                                                              setState(() {
+                                                                                sdt = vl1;
+                                                                              });
+                                                                            },
+                                                                            autovalidateMode:
+                                                                                AutovalidateMode.onUserInteraction,
+                                                                          ),
+                                                                          TextFormField(
+                                                                            controller:
+                                                                                nameController,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              // hintText: 'nhập số điện thoại',
+                                                                              labelText: 'Họ tên: ',
+                                                                            ),
+
+                                                                            // controller: sdtNhanController,
+                                                                            inputFormatters: [
+                                                                              // FilteringTextInputFormatter.allow(
+                                                                              //     RegExp(r'[0-9]')),
+                                                                              FilteringTextInputFormatter.deny(RegExp(r'[0-9]+')),
+                                                                              // LengthLimitingTextInputFormatter(10)
+                                                                            ],
+                                                                            validator:
+                                                                                (ht) {
+                                                                              if (ht == null || ht.isEmpty) {
+                                                                                return 'Họ tên không được để trống';
+                                                                              }
+                                                                              return null;
+                                                                            },
+                                                                            onChanged:
+                                                                                (vl1) {
+                                                                              setState(() {
+                                                                                sdt = vl1;
+                                                                              });
+                                                                            },
+                                                                            autovalidateMode:
+                                                                                AutovalidateMode.onUserInteraction,
+                                                                          ),
+                                                                        ])),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          15,
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            SvgPicture.asset('asset/icons/currency-usd.svg',
+                                                                                width: 24,
+                                                                                height: 24),
+                                                                            SizedBox(
+                                                                              width: spaceBetween,
+                                                                            ),
+                                                                            Text(
+                                                                              'Thanh toán',
+                                                                              style: TextStyle(
+                                                                                  // fontWeight: fontStyleListItem,
+                                                                                  ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Text(
+                                                                          'Đã thanh toán',
+                                                                          style: TextStyle(
+                                                                              // fontWeight: fontStyleListStatus,
+                                                                              color: Colors.black),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.location_on,
+                                                                              size: 24,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: spaceBetween,
+                                                                            ),
+                                                                            Text(
+                                                                              'Điểm xuống',
+                                                                              style: TextStyle(
+                                                                                  // fontWeight: fontStyleListItem,
+                                                                                  ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Text(
+                                                                          'Yên Nghĩa',
+                                                                          style: TextStyle(
+                                                                              // fontWeight: fontStyleListStatus,
+                                                                              color: Colors.black),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          20,
+                                                                    ),
+                                                                    FlatButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        // formTTHK.currentState.validate();
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => componentArea(nameController.text, phoneController.text)));
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        'XÁC NHẬN',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                      color: Colors
+                                                                          .blue,
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            });
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.edit,
+                                                        size: 20,
+                                                        color: Colors.blue,
+                                                      ))
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'asset/icons/account-circle-outline.svg'),
+                                                  SizedBox(
+                                                    width: spaceBetween,
+                                                  ),
+                                                  Text(
+                                                    '${data.hoTen}',
+                                                    style: TextStyle(
+                                                        // fontWeight: fontStyleListItem,
+                                                        fontSize: 11),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 15,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                          'asset/icons/currency-usd.svg',
+                                                          width: 24,
+                                                          height: 24),
+                                                      SizedBox(
+                                                        width: spaceBetween,
+                                                      ),
+                                                      Text(
+                                                        'Thanh toán',
+                                                        style: TextStyle(
+                                                            // fontWeight: fontStyleListItem,
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    '${data.trangThaiThanhToan.tenTrangThai}',
+                                                    style: TextStyle(
+                                                        // fontWeight: fontStyleListStatus,
+                                                        color: Colors.green),
+                                                  )
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.location_on,
+                                                        size: 24,
+                                                      ),
+                                                      SizedBox(
+                                                        width: spaceBetween,
+                                                      ),
+                                                      Text(
+                                                        'Điểm xuống',
+                                                        style: TextStyle(
+                                                            // fontWeight: fontStyleListItem,
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    '${data.tenDiemXuong}',
+                                                    style: TextStyle(
+                                                        // fontWeight: fontStyleListStatus,
+                                                        color: Colors.black),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Divider(
+                                                height: 2,
+                                                thickness: 0.3,
+                                                color: Colors.black,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  FlatButton(
+                                                      onPressed: () {
+                                                        // formTTHK.currentState.validate();
+                                                      },
+                                                      child: Text(
+                                                        'IN VÉ',
+                                                        style: TextStyle(
+                                                            color: Colors.blue),
+                                                      )),
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      // formTTHK.currentState.validate();
+                                                    },
+                                                    child: Text(
+                                                      'XUỐNG XE',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    color: Colors.blue,
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text('Lỗi'),
+                                        );
+                                      }
+                                      return Center(
+                                        child: Text('Không có dữ liệu'),
+                                      );
+                                    });
+                              });
+                        });
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 39,
+                        decoration: BoxDecoration(
+                            color: Colors.blue[600],
+                            // border: Border.all(color: Colors.grey[350]),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Center(
+                            child: SvgPicture.asset(
+                          'asset/icons/account-check.svg',
+                          color: Colors.white,
+                        )),
+                      )),
+                  Positioned(
+                      top: 30,
+                      left: 7,
+                      child: Container(
+                        height: 5,
+                        width: 24,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[350],
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(3),
+                                topRight: Radius.circular(3))),
+                      )),
+                ],
+              )),
+        ],
+      ),
+    ]);
+  }
+
+  List<Widget> abc(List<sodochoData> listparam) {
     // print(tangList.first.soHang);
     // print(tangList.first.soCot);
     List<Widget> list = [];
-  
+
     for (int vtH = 1; vtH <= tangList.first.soHang; vtH++) {
       for (int vtC = 1; vtC <= tangList.first.soCot; vtC++) {
         var tmp =
@@ -791,7 +1318,11 @@ class VeState extends State<Ve> {
           if (tmp.first.viTriCot == 1 && tmp.first.viTriHang == 1) {
             list.add(seatItemLX('${tmp.first.tenCho}'));
           } else {
-            list.add(seatItem('${tmp.first.tenCho}', listparam, index));
+            if (tmp.first.trangThai.idTrangThai == 1) {
+              list.add(seatItem1('${tmp.first.tenCho}', listparam, vtC, vtH));
+            } else {
+              list.add(seatItem2('${tmp.first.tenCho}', listparam, vtC, vtH));
+            }
           }
         } else {
           list.add(Text(''));
@@ -914,36 +1445,40 @@ Row seatItemLX(String num) {
   );
 }
 
-Row itemBottomSheet(Color color, String title, String value1, String value2,
-    bool border, Color LetterColor) {
-  return Row(
-    children: [
-      Container(
-        margin: EdgeInsets.only(right: 5),
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
+Container itemBottomSheet(
+    Color color, String title, String value1, String value2) {
+  return Container(
+    padding: EdgeInsets.all(3),
+    child: Row(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: 5),
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
             color: color,
-            border: border
-                ? Border.all(color: Colors.black, width: 0.3)
-                : Border.all(color: Colors.white, width: 0.0)),
-        child: Center(
-            child: Text(
-          value2,
-          style: TextStyle(color: LetterColor),
-        )),
-      ),
-      Text(
-        title,
-        style: TextStyle(color: Colors.black),
-      ),
-      Text(
-        value1,
-        style: TextStyle(color: Colors.black),
-      ),
-    ],
+            // border: border
+            //     ? Border.all(color: Colors.black, width: 0.3)
+            //     : Border.all(color: Colors.white, width: 0.0)
+          ),
+          child: Center(
+              child: Text(
+            value2,
+            style: TextStyle(color: Colors.black),
+          )),
+        ),
+        Text(
+          '$title: ',
+          style: TextStyle(color: Colors.black),
+        ),
+        Text(
+          value1,
+          style: TextStyle(color: Colors.black),
+        ),
+      ],
+    ),
   );
 }
 
@@ -957,3 +1492,52 @@ Row itemBottomSheet(Color color, String title, String value1, String value2,
 //                     return itemBottomSheet(HexColor.fromHex(listTrangThai[index].maMau), listTrangThai[index].tenTrangThai, '${listTrangThai[index].soLuong}', '${listTrangThai[index].soLuong}');
                 
 //               })
+
+
+//  return Container(
+//                                         padding: EdgeInsets.symmetric(
+//                                             horizontal: 25, vertical: 30),
+//                                         height: 250,
+//                                         child: Column(
+//                                           mainAxisAlignment:
+//                                               MainAxisAlignment.spaceBetween,
+//                                           children: [
+//                                             itemBottomSheet(
+//                                                 HexColor.fromHex(
+//                                                     listTrangThai[0].maMau),
+//                                                 '${listTrangThai[0].tenTrangThai}: ',
+//                                                 '${listTrangThai[0].soLuong}',
+//                                                 '${listTrangThai[0].soLuong}',
+//                                                 true,
+//                                                 Colors.black),
+//                                             itemBottomSheet(
+//                                                 HexColor.fromHex(
+//                                                     listTrangThai[1].maMau),
+//                                                 '${listTrangThai[1].tenTrangThai}: ',
+//                                                 '${listTrangThai[1].soLuong}',
+//                                                 '${listTrangThai[1].soLuong}',
+//                                                 false,
+//                                                 Colors.white),
+//                                             itemBottomSheet(
+//                                                 HexColor.fromHex(
+//                                                     listTrangThai[2].maMau),
+//                                                 '${listTrangThai[2].tenTrangThai}: ',
+//                                                 '${listTrangThai[2].soLuong}',
+//                                                 '${listTrangThai[2].soLuong}',
+//                                                 false,
+//                                                 Colors.white),
+//                                             itemBottomSheet(
+//                                                 HexColor.fromHex(
+//                                                     listTrangThai[3].maMau),
+//                                                 '${listTrangThai[3].tenTrangThai}: ',
+//                                                 '${listTrangThai[3].soLuong}',
+//                                                 '${listTrangThai[3].soLuong}',
+//                                                 false,
+//                                                 Colors.white),
+//                                           ],
+//                                         ));
+
+
+
+
+

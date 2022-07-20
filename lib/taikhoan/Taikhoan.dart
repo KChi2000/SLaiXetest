@@ -14,7 +14,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 import '../helpers/ApiHelper.dart';
 import '../model/Tinh.dart';
-
+import 'package:collection/collection.dart';
 class Taikhoan extends StatefulWidget {
   const Taikhoan({Key key}) : super(key: key);
   @override
@@ -30,7 +30,7 @@ class TaikhoanState extends State<Taikhoan> {
   String unselect = 'chưa chọn';
   String sdt;
   String email = '';
-  String address = '';
+  String address;
   final phoneController = TextEditingController(text: '');
   final emailController = TextEditingController(text: '');
   final addressController = TextEditingController(text: '');
@@ -39,15 +39,15 @@ class TaikhoanState extends State<Taikhoan> {
   String tinh, huyen, diachi;
   List<DataTinh> province = [];
   List<DataHuyen> district = [];
-   List<DataHuyen> huyenlist = [];
+
   var idTinh;
   var datafuture;
   Map<String, dynamic> data;
   var tinhfuture;
-
+DataHuyen idhuyentemp;
   Tinh dataTinh;
   var huyenfuture;
-
+  void Function(void Function()) setstatedialog;
   Huyen dataHuyen;
   final imagePicker = ImagePicker();
   File _image;
@@ -61,10 +61,10 @@ class TaikhoanState extends State<Taikhoan> {
   @override
   void initState() {
     // TODO: implement initState
-    loadInfo();
+    
 
     super.initState();
-
+loadInfo();
     // print('${infoMap.}');
   }
 
@@ -80,22 +80,19 @@ class TaikhoanState extends State<Taikhoan> {
     dataTinh = await tinhfuture;
     province = dataTinh.data;
     if (idTinh != null) {
-      loadHuyen();
+      loadHuyen(false);
     }
   }
 
-  void loadHuyen() async {
+  void loadHuyen(bool checksetState) async {
     huyenfuture = ApiHelper.getDistrict(
         "http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
-    setState(() {
-      huyenlist = dataHuyen.data;
-    });
-    for (int i = 0; i < district.length; i++) {
-      print('huyen: ${district[i].tenHuyen}');
-      print('    ');
-    }
+
+   if(checksetState){
+     setstatedialog(() {});
+   }
   }
 
   @override
@@ -367,23 +364,24 @@ class TaikhoanState extends State<Taikhoan> {
                             ),
                             rowItemInforAddress('Địa chỉ',
                                 address == null ? unselect : address, true, () {
-                              addressController.text = address;
+                              addressController.text = fetchdata['data']['diaChi'];
                               var tinhtemp = province.where((value) =>
                                   fetchdata['data']['idTinh'] == value.idTinh);
                               if (!tinhtemp.isEmpty || tinhtemp != null) {
                                 tinh = tinhtemp.first.tenTinh;
                               }
-                              var huyentemp = district.where((value) =>
+                              var huyentemp = district.firstWhereOrNull((value) =>
                                   fetchdata['data']['idHuyen'] ==
                                   value.idHuyen);
-                              if (!huyentemp.isEmpty || huyentemp != null) {
-                                huyen = huyentemp.first.tenHuyen;
+                              if ( huyentemp != null) {
+                                huyen = huyentemp.tenHuyen;
                               }
                               return showDialog(
                                   context: context,
                                   builder: (context) {
                                     return StatefulBuilder(
-                                        builder: (context, setState) {
+                                        builder: (context, setStateDialog) {
+                                      setstatedialog = setStateDialog;
                                       return AlertDialog(
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
@@ -415,19 +413,19 @@ class TaikhoanState extends State<Taikhoan> {
                                                         onTap: () {
                                                           print(
                                                               'tinh moi : ${text.idTinh}  ${text.tenTinh}');
-                                                          setState(() {
+                                                          setStateDialog(() {
                                                             idTinh =
                                                                 text.idTinh;
-                                                         
+
                                                             huyen = null;
-                                                            loadHuyen();
+                                                            loadHuyen(true);
                                                           });
                                                         },
                                                       );
                                                     }).toList(),
                                                     value: tinh,
                                                     onChanged: (t1) {
-                                                      setState(() {
+                                                      setStateDialog(() {
                                                         tinh = t1;
                                                       });
                                                     },
@@ -461,8 +459,13 @@ class TaikhoanState extends State<Taikhoan> {
                                                       );
                                                     }).toList(),
                                                     value: huyen,
-                                                    onChanged: (t2) {
-                                                      setState(() {
+                                                    onChanged: ( t2) {
+                                                       
+                                                       idhuyentemp = district.firstWhereOrNull((value) =>
+                                                      t2 == 
+                                                      value.tenHuyen);
+                                                      print('huyen chonj ${idhuyentemp.idHuyen}');
+                                                      setStateDialog(() {
                                                         huyen = t2;
                                                       });
                                                     },
@@ -476,7 +479,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                       return null;
                                                     },
                                                     onTap: () {
-                                                      // setState(() {});
+                                                     
                                                     },
                                                   ),
                                                 ),
@@ -499,18 +502,23 @@ class TaikhoanState extends State<Taikhoan> {
                                             )),
                                         actions: [
                                           TextButton(
-                                            onPressed: () => Navigator.pop(
-                                                context, 'Cancel'),
+                                            onPressed: () {
+                                              loadInfo();
+                                                Navigator.pop(
+                                                context, 'Cancel');
+                                            } ,
                                             child: const Text('Cancel'),
                                           ),
                                           TextButton(
-                                            onPressed: () {
+                                            onPressed: () async{
                                               if (formkey.currentState
                                                   .validate()) {
-                                                setState(() {
-                                                  diachi =
-                                                      addressController.text;
+                                                var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',{
+                                                  'diaChi':'${addressController.text}',
+                                                  'idHuyen':'$idhuyentemp'
                                                 });
+                                                print('haihihihihi $res');
+                                               loadInfo();
                                                 Navigator.pop(context, 'OK');
                                               }
                                               ;
@@ -666,13 +674,13 @@ class TaikhoanState extends State<Taikhoan> {
             fontSize: sizeInfo,
           ),
         ),
-        SizedBox(
-          width: 100,
-        ),
+        // SizedBox(
+        //   width: 100,
+        // ),
         Row(
           children: [
             SizedBox(
-              width: 120,
+              width: 200,
               child: Text(
                 t2,
                 style: TextStyle(

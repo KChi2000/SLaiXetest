@@ -10,13 +10,17 @@ import 'package:flutter_ui_kit/model/thongtincanhan.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/DSDiemXuong.dart';
+import '../model/DSDiemxuongLotrinh.dart';
 import '../model/DSHHTheoChuyenDi.dart';
+import '../model/DSHanhKhachGhePhu.dart';
+import '../model/DSHanhKhachMuaVe.dart';
 import '../model/DSTrangThai.dart';
 import '../model/DSTuyenVanChuyenTheoNgay.dart';
 import '../model/KhachTrenXe.dart';
 import '../model/LayChiTietNhatKyVanChuyen.dart';
 import '../model/LenhHienTai.dart';
 import '../model/LichSuChuyenDi.dart';
+import '../model/ThongTinHanhKhachGhe.dart';
 import '../model/ThongTinThem.dart';
 import '../model/TrangThaiChoNgoi.dart';
 import '../model/chuyendiganday.dart';
@@ -208,6 +212,50 @@ class ApiHelper {
       if (resp.body.isNotEmpty) 
         print('infoapi didnhatky   ${resp.body.toString()}');
         return LayChiTietNhatKyVanChuyen.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+   // get ds hanh khach tren xe
+  static Future<DSHanhKhachMuaVe> getDSHanhKhachMuaVe(String idlenhdientu) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/QuanLyThongTin/lay-danh-sach-hanh-khach-mua-ve-tren-xe?idLenhDienTu=${idlenhdientu}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi hanh khach   ${resp.body.toString()}');
+        return DSHanhKhachMuaVe.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+  //get thong tin hanh khach ngoi tren ghe
+  static Future<ThongTinHanhKhachGhe> getThongTinHanhKhachGhe(String machuyendi,String guidchongoi) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/doi-soat/lay-thong-tin-hanh-khach-qua-cho-ngoi?MaChuyenDi=${machuyendi}&GuidChoNgoi=${guidchongoi}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi hanh khach  ghe  ${resp.body.toString()}');
+        return ThongTinHanhKhachGhe.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+   //get thong tin hanh khach ngoi tren ghe phu
+  static Future<DSHanhKhachGhePhu> getDSHanhKhachGhePhu(String guidchuyendi) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/DonHang/lay-danh-sach-hanh-khach-mua-ve-ghe-phu?guidChuyenDi=${guidchuyendi}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi hanh khach  ghe phu ${resp.body.toString()}');
+        return DSHanhKhachGhePhu.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+    //get ds diem xuong cua lo trinh
+  static Future<DSDiemXuongLoTrinh> getDSDiemXuongLoTrinh(String guidlotrinh) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi diem xuong lo trinh ${resp.body.toString()}');
+        return DSDiemXuongLoTrinh.fromJson(jsonDecode(resp.body));
       
     });
   }

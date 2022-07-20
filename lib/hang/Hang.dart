@@ -718,7 +718,7 @@ class HangState extends State<Hang> {
         elevation: 6,
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => layhangInfo()));
+              context, MaterialPageRoute(builder: (context) => layhangInfo(chuyendiGanday.data.guidLoTrinh)));
         },
         label: Text('LẤY HÀNG',
             style: TextStyle(fontSize: 12, color: Colors.black)),
