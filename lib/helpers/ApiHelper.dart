@@ -20,6 +20,7 @@ import '../model/KhachTrenXe.dart';
 import '../model/LayChiTietNhatKyVanChuyen.dart';
 import '../model/LenhHienTai.dart';
 import '../model/LichSuChuyenDi.dart';
+import '../model/SLVe.dart';
 import '../model/ThongTinHanhKhachGhe.dart';
 import '../model/ThongTinThem.dart';
 import '../model/TrangThaiChoNgoi.dart';
@@ -256,6 +257,17 @@ class ApiHelper {
       if (resp.body.isNotEmpty) 
         print('infoapi diem xuong lo trinh ${resp.body.toString()}');
         return DSDiemXuongLoTrinh.fromJson(jsonDecode(resp.body));
+      
+    });
+  }
+    //get so luong ve ban dc
+  static Future<SLVe> getSLVe(String guidchuyendi) async {
+    return await http.get(Uri.parse('http://vedientu.nguyencongtuyen.local:19666/api/DonHang/lay-so-luong-ve-ban-theo-loai-diem-ban?GuidChuyenDi=${guidchuyendi}'), headers: {
+      "authorization": "Bearer ${LoginHelper.Default.access_token}",
+    }).then((resp) {
+      if (resp.body.isNotEmpty) 
+        print('infoapi ve ${resp.body.toString()}');
+        return SLVe.fromJson(jsonDecode(resp.body));
       
     });
   }

@@ -33,10 +33,11 @@ class _layhangInfoState extends State<layhangInfo> {
       text: DateFormat(' kk:mm, dd-MM-yyyy').format(DateTime.now()));
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
-  String nhan, gui;
+  String nhan;
   String cuoc;
   String giacuoc;
   XFile imageitem;
+  String Dropdownselected;
   final lowPrice =
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
   final List<XFile> image = [];
@@ -47,6 +48,8 @@ class _layhangInfoState extends State<layhangInfo> {
     // TODO: implement initState
     super.initState();
     loadDSdiemxuong();
+    print(lowPrice.text);
+    cuoc = lowPrice.text;
   }
   void loadDSdiemxuong(){
     dsdiemxuongFuture = ApiHelper.getDSDiemXuongLoTrinh(widget.guidlotrinh);
@@ -115,9 +118,16 @@ class _layhangInfoState extends State<layhangInfo> {
                     return null;
                   },
                   onChanged: (phone) {
+                    print(phone);
+                     xacnhan();
+                      print('xac nhan ${xacnhan()}');
                     if (phone.length == 10) {
+                     
                       setState(() {
+                        phone.replaceAll(' ', '');
                         nhan = phone;
+                        
+                       
                         print(phone);
                         // formkey.currentState.activate();
                       });
@@ -140,16 +150,19 @@ class _layhangInfoState extends State<layhangInfo> {
                   );
                 }).toList(),
                 // value: 'Bến xe Hà Nam',
-                onChanged: (t1) {
+                onChanged: (DataDSDiemXuongLoTrinh t1) {
+                  xacnhan();
                   setState(() {
-                    // tinh = t1;
+                    Dropdownselected = t1.tenDiemXuong;
+                    xacnhan();
                   });
+                  
                 },
-                hint: Text('chọn tỉnh'),
+                hint: Text('chọn điểm trả hàng'),
                 menuMaxHeight: 200,
                 validator: (vl1) {
                   if (vl1 == null || vl1.isEmpty) {
-                    return 'Chưa chọn bến xe';
+                    return 'Chưa chọn điểm trả hàng';
                   }
                   return null;
                 },
@@ -170,15 +183,24 @@ class _layhangInfoState extends State<layhangInfo> {
                     return null;
                   },
                   onChanged: (gia) {
+                    
+                     String filter = gia.substring(0,gia.length-3);
+                     
+                     print(gia);
+                        
                     setState(() {
                       // cuoc = double.parse(gia);
-                      String filter = gia.substring(0,gia.length-3);
-                      cuoc = filter;
+                       gia.replaceAll(' ', '');
+                        cuoc = filter;
+                     
+                     print('xac nhan ${xacnhan()}');
+                    
                       // filter.replaceAll(RegExp(r','), '');
                       // cuoc = double.tryParse(filter);
                       // print(filter);
                       // print('aaa: '+cuoc.toString());
                     });
+                    xacnhan();
                   },
                 ),
               ),
@@ -205,13 +227,13 @@ class _layhangInfoState extends State<layhangInfo> {
                   onChanged: (p) {
                     if (p.length == 10) {
                       setState(() {
-                        gui = p;
+                        
                         print(p);
                         // formkey.currentState.activate();
                       });
                     } else {
                       setState(() {
-                        gui = null;
+                       
                       });
                     }
                   },
@@ -440,7 +462,9 @@ class _layhangInfoState extends State<layhangInfo> {
                 height: 15,
               ),
               FlatButton(
-                onPressed: xacnhan() ? null : click,
+                onPressed: xacnhan() ? (){
+                 
+                } : null,
                 child: Text(
                   'XÁC NHẬN',
                   style: TextStyle(fontSize: 12, color: Colors.white),
@@ -459,7 +483,7 @@ class _layhangInfoState extends State<layhangInfo> {
     );
   }
 
-  VoidCallback click() {}
+
   bool validateMobile(String value) {
     String pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
     RegExp regExp = new RegExp(pattern);
@@ -470,7 +494,7 @@ class _layhangInfoState extends State<layhangInfo> {
   }
 
   bool xacnhan() {
-    if ((nhan == null)|| (cuoc == '0,00') || (gui == null)) {
+    if (nhan != null  && cuoc != '0,00' && lowPrice.text != '0,00VNĐ' && Dropdownselected !=null) {
       return true;
     }
     return false;

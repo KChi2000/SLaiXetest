@@ -17,6 +17,7 @@ import 'package:image_picker/image_picker.dart';
 import '../componentsFuture/bottomshetHK.dart';
 import '../model/DSHanhKhachGhePhu.dart';
 import '../model/LichSuChuyenDi.dart';
+import '../model/SLVe.dart';
 import '../model/ThongTinHanhKhachGhe.dart';
 import '../model/ThongTinThem.dart';
 import '../model/chuyendiList.dart';
@@ -64,7 +65,7 @@ class VeState extends State<Ve> {
   var dshanhkhachghephuFuture;
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
-
+ SLVe slve;
   String sdt = null;
   String ten;
   @override
@@ -72,8 +73,11 @@ class VeState extends State<Ve> {
     // TODO: implement initState
     super.initState();
     loadLichSuChuyenDi();
+    
   }
-
+void loadslve(String guidchuyendi) async{
+  slve = await ApiHelper.getSLVe(guidchuyendi);
+}
   void loadThongTinKhachNgoi(String maChuyendi, guidChongoi) {
     thongtinhanhkhachFuture =
         ApiHelper.getThongTinHanhKhachGhe(maChuyendi, guidChongoi);
@@ -91,6 +95,7 @@ class VeState extends State<Ve> {
       lichsuChuyenDi = await LichSuChuyenDiFuture;
       loadTrangThaiChoNgoi(changeSodocho);
       loadchongoi();
+      loadslve(changeSodocho);
       if (this.mounted) {
         setState(() {});
       }
@@ -314,22 +319,29 @@ class VeState extends State<Ve> {
                               showModalBottomSheet(
                                   context: context,
                                   builder: (context) {
+                                     List<DataSLVe> listslve = slve.data;
                                     List<TrangThaiData> listTrangThai =
                                         trangthaichongoi.data;
+                                        TrangThaiData item1 = listTrangThai[0];
+                                        listTrangThai.removeWhere((item)=> item.idTrangThai == 1);
+                                    
+                                    // listTrangThai.removeAt(0);
                                     return Container(
                                       padding: EdgeInsets.all(20),
                                       height: 225,
-                                      child: ListView.builder(
-                                          itemCount: listTrangThai.length,
-                                          itemBuilder: (context, index) {
-                                            return itemBottomSheet(
-                                              HexColor.fromHex(
-                                                  listTrangThai[index].maMau),
-                                              listTrangThai[index].tenTrangThai,
-                                              '${listTrangThai[index].soLuong}',
-                                              '${listTrangThai[index].soLuong}',
-                                            );
-                                          }),
+                                      child: ListView(
+                                        children: [
+                                          itemBottomSheet1(item1),
+                                          ...listTrangThai
+                                              .map(itemBottomSheet)
+                                              .toList(),
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          Text(
+                                              ' Vé bán tại bến: ${listslve.first.soLuong}')
+                                        ],
+                                      ),
                                     );
                                   });
                             });
@@ -1445,8 +1457,7 @@ Row seatItemLX(String num) {
   );
 }
 
-Container itemBottomSheet(
-    Color color, String title, String value1, String value2) {
+Container itemBottomSheet(TrangThaiData data) {
   return Container(
     padding: EdgeInsets.all(3),
     child: Row(
@@ -1458,23 +1469,23 @@ Container itemBottomSheet(
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color: color,
+            color: HexColor.fromHex(data.maMau),
             // border: border
             //     ? Border.all(color: Colors.black, width: 0.3)
             //     : Border.all(color: Colors.white, width: 0.0)
           ),
           child: Center(
               child: Text(
-            value2,
-            style: TextStyle(color: Colors.black),
+            data.soLuong.toString(),
+            style: TextStyle(color: Colors.white),
           )),
         ),
         Text(
-          '$title: ',
+          '${data.tenTrangThai}: ',
           style: TextStyle(color: Colors.black),
         ),
         Text(
-          value1,
+          data.soLuong.toString(),
           style: TextStyle(color: Colors.black),
         ),
       ],
@@ -1482,6 +1493,40 @@ Container itemBottomSheet(
   );
 }
 
+Container itemBottomSheet1(TrangThaiData data) {
+  return Container(
+    padding: EdgeInsets.all(3),
+    child: Row(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: 5),
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10),
+            color: HexColor.fromHex(data.maMau),
+            border:  Border.all(color: Colors.black, width: 0.3)
+               
+          ),
+          child: Center(
+              child: Text(
+            data.soLuong.toString(),
+            style: TextStyle(color: Colors.black),
+          )),
+        ),
+        Text(
+          '${data.tenTrangThai}: ',
+          style: TextStyle(color: Colors.black),
+        ),
+        Text(
+          data.soLuong.toString(),
+          style: TextStyle(color: Colors.black),
+        ),
+      ],
+    ),
+  );
+}
 
 
 

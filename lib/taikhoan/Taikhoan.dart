@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import '../helpers/ApiHelper.dart';
 import '../model/Tinh.dart';
 import 'package:collection/collection.dart';
+
 class Taikhoan extends StatefulWidget {
   const Taikhoan({Key key}) : super(key: key);
   @override
@@ -29,7 +30,7 @@ class TaikhoanState extends State<Taikhoan> {
   String formattedDate;
   String unselect = 'chưa chọn';
   String sdt;
-  String email = '';
+  String email;
   String address;
   final phoneController = TextEditingController(text: '');
   final emailController = TextEditingController(text: '');
@@ -44,7 +45,7 @@ class TaikhoanState extends State<Taikhoan> {
   var datafuture;
   Map<String, dynamic> data;
   var tinhfuture;
-DataHuyen idhuyentemp;
+  DataHuyen huyentemp;
   Tinh dataTinh;
   var huyenfuture;
   void Function(void Function()) setstatedialog;
@@ -61,10 +62,9 @@ DataHuyen idhuyentemp;
   @override
   void initState() {
     // TODO: implement initState
-    
 
     super.initState();
-loadInfo();
+    loadInfo();
     // print('${infoMap.}');
   }
 
@@ -82,6 +82,7 @@ loadInfo();
     if (idTinh != null) {
       loadHuyen(false);
     }
+    setState(() {});
   }
 
   void loadHuyen(bool checksetState) async {
@@ -90,15 +91,15 @@ loadInfo();
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
-   if(checksetState){
-     setstatedialog(() {});
-   }
+    if (checksetState) {
+      setstatedialog(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (datetime != null) {
-      formattedDate = DateFormat('dd-MM-yyyy').format(datetime);
+      formattedDate = DateFormat('dd/MM/yyyy').format(datetime);
     }
     // formattedDate == DateFormat('dd-MM-yyyy').format(datetime)? null: formattedDate;
     print(formattedDate);
@@ -192,8 +193,11 @@ loadInfo();
                   sdt = fetchdata['data']['soDienThoai'];
                   email = fetchdata['data']['email'];
                   address = fetchdata['data']['diaChiThuongTru'];
-                  print('sdt:  ${fetchdata['data']['soDienThoai'].toString()}');
-
+                  if(formattedDate != null){
+                    formattedDate =DateFormat('dd/MM/yyyy').format(DateTime.parse(formattedDate).toLocal());
+                  }
+                  print('date:  $formattedDate');
+                  
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -226,29 +230,40 @@ loadInfo();
                             ),
                             rowItemInfor(
                                 'Ngày sinh',
-                                formattedDate == null
-                                    ? unselect
-                                    : formattedDate,
-                                true, () {
-                              showDatePicker(
+                                formattedDate!=null
+                                    ?  formattedDate
+                                    : unselect,
+                                true, ()async {
+                             var datetemp= await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
+                                      initialDate: DateTime.parse(fetchdata['data']['ngaySinh']).toLocal(),
                                       firstDate: DateTime(1900),
-                                      lastDate: DateTime(2222))
-                                  .then((value) {
-                                setState(() {
-                                  datetime = value;
-
-                                  print(formattedDate);
-                                });
-                              });
+                                      lastDate: DateTime(2222));
+                              //     .then((value) {
+                              //   setState(() {
+                                 
+                                  formattedDate = DateFormat('dd/MM/yyyy').format(datetemp);
+                                   var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                                'noiDung': '${formattedDate}',
+                                                'tenTruong':'ngaySinh'
+                                              });
+                                              if(res['status']){
+                                                  loadInfo();
+                                                  // Navigator.pop(context, 'OK');
+                                              }else{
+                                                print('failed');
+                                              }
+                                  
+                              //     print(formattedDate);
+                              //   });
+                              // });
                             }),
                             SizedBox(
                               height: spaceInfo,
                             ),
                             rowItemInfor('Số điện thoại',
-                                sdt == null ? unselect : sdt, true, () {
-                              phoneController.text = sdt;
+                                sdt != null ?  sdt:unselect , true, () {
+                              phoneController.text = fetchdata['data']['soDienThoai'];
                               return showDialog(
                                   context: context,
                                   builder: (context) {
@@ -290,14 +305,20 @@ loadInfo();
                                           child: const Text('Cancel'),
                                         ),
                                         TextButton(
-                                          onPressed: () {
+                                          onPressed: () async{
                                             if (formkey.currentState
                                                 .validate()) {
-                                              setState(() {
-                                                sdt = phoneController.text;
-                                                print('sdt: ' + sdt);
+                                              var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                                'noiDung': '${phoneController.text}',
+                                                'tenTruong':'soDienThoai'
                                               });
-                                              Navigator.pop(context, 'Cancel');
+                                              if(res['status']){
+                                                  loadInfo();
+                                                  Navigator.pop(context, 'OK');
+                                              }else{
+                                                print('failed');
+                                              }
+                                              
                                             }
                                           },
                                           child: const Text('OK'),
@@ -312,6 +333,7 @@ loadInfo();
                             rowItemInfor(
                                 'Email', email == null ? unselect : email, true,
                                 () {
+                                  emailController.text = fetchdata['data']['email'];
                               return showDialog(
                                   context: context,
                                   builder: (context) {
@@ -341,19 +363,26 @@ loadInfo();
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
+                                          child: const Text('Huỷ'),
                                         ),
                                         TextButton(
-                                          onPressed: () {
+                                          onPressed: ()async {
                                             if (formkey.currentState
                                                 .validate()) {
-                                              setState(() {
-                                                email = emailController.text;
+                                              var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                                'noiDung': '${emailController.text}',
+                                                'tenTruong':'email'
                                               });
-                                              Navigator.pop(context, 'OK');
+                                              if(res['status']){
+                                                  loadInfo();
+                                                  Navigator.pop(context, 'OK');
+                                              }else{
+                                                print('failed');
+                                              }
+                                              
                                             }
                                           },
-                                          child: const Text('OK'),
+                                          child: const Text('Xác nhận'),
                                         ),
                                       ],
                                     );
@@ -363,17 +392,19 @@ loadInfo();
                               height: spaceInfo,
                             ),
                             rowItemInforAddress('Địa chỉ',
-                                address == null ? unselect : address, true, () {
-                              addressController.text = fetchdata['data']['diaChi'];
+                                address != null ?address  :unselect , true, () {
+                              addressController.text =
+                                  fetchdata['data']['diaChi'];
                               var tinhtemp = province.where((value) =>
                                   fetchdata['data']['idTinh'] == value.idTinh);
                               if (!tinhtemp.isEmpty || tinhtemp != null) {
                                 tinh = tinhtemp.first.tenTinh;
                               }
-                              var huyentemp = district.firstWhereOrNull((value) =>
-                                  fetchdata['data']['idHuyen'] ==
-                                  value.idHuyen);
-                              if ( huyentemp != null) {
+                              var huyentemp = district.firstWhereOrNull(
+                                  (value) =>
+                                      fetchdata['data']['idHuyen'] ==
+                                      value.idHuyen);
+                              if (huyentemp != null) {
                                 huyen = huyentemp.tenHuyen;
                               }
                               return showDialog(
@@ -459,12 +490,15 @@ loadInfo();
                                                       );
                                                     }).toList(),
                                                     value: huyen,
-                                                    onChanged: ( t2) {
-                                                       
-                                                       idhuyentemp = district.firstWhereOrNull((value) =>
-                                                      t2 == 
-                                                      value.tenHuyen);
-                                                      print('huyen chonj ${idhuyentemp.idHuyen}');
+                                                    onChanged: (t2) {
+                                                      huyentemp = district
+                                                          .firstWhereOrNull(
+                                                              (value) =>
+                                                                  t2 ==
+                                                                  value
+                                                                      .tenHuyen);
+                                                      print(
+                                                          'huyen chonj ${huyentemp.idHuyen}');
                                                       setStateDialog(() {
                                                         huyen = t2;
                                                       });
@@ -478,9 +512,7 @@ loadInfo();
                                                       }
                                                       return null;
                                                     },
-                                                    onTap: () {
-                                                     
-                                                    },
+                                                    onTap: () {},
                                                   ),
                                                 ),
                                                 TextFormField(
@@ -504,21 +536,26 @@ loadInfo();
                                           TextButton(
                                             onPressed: () {
                                               loadInfo();
-                                                Navigator.pop(
-                                                context, 'Cancel');
-                                            } ,
+                                              Navigator.pop(context, 'Cancel');
+                                            },
                                             child: const Text('Cancel'),
                                           ),
                                           TextButton(
-                                            onPressed: () async{
+                                            onPressed: () async {
+                                              Map<String, dynamic> Mappostdata =
+                                                  {
+                                                'diaChi':
+                                                    '${addressController.text}',
+                                                'idHuyen':
+                                                    '${huyentemp.idHuyen}',
+                                              };
                                               if (formkey.currentState
                                                   .validate()) {
-                                                var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',{
-                                                  'diaChi':'${addressController.text}',
-                                                  'idHuyen':'$idhuyentemp'
-                                                });
-                                                print('haihihihihi $res');
-                                               loadInfo();
+                                                var res = await ApiHelper.post(
+                                                    'http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',
+                                                    Mappostdata);
+
+                                                loadInfo();
                                                 Navigator.pop(context, 'OK');
                                               }
                                               ;
@@ -529,7 +566,7 @@ loadInfo();
                                       );
                                     });
                                   });
-                            }),
+                            },fetchdata['data']['diaChiThuongTru'] ),
                             SizedBox(
                               height: spaceInfo,
                             ),
@@ -663,7 +700,7 @@ loadInfo();
   }
 
   Row rowItemInforAddress(
-      String t1, String t2, bool active, VoidCallback click) {
+      String t1, String t2, bool active, VoidCallback click,String checkspace) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -680,7 +717,7 @@ loadInfo();
         Row(
           children: [
             SizedBox(
-              width: 200,
+              width: checkspace==null? 70:200,
               child: Text(
                 t2,
                 style: TextStyle(
