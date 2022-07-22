@@ -29,7 +29,7 @@ class HangState extends State<Hang> {
   String title;
   String value = '';
   String chooseChuyenDi;
-  String search='';
+  String search = '';
   XFile imageitem;
   final image = [];
   int count, itemclick;
@@ -46,7 +46,7 @@ class HangState extends State<Hang> {
   String giaoStatus;
   var LichSuChuyenDiFuture;
   LichSuChuyenDi lichsuChuyenDi;
- 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -60,10 +60,9 @@ class HangState extends State<Hang> {
     if (chuyendiGanday != null) {
       setState(() {
         chooseChuyenDi = chuyendiGanday.data.guidChuyenDi;
-        loadshh(chooseChuyenDi,search);
+        loadshh(chooseChuyenDi, search);
         loadThongTinThem();
         loadDSTrangThai();
-       
       });
     }
   }
@@ -72,17 +71,15 @@ class HangState extends State<Hang> {
     dsTrangThaiFuture = ApiHelper.getDSTrangThai(
         'http://vedientu.nguyencongtuyen.local:19666/api/HangHoa/lay-danh-sach-trang-thai-van-chuyen?idChuyenDi=${chooseChuyenDi}');
     dsTrangThai = await dsTrangThaiFuture;
-     setState(() {
-       for(int i=0;i<dsTrangThai.data.length;i++){
-          trangthaiCount += dsTrangThai.data[i].soLuong;
-       }
- 
-     });
+    setState(() {
+      for (int i = 0; i < dsTrangThai.data.length; i++) {
+        trangthaiCount += dsTrangThai.data[i].soLuong;
+      }
+    });
   }
 
   void loadThongTinThem() async {
-    thongtinthemFuture = ApiHelper.getThongTinThem(
-        chooseChuyenDi);
+    thongtinthemFuture = ApiHelper.getThongTinThem(chooseChuyenDi);
     thongtinthem = await thongtinthemFuture;
     if (thongtinthem != null) {
       setState(() {
@@ -97,8 +94,8 @@ class HangState extends State<Hang> {
     lichsuChuyenDi = await LichSuChuyenDiFuture;
   }
 
-  void loadshh(String vl,String s) async {
-    tongtien=0;
+  void loadshh(String vl, String s) async {
+    tongtien = 0;
     dshhTheoChuyenDiFuture = ApiHelper.getDSHHTheoChuyenDi(
         'http://vedientu.nguyencongtuyen.local:19666/api/HangHoa/lay-danh-sach-hang-hoa-theo-chuyen-di?idChuyenDi=${vl}&timKiem=${s}');
     dshhTheoChuyenDi = await dshhTheoChuyenDiFuture;
@@ -112,10 +109,9 @@ class HangState extends State<Hang> {
     var temp = lichsulist.where((element) => element.maChuyenDi == value);
     setState(() {
       chooseChuyenDi = temp.first.guidChuyenDi;
-      loadshh(chooseChuyenDi,search);
+      loadshh(chooseChuyenDi, search);
       loadThongTinThem();
       loadDSTrangThai();
-      
     });
 
     print('saaa $chooseChuyenDi');
@@ -132,8 +128,8 @@ class HangState extends State<Hang> {
               height: itemListHeightHang,
               width: MediaQuery.of(context).size.width * itemListwidthtHang,
               child: TextFormField(
-              //  controller: searchController,
-              initialValue: search,
+                //  controller: searchController,
+                initialValue: search,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(0),
                     prefixIcon: Icon(searchIcon),
@@ -149,13 +145,13 @@ class HangState extends State<Hang> {
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                     hintText: 'nhập để tìm kiếm'),
-                    onChanged: (vl){
-                          setState(() {
-                            search = vl;
-                            print('search: $search');
-                          });
-                          loadshh(chooseChuyenDi, search);
-                    },
+                onChanged: (vl) {
+                  setState(() {
+                    search = vl;
+                    print('search: $search');
+                  });
+                  loadshh(chooseChuyenDi, search);
+                },
               )),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -222,10 +218,11 @@ class HangState extends State<Hang> {
                                 future: LichSuChuyenDiFuture,
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
-                                    return  Center(
-                                      child: Text('Không có dữ liệu',style: TextStyle(color: Colors.black),)
-                                     
-                                    );
+                                    return Center(
+                                        child: Text(
+                                      'Không có dữ liệu',
+                                      style: TextStyle(color: Colors.black),
+                                    ));
                                   } else if (snapshot.hasError) {
                                     return Center(
                                       child: Text('Lỗi'),
@@ -320,7 +317,7 @@ class HangState extends State<Hang> {
                                     );
                                   }
                                   return Center(
-                                    child:  CircularProgressIndicator(),
+                                    child: CircularProgressIndicator(),
                                   );
                                 });
                           });
@@ -330,7 +327,7 @@ class HangState extends State<Hang> {
                         print('value: ' + title);
                       });
                       tongtien = 0;
-                     trangthaiCount=0;
+                      trangthaiCount = 0;
                       showDSHangTheoChuyenDi();
                     });
                   },
@@ -382,12 +379,12 @@ class HangState extends State<Hang> {
                   } else if (snapshot.hasData) {
                     DSHHTheoChuyenDi data = snapshot.data;
                     List<DataDSHH> list = data.data;
-                    if(!data.status){
+                    if (!data.status) {
                       return Expanded(
-                      child: Center(
-                        child: Text('Không có hàng trên xe'),
-                      ),
-                    );
+                        child: Center(
+                          child: Text('Không có hàng trên xe'),
+                        ),
+                      );
                     }
                     return Expanded(
                         child: ListView.builder(
@@ -459,7 +456,9 @@ class HangState extends State<Hang> {
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             hangDetail(
-                                                                itemclick,list[index].idNhatKy)));
+                                                                itemclick,
+                                                                list[index]
+                                                                    .idNhatKy)));
                                                 print(itemclick);
                                               },
                                               child: Container(
@@ -681,11 +680,44 @@ class HangState extends State<Hang> {
                                                                             10,
                                                                       ),
                                                                       Align(
-                                                                          alignment: Alignment
-                                                                              .bottomRight,
+                                                                          alignment:
+                                                                              Alignment.bottomRight,
                                                                           child: SizedBox(
                                                                               height: 28,
-                                                                              child: ElevatedButton(onPressed: () {}, child: Text('XÁC NHẬN'))))
+                                                                              child: ElevatedButton(
+                                                                                  onPressed: () async {
+                                                                                  
+                                                                                    var res = await ApiHelper.postMultipart('http://vedientu.nguyencongtuyen.local:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
+                                                                                      'idNhatKy': '${list[index].idNhatKy}',
+                                                                                      'toaDo': ''
+                                                                                    });
+                                                                                    if (res == 'Uploadd') {
+                                                                                      trangthaiCount=0;
+                                                                                      loadchuyendiganday();
+                                                                                      Navigator.of(context).pop();
+                                                                                    } else {
+                                                                                      showDialog(
+                                                                                        context: context, barrierDismissible: false, // user must tap button!
+                                                                                        builder: (BuildContext context) {
+                                                                                          return AlertDialog(
+                                                                                            title: const Text('Lỗi'),
+                                                                                            content: 
+                                                                                             Text('Lỗi kết nối'),
+                                                                                            
+                                                                                            actions: <Widget>[
+                                                                                              TextButton(
+                                                                                                child: const Text('Đã hiểu'),
+                                                                                                onPressed: () {
+                                                                                                  Navigator.of(context).pop();
+                                                                                                },
+                                                                                              ),
+                                                                                            ],
+                                                                                          );
+                                                                                        },
+                                                                                      );
+                                                                                    }
+                                                                                  },
+                                                                                  child: Text('XÁC NHẬN'))))
                                                                     ],
                                                                   ),
                                                                 );
@@ -707,8 +739,7 @@ class HangState extends State<Hang> {
                             }));
                   }
                   return Expanded(
-                    child: Center(child: CircularProgressIndicator()
-                    ),
+                    child: Center(child: CircularProgressIndicator()),
                   );
                 })
           ],
@@ -718,7 +749,10 @@ class HangState extends State<Hang> {
         elevation: 6,
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => layhangInfo(chuyendiGanday.data.guidLoTrinh)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      layhangInfo(chuyendiGanday.data.guidLoTrinh,chooseChuyenDi)));
         },
         label: Text('LẤY HÀNG',
             style: TextStyle(fontSize: 12, color: Colors.black)),

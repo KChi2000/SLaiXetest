@@ -408,7 +408,19 @@ void convertDateTime() {
                               ),
                               RaisedButton(
                                 onPressed: () {
-                                  formkey.currentState.validate();
+                                  if(formkey.currentState.validate()){
+                                    var resp = ApiHelper.postMultipart('http://lenh.nguyencongtuyen.local:19666/api/Driver/lai-xe-dung-hanh-trinh', {
+                                      'guidLenh':'${chitietlenh.data.guidLenh}',
+                                      'lyDo':'${lidoController.text}',
+                                      'ToaDo':''
+                                    });
+                                    if(resp == 'Uploadd'){
+                                      Navigator.pop(context);
+                                    }else{
+                                      print('dung hanh trinh failed');
+                                    }
+                                  }
+                                  
                                 },
                                 child: Text('XÁC NHẬN',
                                     style: TextStyle(

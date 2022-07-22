@@ -54,7 +54,7 @@ class _hangDetailState extends State<hangDetail> {
             LayChiTietNhatKyVanChuyen chitietnhatky = snapshot.data;
             DataNhatKyChiTiet datachitiet = chitietnhatky.data;
             var datetime;
-            if(datetime == null || datetime.toString().isEmpty){
+            if(datachitiet.thoiGianGiaoHangThucTe == null || datachitiet.thoiGianGiaoHangThucTe.isEmpty){
               print('nulllllll');
               datetime = DateTime.parse(datachitiet.thoiGianGiaoHangDuKien).toLocal();
             } else{

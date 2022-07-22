@@ -8,7 +8,7 @@ import 'thongbao/Thongbao.dart';
 import 've/Ve.dart';
 
 class UIKitPage extends StatefulWidget {
-  int index=0;
+  int index;
   UIKitPage(this.index);
   @override
   _UIKitPageState createState() {
@@ -33,6 +33,9 @@ class _UIKitPageState extends State<UIKitPage> {
     super.initState();
     if(widget.index== 2){
       _selectedIndex = 2;
+    }
+    if(widget.index==3){
+      _selectedIndex = 3;
     }
   }
 

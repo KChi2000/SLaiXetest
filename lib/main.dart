@@ -5,6 +5,7 @@ import 'package:flutter_ui_kit/home/Home.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 
 import 'banvethanhcong.dart';
+import 'lenh/dunglenhthanhcong.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: Login()
+      home: dunglenhthanhcong()
     );
   }
 }

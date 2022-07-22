@@ -40,7 +40,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
     loadDSLenh();
     print(widget.idLenhdientu);
   }
-  
+
   void loadDSLenh() async {
     postdata = {
       'custom': {
@@ -67,17 +67,18 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
   void loadDSHanhKhachTrenXe() {
     DshanhkhachmuaveFuture = ApiHelper.getDSHanhKhachMuaVe(widget.idLenhdientu);
   }
-  void setAllChecked(bool vl){
-      setstatecheck(() {
-        AllChecked = vl;
-        listCheck.forEach((element) {
-          setstatecheck(() {
-            element.check = vl;
-          });
-         });
 
+  void setAllChecked(bool vl) {
+    setstatecheck(() {
+      AllChecked = vl;
+      listCheck.forEach((element) {
+        setstatecheck(() {
+          element.check = vl;
+        });
       });
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     double widthScreen = MediaQuery.of(context).size.width;
@@ -365,35 +366,49 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                         setstatecheck = setState;
                         return Container(
                           padding: EdgeInsets.all(15),
-                          height: 400,
+                          // height: 400,
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Danh sách vé chuyển đổi lệnh',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              FutureBuilder<DSHanhKhachMuaVe>(
-                                  future: DshanhkhachmuaveFuture,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    }
-                                    if (snapshot.hasData) {
-                                      DSHanhKhachMuaVe dshanhkhachmuave =
-                                          snapshot.data;
-                                      List<DataDSHangKhachMuaVe> data =
-                                          dshanhkhachmuave.data;
-                                      if (data.length != 0) {
-                                        listCheck = data;
-                                      }
-                                      return Expanded(
+                            FutureBuilder<DSHanhKhachMuaVe>(
+                              future: DshanhkhachmuaveFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                if (snapshot.hasData) {
+                                  DSHanhKhachMuaVe dshanhkhachmuave =
+                                      snapshot.data;
+                                  listCheck = dshanhkhachmuave.data;
+                                  if (listCheck.length == 0) {
+                                    return Center(
+                                      child: Column(
+                                        children: [
+                                          Image.asset('asset/images/warning.png',width: 80,height: 80,),
+                                          SizedBox(height: 10,),
+                                          Text('Xác nhận chuyển đổi lệnh',style: TextStyle(fontSize: 18),),
+                                          Text('Bạn có chắc chắn muốn chuyên sang lệnh'),
+                                          Text('${listdata[0].maLenh}',style: TextStyle(fontSize: 16)),
+                                          SizedBox(height: 10,)
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'Danh sách vé chuyển đổi lệnh',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      Expanded(
                                         child: ListView(
                                           children: [
                                             Column(
@@ -402,8 +417,10 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                                   children: [
                                                     Checkbox(
                                                         value: AllChecked,
-                                                        onChanged: setAllChecked),
-                                                    Text('Tất cả(${listCheck.length})')
+                                                        onChanged:
+                                                            setAllChecked),
+                                                    Text(
+                                                        'Tất cả(${listCheck.length})')
                                                   ],
                                                 ),
                                                 Container(
@@ -422,74 +439,63 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                                 .toList()
                                           ],
                                         ),
-                                      );
-                                    }
-                                    if (snapshot.hasError) {
-                                      return Center(
-                                        child: Text('Lỗi'),
-                                      );
-                                    }
-                                    return Center(
-                                      child: Text('Không có dữ liệu'),
-                                    );
-                                  }),
+                                      ),
+                                      
+                                    ],
+                                  );
+                                }
+                                if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Lỗi'),
+                                  );
+                                }
+                                return Center(
+                                  child: Text('Không có dữ liệu'),
+                                );
+                              }),
                               Divider(
-                                thickness: 1.5,
-                                height: 1,
-                              ),
-                              IntrinsicHeight(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('HỦY',
-                                          style: TextStyle(color: Colors.red)),
-                                      height: 18,
-                                      // color: Colors.black,
-                                    ),
-                                    VerticalDivider(
-                                      width: 2,
-                                      thickness: 1.5,
-                                    ),
-                                    FlatButton(
-                                        onPressed: () {
-                                          // showDialog(
-                                          //     context: context,
-                                          //     builder: (context) {
-                                          //       return AlertDialog(
-                                          //         title: Text(
-                                          //             'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maTuyen} không?'),
-                                          //         actions: [
-                                          //           TextButton(
-                                          //             onPressed: () =>
-                                          //                 Navigator.pop(context, 'Hủy'),
-                                          //             child: const Text(
-                                          //               'Hủy',
-                                          //               style: TextStyle(color: Colors.red),
-                                          //             ),
-                                          //           ),
-                                          //           TextButton(
-                                          //             onPressed: () {},
-                                          //             child: const Text('Xác nhận'),
-                                          //           ),
-                                          //         ],
-                                          //       );
-                                          //     });
-                                        },
-                                        child: Text('ĐỒNG Ý',
-                                            style:
-                                                TextStyle(color: Colors.blue)),
-                                        height: 18)
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                                        thickness: 1.5,
+                                        height: 1,
+                                      ),
+                                      IntrinsicHeight(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('HỦY',
+                                                  style: TextStyle(
+                                                      color: Colors.red)),
+                                              height: 18,
+                                              // color: Colors.black,
+                                            ),
+                                            VerticalDivider(
+                                              width: 2,
+                                              thickness: 1.5,
+                                            ),
+                                            FlatButton(
+                                                onPressed: () {
+                                                  print('idlenh cu: ${widget.idLenhdientu}');
+                                                   print('idlenh moi: ${listdata.first.guidLenh}');
+                                                var resp = ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di', {
+                                                  'ToaDo':'',
+                                                  'idDonHangs':[],
+                                                  'idLenhCu':'${widget.idLenhdientu}',
+                                                  'idLenhMoi':'${listdata.first.guidLenh}'
+                                                });
+                                                },
+                                                child: Text('ĐỒNG Ý',
+                                                    style: TextStyle(
+                                                        color: Colors.blue)),
+                                                height: 18)
+                                          ],
+                                        ),
+                                      )
+                          ],),
                         );
                       });
                     });
@@ -511,34 +517,52 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
       children: [
         Row(
           children: [
-            Checkbox(value: vl.check, onChanged: (value) {
-                setstatecheck(() {
-                  print(value);
-                  vl.check = value;
-                });
-            }),
-            SizedBox(width: 10,),
+            Checkbox(
+                value: vl.check,
+                onChanged: (value) {
+                  setstatecheck(() {
+                    print(value);
+                    vl.check = value;
+                  });
+                }),
+            SizedBox(
+              width: 10,
+            ),
             Column(
               // mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Số điện thoại: ', style: TextStyle(color: Colors.black)),
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Text('Giá vé: ', style: TextStyle(color: Colors.black)),
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Text('Điểm xuống: ', style: TextStyle(color: Colors.black)),
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${vl.soDienThoai}',
-                    style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
-                    SizedBox(height: 5,),
-                Text('${vl.thanhTien}đ', style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold)),
-                SizedBox(height: 5,),
+                Text(
+                  '${vl.soDienThoai}',
+                  style: TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text('${vl.thanhTien}đ',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 5,
+                ),
                 Text('${vl.tenDiemXuong}',
-                    style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        color: Colors.orange, fontWeight: FontWeight.bold)),
               ],
             )
           ],
