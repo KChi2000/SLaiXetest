@@ -5,9 +5,11 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/DSDiemXuong.dart';
 
 import '../componentsFuture/bottomshetHK.dart';
+import '../model/DonGiaTheoTuyen.dart';
 import '../other/homeConstant.dart';
 
 class banve extends StatefulWidget {
@@ -23,27 +25,33 @@ class _banveState extends State<banve> {
   final formkey1 = GlobalKey<FormState>();
   final formTTHK = GlobalKey<FormState>();
   final abc = GlobalKey<FormState>();
-  final diemxuong = ['Bến xe Việt Trì'];
+String diemxuong;
   final lowPrice =
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
   bool cash = true;
   bool bank = false;
   bool checkbox = false;
   // bool xacnhan= false;
-  String ve = '1', sdt = null, giave = '0,00VNĐ';
-  final veController = TextEditingController(text: '1');
- 
+  String ve = '1', sdt, giave;
+  final sdtControlller = TextEditingController();
+  DonGiaTheoTuyen DonGia;
   var DSDiemXuongFuture;
+  List<DataDonGiaTheoTuyen> data = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    loadDonGia(widget.guidlotrinh);
     print(widget.guidlotrinh);
     loadDSDiemXuong();
   }
 
-  void loadDSDiemXuong() {
+  void loadDSDiemXuong() async {
     DSDiemXuongFuture = ApiHelper.getDSDiemXuong(widget.guidlotrinh);
+  }
+
+  void loadDonGia(String idLoTRinh) async {
+    DonGia = await ApiHelper.getDonGiaTheoTuyen(idLoTRinh);
   }
 
   @override
@@ -60,9 +68,10 @@ class _banveState extends State<banve> {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasData) {
+              data = DonGia.data;
               DSDiemXuong dsdiemxuong = snapshot.data;
-              List<DiemXuongData> listdiemxuong= dsdiemxuong.data;
-              String initDropValue= listdiemxuong[0].tenDiemXuong;
+              List<DiemXuongData> listdiemxuong = dsdiemxuong.data;
+              String initDropValue = listdiemxuong[0].tenDiemXuong;
               return Container(
                   padding: EdgeInsets.all(10),
                   child: Column(
@@ -71,6 +80,7 @@ class _banveState extends State<banve> {
                       Form(
                         key: formkey1,
                         child: TextFormField(
+                          controller: sdtControlller,
                           decoration: InputDecoration(
                               // hintText: 'nhập số điện thoại',
                               labelText: 'Số điện thoại',
@@ -92,27 +102,42 @@ class _banveState extends State<banve> {
                             return null;
                           },
                           onChanged: (vl1) {
-                            setState(() {
-                              sdt = vl1;
-                            });
+                            if(vl1.length< 10){
+                              setState(() {
+                                sdt = null;
+                                
+                              });
+                             
+                            }
+                            else{
+                                setState(() {
+                                  sdt = vl1;
+                                sdtControlller.text= vl1;
+                                });
+                                
+                            }
+                            xacnhan();
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                         ),
                       ),
                       DropdownButtonFormField(
-                        decoration: InputDecoration(labelText: 'Điểm xuống',hintText: 'Chọn điểm xuống'),
+                        decoration: InputDecoration(
+                            labelText: 'Điểm xuống',
+                            hintText: 'Chọn điểm xuống'),
                         items: listdiemxuong.map((DiemXuongData text) {
                           return new DropdownMenuItem(
                             child: Container(
-                                child:
-                                    Text(text.tenDiemXuong, style: TextStyle(fontSize: 15))),
+                                child: Text(text.tenDiemXuong,
+                                    style: TextStyle(fontSize: 15))),
                             value: text,
                           );
                         }).toList(),
                         // value: initDropValue,
-                        onChanged: (t1) {
+                        onChanged: (DiemXuongData t1) {
+                          xacnhan();
                           setState(() {
-                            // tinh = t1;
+                            diemxuong = t1.tenDiemXuong;
                           });
                         },
                         menuMaxHeight: 200,
@@ -141,10 +166,29 @@ class _banveState extends State<banve> {
                           onChanged: (vl2) {
                             setState(() {
                               giave = vl2;
+                              
                             });
+                            xacnhan();
                           },
                         ),
                       ),
+                      data.length != 0
+                          ? Wrap(children: [
+                              ...data.map((e) => InkWell(
+                                    onTap: () {
+                                      print(e.giaVe);
+                                      lowPrice.text = e.giaVe.toString();
+                                    },
+                                    child: Container(
+                                        margin:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        child: Chip(
+                                          label: Text(e.giaVe.toString()),
+                                          backgroundColor: Colors.grey[350],
+                                        )),
+                                  ))
+                            ])
+                          : Text(''),
                       Row(
                         children: [
                           Checkbox(
@@ -255,10 +299,22 @@ class _banveState extends State<banve> {
                       ),
                       ElevatedButton(
                         onPressed: xacnhan()
-                            ? () {
-                                // formkey.currentState.validate();
-                                // formkey1.currentState.validate();
-                                
+                            ? ()async {
+                                var resp = await ApiHelper.post('http://vedientu.nguyencongtuyen.local:19666/api/DonHang/thuc-hien-ban-ve-tai-app-lai-xe', {
+                                  'danhSachMaSoGhe':[],
+                                  'email':'',
+                                  'ghiChu':'',
+                                  'guidDoanhNghiep':'${LoginHelper.Default.userToken.GuidDoanhNghiep}',
+                                  'guidXe':'',
+                                  'hoTen':'',
+                                  'maChuyenDi':'',
+                                  'maDiemXuong':'',
+                                  'phatHanhVe':'',
+                                  'soDienThoai':'',
+                                  'tenDiemXuong':'',
+                                  'toaDo':'',
+                                  'tongTienThanhToan':''
+                                });
                               }
                             : null,
                         child: Text(
@@ -281,9 +337,9 @@ class _banveState extends State<banve> {
   }
 
   bool xacnhan() {
-    if (giave == '0,00VNĐ' || sdt == null || sdt.isEmpty) {
-      return false;
-    } else
+    if (lowPrice.text != '0,00VNĐ' && giave != '0,00VNĐ' && sdt != null && sdtControlller.text != null && diemxuong != null) {
       return true;
+    } else
+      return false;
   }
 }

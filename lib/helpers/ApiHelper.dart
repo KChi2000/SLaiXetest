@@ -16,6 +16,7 @@ import '../model/DSHanhKhachGhePhu.dart';
 import '../model/DSHanhKhachMuaVe.dart';
 import '../model/DSTrangThai.dart';
 import '../model/DSTuyenVanChuyenTheoNgay.dart';
+import '../model/DonGiaTheoTuyen.dart';
 import '../model/KhachTrenXe.dart';
 import '../model/LayChiTietNhatKyVanChuyen.dart';
 import '../model/LenhHienTai.dart';
@@ -303,6 +304,18 @@ class ApiHelper {
     });
   }
 
+ //get don gia theo tuyen
+  static Future<DonGiaTheoTuyen> getDonGiaTheoTuyen(String idlotrinh) async {
+    return await http.get(
+        Uri.parse(
+            'http://vedientu.nguyencongtuyen.local:19666/api/QuanLyThongTin/lay-don-gia-theo-tuyen?idLoTrinh=${idlotrinh}'),
+        headers: {
+          "authorization": "Bearer ${LoginHelper.Default.access_token}",
+        }).then((resp) {
+      if (resp.body.isNotEmpty) print('infoapi ve ${resp.body.toString()}');
+      return DonGiaTheoTuyen.fromJson(jsonDecode(resp.body));
+    });
+  }
   static Future<DSLenh> postDsLenh(String url, dynamic data) async {
     return await http
         .post(Uri.parse(url),

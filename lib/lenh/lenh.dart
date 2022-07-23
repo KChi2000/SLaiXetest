@@ -4,6 +4,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/lenh/dunglenhthanhcong.dart';
 import 'package:flutter_ui_kit/model/KhachTrenXe.dart';
 import 'package:image_picker/image_picker.dart';
 import '../lenh/chuyendoilenh.dart';
@@ -230,7 +231,7 @@ void convertDateTime() {
                               Row(children: [
                                 Text('Mã số lệnh: ',
                                     style: TextStyle(fontSize: 13)),
-                                Text('LCV-0000187/SPCT',
+                                Text('${chitietlenh.data.maLenh}',
                                     style: TextStyle(fontSize: 16)),
                               ]),
                               Form(
@@ -415,7 +416,7 @@ void convertDateTime() {
                                       'ToaDo':''
                                     });
                                     if(resp == 'Uploadd'){
-                                      Navigator.pop(context);
+                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>dunglenhthanhcong()));
                                     }else{
                                       print('dung hanh trinh failed');
                                     }

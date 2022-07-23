@@ -41,7 +41,7 @@ class VeState extends State<Ve> {
   double marginRowLeft = 15;
   bool flag = false;
   int choose = 0;
-  String value = '';
+  String value;
   bool seat = false;
   bool activefab = false;
   String title = '';
@@ -65,7 +65,7 @@ class VeState extends State<Ve> {
   var dshanhkhachghephuFuture;
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
- SLVe slve;
+  SLVe slve;
   String sdt = null;
   String ten;
   @override
@@ -73,11 +73,12 @@ class VeState extends State<Ve> {
     // TODO: implement initState
     super.initState();
     loadLichSuChuyenDi();
-    
   }
-void loadslve(String guidchuyendi) async{
-  slve = await ApiHelper.getSLVe(guidchuyendi);
-}
+
+  void loadslve(String guidchuyendi) async {
+    slve = await ApiHelper.getSLVe(guidchuyendi);
+  }
+
   void loadThongTinKhachNgoi(String maChuyendi, guidChongoi) {
     thongtinhanhkhachFuture =
         ApiHelper.getThongTinHanhKhachGhe(maChuyendi, guidChongoi);
@@ -105,11 +106,13 @@ void loadslve(String guidchuyendi) async{
   void LichSuChuyenDiNotify() {
     List<DataLichSuChuyenDi> lichsulist = lichsuChuyenDi.data;
     var temp = lichsulist.where((element) => element.maChuyenDi == value);
-    setState(() {
-      changeSodocho = temp.first.guidChuyenDi;
-      loadchongoi();
-      loadTrangThaiChoNgoi(changeSodocho);
-    });
+    if (temp.first.guidChuyenDi != null) {
+      setState(() {
+        changeSodocho = temp.first.guidChuyenDi;
+        loadchongoi();
+        loadTrangThaiChoNgoi(changeSodocho);
+      });
+    }
   }
 
   void loadchongoi() async {
@@ -189,13 +192,23 @@ void loadslve(String guidchuyendi) async{
                                               DateFormat('kk:mm').format(time);
                                           return GestureDetector(
                                             onTap: () {
+                                              // print(lichsulist[index].maChuyenDi);
+                                              // print(title);
+                                              // print(value);
+                                              // title = lichsulist[index]
+                                              //       .maChuyenDi;
+                                              // setState(() {
+                                              //   value = title;
+                                              // },);
+                                              print(title);
+                                              Navigator.pop(context);
+
                                               setState(() {
                                                 choose = index;
                                                 title = lichsulist[index]
                                                     .maChuyenDi;
-                                                print(title);
-                                                Navigator.pop(context);
                                               });
+                                              print('title  $title');
                                             },
                                             child: Container(
                                                 height: 45,
@@ -249,12 +262,24 @@ void loadslve(String guidchuyendi) async{
                           });
                     });
                   }).whenComplete(() {
+                    print(title);
+                    print(value);
+             if(title == null || title.isEmpty){
+                 setState(() {
+                   title = chuyendiGanday.data.maChuyenDi;
+                 
+                });
+             }
+
                 setState(() {
                   value = title;
                   sodochoFuture = null;
-                  print('value: ' + title);
+                  
                 });
-                LichSuChuyenDiNotify();
+LichSuChuyenDiNotify();
+                print('value: ' + value);
+
+               
               });
             },
             child: Row(
@@ -319,12 +344,13 @@ void loadslve(String guidchuyendi) async{
                               showModalBottomSheet(
                                   context: context,
                                   builder: (context) {
-                                     List<DataSLVe> listslve = slve.data;
+                                    List<DataSLVe> listslve = slve.data;
                                     List<TrangThaiData> listTrangThai =
                                         trangthaichongoi.data;
-                                        TrangThaiData item1 = listTrangThai[0];
-                                        listTrangThai.removeWhere((item)=> item.idTrangThai == 1);
-                                    
+                                    TrangThaiData item1 = listTrangThai[0];
+                                    listTrangThai.removeWhere(
+                                        (item) => item.idTrangThai == 1);
+
                                     // listTrangThai.removeAt(0);
                                     return Container(
                                       padding: EdgeInsets.all(20),
@@ -1503,12 +1529,10 @@ Container itemBottomSheet1(TrangThaiData data) {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10),
-            color: HexColor.fromHex(data.maMau),
-            border:  Border.all(color: Colors.black, width: 0.3)
-               
-          ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10),
+              color: HexColor.fromHex(data.maMau),
+              border: Border.all(color: Colors.black, width: 0.3)),
           child: Center(
               child: Text(
             data.soLuong.toString(),
