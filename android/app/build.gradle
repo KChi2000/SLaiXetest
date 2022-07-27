@@ -26,6 +26,9 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+  
+    
+
     compileSdkVersion 28
     
     sourceSets {
@@ -35,7 +38,15 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-
+    buildscript {
+        ext {
+            buildToolsVersion = "29.0.3"
+            minSdkVersion = 5
+            compileSdkVersion = 31
+            targetSdkVersion = 28
+            ndkVersion = "25.0.8775105"
+        }
+    }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.ocnyang.flutter_ui_kit"
