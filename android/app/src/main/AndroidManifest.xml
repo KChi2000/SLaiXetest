@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:name="${applicationName}"
-        android:label="flutter_ui_kit"
+        android:label="SLaiXe"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -7,7 +7,12 @@ import 'package:flutter_ui_kit/uikit.dart';
 import 'banvethanhcong.dart';
 import 'lenh/dunglenhthanhcong.dart';
 
-void main() => runApp(MyApp());
+import 'package:flutter_driver/driver_extension.dart';
+
+void main() {
+  // enableFlutterDriverExtension();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
