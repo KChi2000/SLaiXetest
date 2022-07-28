@@ -70,13 +70,13 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadInfo() async {
     datafuture = ApiHelper.get(
-        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-thong-tin-ca-nhan');
+        'http://113.176.29.57:19666/api/Driver/lay-thong-tin-ca-nhan');
     data = await datafuture;
     tinh = '';
     idTinh = data['data']['idTinh'];
     print('ttttt ${data['data']['idTinh']}');
     tinhfuture = ApiHelper.getProvince(
-        "http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tinh");
+        "http://113.176.29.57:19666/api/Driver/lay-danh-sach-tinh");
     dataTinh = await tinhfuture;
     province = dataTinh.data;
     if (idTinh != null) {
@@ -87,7 +87,7 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadHuyen(bool checksetState) async {
     huyenfuture = ApiHelper.getDistrict(
-        "http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
+        "http://113.176.29.57:19666/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
@@ -243,7 +243,8 @@ class TaikhoanState extends State<Taikhoan> {
                               //   setState(() {
                                  
                                   formattedDate = DateFormat('dd/MM/yyyy').format(datetemp);
-                                   var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                  print(formattedDate);
+                                   var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${formattedDate}',
                                                 'tenTruong':'ngaySinh'
                                               });
@@ -254,7 +255,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                 print('failed');
                                               }
                                   
-                              //     print(formattedDate);
+                                  
                               //   });
                               // });
                             }),
@@ -308,7 +309,7 @@ class TaikhoanState extends State<Taikhoan> {
                                           onPressed: () async{
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                              var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${phoneController.text}',
                                                 'tenTruong':'soDienThoai'
                                               });
@@ -369,7 +370,7 @@ class TaikhoanState extends State<Taikhoan> {
                                           onPressed: ()async {
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var res = await ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                              var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${emailController.text}',
                                                 'tenTruong':'email'
                                               });
@@ -552,7 +553,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               if (formkey.currentState
                                                   .validate()) {
                                                 var res = await ApiHelper.post(
-                                                    'http://lenh.nguyencongtuyen.local:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',
+                                                    'http://113.176.29.57:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',
                                                     Mappostdata);
 
                                                 loadInfo();

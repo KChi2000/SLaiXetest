@@ -78,14 +78,13 @@ class _MyWidgetState extends State<Login> {
                 SizedBox(
                   height: 75,
                 ),
-                Form(
-                  key: formkey,
-                  child: Column(
+                 Column(
                     children: [
                       SizedBox(
                         width: screenWidth * 0.8,
                         child: TextFormField(
                             initialValue: username,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.person),
                                 isDense: true,
@@ -109,6 +108,7 @@ class _MyWidgetState extends State<Login> {
                         width: screenWidth * 0.8,
                         child: TextFormField(
                           // controller: passController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           obscuringCharacter: '*',
                           obscureText: showPass,
                           initialValue: password,
@@ -147,13 +147,13 @@ class _MyWidgetState extends State<Login> {
                       ),
                     ],
                   ),
-                ),
+            
                 SizedBox(
                   height: 65,
                 ),
                 FlatButton(
                   onPressed: () async {
-                    if (formkey.currentState.validate()) {
+                   
                       try {
                         await LoginHelper.Default.login(username, password);
                         String token = LoginHelper.Default.access_token;
@@ -182,8 +182,8 @@ class _MyWidgetState extends State<Login> {
                                   ],
                                 ));
                       }
-                    }
-                  },
+                    },
+                  
                   child: Text(
                     'ĐĂNG NHẬP',
                     style: TextStyle(color: Colors.white),

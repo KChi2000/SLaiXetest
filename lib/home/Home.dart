@@ -33,13 +33,13 @@ class HomeState extends State<Home> {
 
   void loadLenhHienTai() async {
     lenhHienTaiFuture = ApiHelper.getLenhHienTai(
-        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-lenh-hien-tai-cua-lai-xe');
+        'http://113.176.29.57:19666/api/Driver/lay-lenh-hien-tai-cua-lai-xe');
     lenhhientai = await lenhHienTaiFuture;
 
     convertDateTime();
     if (lenhhientai != null) {
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-          'http://vedientu.nguyencongtuyen.local:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
+          'http://113.176.29.57:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
     }
     setState(() {});
   }

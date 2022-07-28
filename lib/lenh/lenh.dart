@@ -39,13 +39,13 @@ class LenhState extends State<Lenh> {
 
   void loadChiTietLenh() async {
     chitietlenhFuture = ApiHelper.getChiTietLenh(
-        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-chi-tiet-lenh-dang-thuc-hien');
+        'http://113.176.29.57:19666/api/Driver/lay-chi-tiet-lenh-dang-thuc-hien');
     chitietlenh = await chitietlenhFuture;
     convertDateTime();
     print('object ${chitietlenh.data.guidLenh}');
    if(chitietlenh != null){
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-        'http://vedientu.nguyencongtuyen.local:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
+        'http://113.176.29.57:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
     
    }
    setState(() {
@@ -205,231 +205,235 @@ void convertDateTime() {
                 // backgroundColor: Colors.red,
                 onTap: () {
                   showModalBottomSheet(
+                    isScrollControlled: true,
                       context: context,
                       builder: (context) {
-                        return Container(
-                          padding: EdgeInsets.all(15),
-                          height: 350,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text('Hủy',
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 15)),
-                                ),
-                              ),
-                              Text('Dừng hành trình',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18)),
-                              Row(children: [
-                                Text('Mã số lệnh: ',
-                                    style: TextStyle(fontSize: 13)),
-                                Text('${chitietlenh.data.maLenh}',
-                                    style: TextStyle(fontSize: 16)),
-                              ]),
-                              Form(
-                                key: formkey,
-                                child: TextFormField(
-                                  controller: lidoController,
-                                  decoration: InputDecoration(
-                                      labelText: 'Dừng vì lí do()*'),
-                                  validator: (vl) {
-                                    if (vl == null || vl.isEmpty) {
-                                      return 'Chưa nhập lí do';
-                                    } else
-                                      return null;
+                        return Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            height: 350,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
                                   },
-                                ),
-                              ),
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child: RichText(
-                                      text: TextSpan(children: [
-                                    TextSpan(
-                                        text: 'Hình ảnh cho sự cố ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 15)),
-                                    TextSpan(
-                                        text: '0/6',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 15)),
-                                  ]))),
-                              Row(
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Container(
-                                          height: 60,
-                                          width: 50,
-                                          child: Image.asset(
-                                            'asset/images/6.jpg',
-                                            width: 60,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 45,
-                                        left: 35,
-                                        child: IconButton(
-                                          icon: SvgPicture.asset(
-                                            'asset/icons/cancel.svg',
-                                            width: 20,
-                                            height: 20,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Container(
-                                          height: 60,
-                                          width: 50,
-                                          child: Image.asset(
-                                            'asset/images/6.jpg',
-                                            width: 50,
-                                            height: 45,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 45,
-                                        left: 35,
-                                        child: IconButton(
-                                          icon: SvgPicture.asset(
-                                            'asset/icons/cancel.svg',
-                                            width: 20,
-                                            height: 20,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Align(
+                                  child: Align(
                                     alignment: Alignment.topLeft,
-                                    child: DottedBorder(
-                                      child: GestureDetector(
-                                        child: Container(
-                                          height: 55,
-                                          width: 50,
-                                          child: Center(
-                                              child: SvgPicture.asset(
-                                            'asset/icons/camera-plus.svg',
-                                            color: Colors.black54,
-                                          )),
-                                        ),
-                                        onTap: () {
-                                          return showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: Container(
-                                                    width: 60,
-                                                    child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          GestureDetector(
-                                                            child: Text(
-                                                                'Chụp ảnh mới'),
-                                                            onTap: () async {
-                                                              print(
-                                                                  'chọn chụp ảnh');
-                                                              Navigator.pop(
-                                                                  context);
-                                                              await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .camera);
-                                                            },
-                                                          ),
-                                                          SizedBox(
-                                                            height: 20,
-                                                          ),
-                                                          GestureDetector(
-                                                            child: Text(
-                                                                'Chọn ảnh'),
-                                                            onTap: () async {
-                                                              print('chọn ảnh');
-                                                              Navigator.pop(
-                                                                  context);
-                                                              imageitem = await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .gallery);
-                                                              if (imageitem ==
-                                                                  null) {
-                                                                return;
-                                                              }
-                                                              // image.add(imageitem);
-                                                              setState(() {
-                                                                // count = image.length;
-                                                              });
-                                                            },
-                                                          ),
-                                                        ]),
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      color: Colors.black54,
-                                      strokeWidth: 1,
-                                      radius: Radius.circular(10),
-                                    ),
+                                    child: Text('Hủy',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 15)),
                                   ),
-                                ],
-                              ),
-                              RaisedButton(
-                                onPressed: () {
-                                  if(formkey.currentState.validate()){
-                                    var resp = ApiHelper.postMultipart('http://lenh.nguyencongtuyen.local:19666/api/Driver/lai-xe-dung-hanh-trinh', {
-                                      'guidLenh':'${chitietlenh.data.guidLenh}',
-                                      'lyDo':'${lidoController.text}',
-                                      'ToaDo':''
-                                    });
-                                    if(resp == 'Uploadd'){
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>dunglenhthanhcong()));
-                                    }else{
-                                      print('dung hanh trinh failed');
-                                    }
-                                  }
-                                  
-                                },
-                                child: Text('XÁC NHẬN',
+                                ),
+                                Text('Dừng hành trình',
                                     style: TextStyle(
-                                      color: Colors.white,
-                                    )),
-                                color: Colors.blue,
-                              )
-                            ],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18)),
+                                Row(children: [
+                                  Text('Mã số lệnh: ',
+                                      style: TextStyle(fontSize: 13)),
+                                  Text('${chitietlenh.data.maLenh}',
+                                      style: TextStyle(fontSize: 16)),
+                                ]),
+                                Form(
+                                  key: formkey,
+                                  child: TextFormField(
+                                    controller: lidoController,
+                                    decoration: InputDecoration(
+                                        labelText: 'Dừng vì lí do()*'),
+                                    validator: (vl) {
+                                      if (vl == null || vl.isEmpty) {
+                                        return 'Chưa nhập lí do';
+                                      } else
+                                        return null;
+                                    },
+                                  ),
+                                ),
+                                Align(
+                                    alignment: Alignment.topLeft,
+                                    child: RichText(
+                                        text: TextSpan(children: [
+                                      TextSpan(
+                                          text: 'Hình ảnh cho sự cố ',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 15)),
+                                      TextSpan(
+                                          text: '0/6',
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 15)),
+                                    ]))),
+                                Row(
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Container(
+                                            height: 60,
+                                            width: 50,
+                                            child: Image.asset(
+                                              'asset/images/6.jpg',
+                                              width: 60,
+                                              height: 50,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 45,
+                                          left: 35,
+                                          child: IconButton(
+                                            icon: SvgPicture.asset(
+                                              'asset/icons/cancel.svg',
+                                              width: 20,
+                                              height: 20,
+                                            ),
+                                            onPressed: () {},
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Container(
+                                            height: 60,
+                                            width: 50,
+                                            child: Image.asset(
+                                              'asset/images/6.jpg',
+                                              width: 50,
+                                              height: 45,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 45,
+                                          left: 35,
+                                          child: IconButton(
+                                            icon: SvgPicture.asset(
+                                              'asset/icons/cancel.svg',
+                                              width: 20,
+                                              height: 20,
+                                            ),
+                                            onPressed: () {},
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: DottedBorder(
+                                        child: GestureDetector(
+                                          child: Container(
+                                            height: 55,
+                                            width: 50,
+                                            child: Center(
+                                                child: SvgPicture.asset(
+                                              'asset/icons/camera-plus.svg',
+                                              color: Colors.black54,
+                                            )),
+                                          ),
+                                          onTap: () {
+                                            return showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    content: Container(
+                                                      width: 60,
+                                                      child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            GestureDetector(
+                                                              child: Text(
+                                                                  'Chụp ảnh mới'),
+                                                              onTap: () async {
+                                                                print(
+                                                                    'chọn chụp ảnh');
+                                                                Navigator.pop(
+                                                                    context);
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source: ImageSource
+                                                                            .camera);
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              height: 20,
+                                                            ),
+                                                            GestureDetector(
+                                                              child: Text(
+                                                                  'Chọn ảnh'),
+                                                              onTap: () async {
+                                                                print('chọn ảnh');
+                                                                Navigator.pop(
+                                                                    context);
+                                                                imageitem = await ImagePicker()
+                                                                    .pickImage(
+                                                                        source: ImageSource
+                                                                            .gallery);
+                                                                if (imageitem ==
+                                                                    null) {
+                                                                  return;
+                                                                }
+                                                                // image.add(imageitem);
+                                                                setState(() {
+                                                                  // count = image.length;
+                                                                });
+                                                              },
+                                                            ),
+                                                          ]),
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                        ),
+                                        color: Colors.black54,
+                                        strokeWidth: 1,
+                                        radius: Radius.circular(10),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                RaisedButton(
+                                  onPressed: () {
+                                    if(formkey.currentState.validate()){
+                                      var resp = ApiHelper.postMultipart('http://113.176.29.57:19666/api/Driver/lai-xe-dung-hanh-trinh', {
+                                        'guidLenh':'${chitietlenh.data.guidLenh}',
+                                        'lyDo':'${lidoController.text}',
+                                        'ToaDo':''
+                                      });
+                                      if(resp == 'Uploadd'){
+                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>dunglenhthanhcong()));
+                                      }else{
+                                        print('dung hanh trinh failed');
+                                      }
+                                    }
+                                    
+                                  },
+                                  child: Text('XÁC NHẬN',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      )),
+                                  color: Colors.blue,
+                                )
+                              ],
+                            ),
                           ),
                         );
                       });

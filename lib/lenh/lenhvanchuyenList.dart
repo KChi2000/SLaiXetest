@@ -91,7 +91,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-tat-ca-lenh-cua-lai-xe',
+        'http://113.176.29.57:19666/api/Driver/lay-danh-sach-tat-ca-lenh-cua-lai-xe',
         postdata);
     maplenh = await DSLenhFuture;
     setState(() {});
@@ -508,7 +508,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               Text(
                 '${listdata[index].tenTrangThai}',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.orange),
+                    fontWeight: FontWeight.bold, color: listdata[index].idTrangThai == 6? Colors.red:Colors.orange),
               )
             ],
           ),
@@ -671,86 +671,97 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 FlatButton(
                   onPressed: () {
                     showModalBottomSheet(
+                      isScrollControlled:true,
                         context: context,
                         builder: (context) {
                           return StatefulBuilder(builder: (context, setState) {
-                            return Container(
-                              padding: EdgeInsets.all(15),
-                              height: 250,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(
-                                            left: widthScreen * 0.32),
-                                        child: Text('Từ chối lệnh',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18)),
-                                      ),
-                                      Expanded(
-                                        child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('Hủy',
-                                                style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 15)),
+                            return Padding(
+                              padding: MediaQuery.of(context).viewInsets,
+                              child: Container(
+                                padding: EdgeInsets.all(15),
+                                height: 250,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              left: widthScreen * 0.32),
+                                          child: Text('Từ chối lệnh',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18)),
+                                        ),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Hủy',
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 15)),
+                                            ),
                                           ),
                                         ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(children: [
+                                      Text('Mã số lệnh: ',
+                                          style: TextStyle(fontSize: 13)),
+                                      Text('${listdata[index].maLenh}',
+                                          style: TextStyle(fontSize: 16)),
+                                    ]),
+                                    Form(
+                                      key: formKey,
+                                      child: TextFormField(
+                                        controller: lidoController,
+                                        decoration: InputDecoration(
+                                            labelText: 'Lí do(*)'),
+                                        validator: (vl) {
+                                          if (vl == null || vl.isEmpty) {
+                                            return 'Lí do không được để trống';
+                                          }
+                                          return null;
+                                        },
                                       ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  Row(children: [
-                                    Text('Mã số lệnh: ',
-                                        style: TextStyle(fontSize: 13)),
-                                    Text('LCV-0000187/SPCT',
-                                        style: TextStyle(fontSize: 16)),
-                                  ]),
-                                  Form(
-                                    key: formKey,
-                                    child: TextFormField(
-                                      controller: lidoController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Lí do(*)'),
-                                      validator: (vl) {
-                                        if (vl == null || vl.isEmpty) {
-                                          return 'Lí do không được để trống';
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    RaisedButton(
+                                      onPressed: () {
+                                        if(formKey.currentState.validate()){
+                                          ApiHelper.post('http://l113.176.29.57:19666/api/Driver/lai-xe-huy-nhan-lenh', {
+                                            'guidLenh':'${listdata[index].guidLenh}',
+                                            'lyDo':'${lidoController.text}',
+                                            'toaDo':''
+                                          });
                                         }
-                                        return null;
                                       },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  RaisedButton(
-                                    onPressed: () {
-                                      formKey.currentState.validate();
-                                    },
-                                    child: Text(
-                                      'XÁC NHẬN',
-                                      style: TextStyle(
-                                        color: Colors.white,
+                                      child: Text(
+                                        'XÁC NHẬN',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    color: Colors.blue,
-                                  )
-                                ],
+                                      color: Colors.blue,
+                                    )
+                                  ],
+                                ),
                               ),
                             );
                           });
@@ -771,7 +782,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                           builder: (context) {
                             return AlertDialog(
                               title: Text(
-                                  'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maTuyen} không?'),
+                                  'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maLenh} không?'),
                               actions: [
                                 TextButton(
                                   onPressed: () =>
@@ -782,7 +793,32 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () async{
+                                    // print(listdata[index].guidLenh);
+                                    Navigator.pop(context);
+                                    var resp = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/lai-xe-tiep-nhan-lenh', {
+                                      'guidLenh':'${listdata[index].guidLenh}',
+                                      'toaDo':''
+                                    });
+                                    if(resp['status']){}
+                                    else{
+                                      showDialog(context: context, builder: (context){
+                                        return AlertDialog(
+                                          title: Text('Lái xe đang thực hiện lệnh khác'),
+                                          actions: [
+                                             TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Đã hiểu'),
+                                  child: const Text(
+                                    'Đã hiểu',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                                          ],
+                                        );
+                                      });
+                                    }
+                                  },
                                   child: const Text('Xác nhận'),
                                 ),
                               ],

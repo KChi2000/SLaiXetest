@@ -34,8 +34,11 @@ class _UIKitPageState extends State<UIKitPage> {
     if(widget.index== 2){
       _selectedIndex = 2;
     }
-    if(widget.index==3){
+   else if(widget.index==3){
       _selectedIndex = 3;
+    }
+   else if(widget.index==1){
+      _selectedIndex = 1;
     }
   }
 
@@ -43,10 +46,7 @@ class _UIKitPageState extends State<UIKitPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-//      appBar: AppBar(
-//        title: Text('AAAA'),
-//        centerTitle: true,
-//      ),
+
       body: _tabPages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: [

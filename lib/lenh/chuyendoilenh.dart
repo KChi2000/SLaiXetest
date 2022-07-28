@@ -58,7 +58,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        'http://lenh.nguyencongtuyen.local:19666/api/Driver/lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
+        'http://113.176.29.57:19666/api/Driver/lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
         postdata);
 
     // }
@@ -481,7 +481,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                                 onPressed: () {
                                                   print('idlenh cu: ${widget.idLenhdientu}');
                                                    print('idlenh moi: ${listdata.first.guidLenh}');
-                                                var resp = ApiHelper.post('http://lenh.nguyencongtuyen.local:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di', {
+                                                var resp = ApiHelper.post('http://113.176.29.57:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di', {
                                                   'ToaDo':'',
                                                   'idDonHangs':[],
                                                   'idLenhCu':'${widget.idLenhdientu}',

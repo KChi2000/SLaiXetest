@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_kit/Login.dart';
 import 'package:flutter_ui_kit/componentsFuture/thanhtoanbanve.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_driver/driver_extension.dart';
 void main() {
   // enableFlutterDriverExtension();
   runApp(MyApp());
+  HttpOverrides.global = MyHttpOverrides();
 }
 
 class MyApp extends StatelessWidget {
@@ -32,3 +35,10 @@ class MyApp extends StatelessWidget {
 }
 
 
+ class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}

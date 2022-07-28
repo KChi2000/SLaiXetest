@@ -41,15 +41,15 @@ class VeState extends State<Ve> {
   double marginRowLeft = 15;
   bool flag = false;
   int choose = 0;
-  String value;
+  String value = '';
   bool seat = false;
   bool activefab = false;
-  String title = '';
+  String title;
   String hasTangdata = 'loading';
   List<tangData> tangList = [];
   int pos;
   var TrangThaiChoNgoiFuture;
-
+  String checkHaschuyendiganday = 'has data';
   var chuyendigandayFuture;
   chuyendiganday chuyendiGanday;
   var LichSuChuyenDiFuture;
@@ -87,12 +87,12 @@ class VeState extends State<Ve> {
   void loadLichSuChuyenDi() async {
     chuyendigandayFuture = ApiHelper.getchuyendiganday();
     chuyendiGanday = await chuyendigandayFuture;
-    if (chuyendiGanday != null) {
+    if (chuyendiGanday.status) {
       value = chuyendiGanday.data.maChuyenDi;
       changeSodocho = chuyendiGanday.data.guidChuyenDi;
       print('changesodocho $changeSodocho');
       LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
-          'http://vedientu.nguyencongtuyen.local:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+          'http://113.176.29.57:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
       lichsuChuyenDi = await LichSuChuyenDiFuture;
       loadTrangThaiChoNgoi(changeSodocho);
       loadchongoi();
@@ -100,6 +100,11 @@ class VeState extends State<Ve> {
       if (this.mounted) {
         setState(() {});
       }
+    } else {
+      setState(() {
+        checkHaschuyendiganday = 'no data';
+        hasTangdata = 'no data';
+      });
     }
   }
 
@@ -153,133 +158,137 @@ class VeState extends State<Ve> {
                   context: context,
                   builder: (context) {
                     return StatefulBuilder(builder: (context, setState) {
-                      return FutureBuilder(
-                          future: LichSuChuyenDiFuture,
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasData) {
-                              LichSuChuyenDi data = snapshot.data;
-                              List<DataLichSuChuyenDi> lichsulist = data.data;
+                      return checkHaschuyendiganday != 'no data'
+                          ? FutureBuilder(
+                              future: LichSuChuyenDiFuture,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasData) {
+                                  LichSuChuyenDi data = snapshot.data;
+                                  List<DataLichSuChuyenDi> lichsulist =
+                                      data.data;
 
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: paddingVertical,
-                                    horizontal: paddingHori),
-                                height: bottomSheetHeight,
-                                child: Column(
-                                  children: [
-                                    Text(titleBottomSheet,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: fontStyle,
-                                            fontSize: fontSize)),
-                                    SizedBox(
-                                      height: spaceBetween,
-                                    ),
-                                    Expanded(
-                                      child: ListView.builder(
-                                        itemBuilder: (context, index) {
-                                          var time;
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: paddingVertical,
+                                        horizontal: paddingHori),
+                                    height: bottomSheetHeight,
+                                    child: Column(
+                                      children: [
+                                        Text(titleBottomSheet,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: fontStyle,
+                                                fontSize: fontSize)),
+                                        SizedBox(
+                                          height: spaceBetween,
+                                        ),
+                                        Expanded(
+                                          child: ListView.builder(
+                                            itemBuilder: (context, index) {
+                                              var time;
 
-                                          time = DateTime.parse(
-                                                  lichsulist[index].gioXuatBen)
-                                              .toLocal();
+                                              time = DateTime.parse(
+                                                      lichsulist[index]
+                                                          .gioXuatBen)
+                                                  .toLocal();
 
-                                          String timeHieuLuc =
-                                              DateFormat('kk:mm').format(time);
-                                          return GestureDetector(
-                                            onTap: () {
-                                              // print(lichsulist[index].maChuyenDi);
-                                              // print(title);
-                                              // print(value);
-                                              // title = lichsulist[index]
-                                              //       .maChuyenDi;
-                                              // setState(() {
-                                              //   value = title;
-                                              // },);
-                                              print(title);
-                                              Navigator.pop(context);
+                                              String timeHieuLuc =
+                                                  DateFormat('kk:mm')
+                                                      .format(time);
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  // print(lichsulist[index].maChuyenDi);
+                                                  // print(title);
+                                                  // print(value);
+                                                  // title = lichsulist[index]
+                                                  //       .maChuyenDi;
+                                                  // setState(() {
+                                                  //   value = title;
+                                                  // },);
+                                                  print(title);
+                                                  Navigator.pop(context);
 
-                                              setState(() {
-                                                choose = index;
-                                                title = lichsulist[index]
-                                                    .maChuyenDi;
-                                              });
-                                              print('title  $title');
-                                            },
-                                            child: Container(
-                                                height: 45,
-                                                child: Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      iconBottomSheet,
-                                                      color: choose == index
-                                                          ? selectedColor
-                                                          : unselectedColor,
-                                                      width:
-                                                          iconSizeBottomSheet,
-                                                      height:
-                                                          iconSizeBottomSheet,
-                                                    ),
-                                                    Text(
-                                                      ' ${lichsulist[index].maChuyenDi}',
-                                                      style: TextStyle(
+                                                  setState(() {
+                                                    choose = index;
+                                                    title = lichsulist[index]
+                                                        .maChuyenDi;
+                                                  });
+                                                  print('title  $title');
+                                                },
+                                                child: Container(
+                                                    height: 45,
+                                                    child: Row(
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          iconBottomSheet,
                                                           color: choose == index
                                                               ? selectedColor
-                                                              : unselectedColor),
-                                                    ),
-                                                    Text(' | ',
-                                                        style: TextStyle(
-                                                            color: choose ==
-                                                                    index
-                                                                ? selectedColor
-                                                                : unselectedColor)),
-                                                    Text('$timeHieuLuc',
-                                                        style: TextStyle(
-                                                            color: choose ==
-                                                                    index
-                                                                ? selectedColor
-                                                                : unselectedColor))
-                                                  ],
-                                                )),
-                                          );
-                                        },
-                                        itemCount: lichsulist.length,
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }
-                            return Center(
-                              child: Text('Lỗi'),
+                                                              : unselectedColor,
+                                                          width:
+                                                              iconSizeBottomSheet,
+                                                          height:
+                                                              iconSizeBottomSheet,
+                                                        ),
+                                                        Text(
+                                                          ' ${lichsulist[index].maChuyenDi}',
+                                                          style: TextStyle(
+                                                              color: choose ==
+                                                                      index
+                                                                  ? selectedColor
+                                                                  : unselectedColor),
+                                                        ),
+                                                        Text(' | ',
+                                                            style: TextStyle(
+                                                                color: choose ==
+                                                                        index
+                                                                    ? selectedColor
+                                                                    : unselectedColor)),
+                                                        Text('$timeHieuLuc',
+                                                            style: TextStyle(
+                                                                color: choose ==
+                                                                        index
+                                                                    ? selectedColor
+                                                                    : unselectedColor))
+                                                      ],
+                                                    )),
+                                              );
+                                            },
+                                            itemCount: lichsulist.length,
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return Center(
+                                  child: Text('Lỗi'),
+                                );
+                              })
+                          : Center(
+                              child: Text('Không tìm thấy chuyến đi'),
                             );
-                          });
                     });
                   }).whenComplete(() {
-                    print(title);
-                    print(value);
-             if(title == null || title.isEmpty){
-                 setState(() {
-                   title = chuyendiGanday.data.maChuyenDi;
-                 
-                });
-             }
+                // print(title);
+                // print(value);
+                if (title == null || title.isEmpty) {
+                  setState(() {
+                    title = chuyendiGanday.data.maChuyenDi;
+                  });
+                }
 
                 setState(() {
                   value = title;
                   sodochoFuture = null;
-                  
                 });
-LichSuChuyenDiNotify();
+                LichSuChuyenDiNotify();
                 print('value: ' + value);
-
-               
               });
             },
             child: Row(
@@ -384,418 +393,447 @@ LichSuChuyenDiNotify();
             color: Colors.grey,
           ),
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              // Text('Sơ đồ chỗ xe khách',
-              //     style: TextStyle(
-              //         fontWeight: FontWeight.bold,
-              //         color: Colors.black,
-              //         fontSize: 18)),
-              Expanded(
-                  child: FutureBuilder<sodocho>(
-                future: sodochoFuture,
-                builder: (context, snapshot) {
-                  if (hasTangdata == 'loading') {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (hasTangdata == 'Thành công') {
-                    if (snapshot.hasData) {
-                      sodocho datatemp = snapshot.data;
+        body: checkHaschuyendiganday != 'no data'
+            ? Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    // Text('Sơ đồ chỗ xe khách',
+                    //     style: TextStyle(
+                    //         fontWeight: FontWeight.bold,
+                    //         color: Colors.black,
+                    //         fontSize: 18)),
+                    Expanded(
+                        child: FutureBuilder<sodocho>(
+                      future: sodochoFuture,
+                      builder: (context, snapshot) {
+                        if (hasTangdata == 'loading') {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (hasTangdata == 'Thành công') {
+                          if (snapshot.hasData) {
+                            sodocho datatemp = snapshot.data;
 
-                      if (datatemp.status) {
-                        List<sodochoData> sodoList = datatemp.data;
+                            if (datatemp.status) {
+                              List<sodochoData> sodoList = datatemp.data;
 
-                        print(sodoList.length);
-                        return Column(
-                          children: [
-                            Row(
-                              children: [Text('aaa')],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              // crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      height: 50,
-                                      width: 6,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(8),
-                                              bottomLeft: Radius.circular(8))),
-                                    ),
-                                    SizedBox(
-                                      height: 230,
-                                    ),
-                                    Container(
-                                      height: 50,
-                                      width: 6,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(8),
-                                              bottomLeft: Radius.circular(8))),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  width: widthScreen - 35,
-                                  height: heightScreen * 0.65,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey[400], width: 3.5),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Column(
+                              print(sodoList.length);
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [Text('aaa')],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      SizedBox(
-                                        height: 2,
+                                      Column(
+                                        children: [
+                                          Container(
+                                            height: 50,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(8),
+                                                    bottomLeft:
+                                                        Radius.circular(8))),
+                                          ),
+                                          SizedBox(
+                                            height: 230,
+                                          ),
+                                          Container(
+                                            height: 50,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(8),
+                                                    bottomLeft:
+                                                        Radius.circular(8))),
+                                          ),
+                                        ],
                                       ),
                                       Container(
-                                        width: widthScreen - 35 - 20,
-                                        height: 20,
+                                        width: widthScreen - 35,
+                                        height: heightScreen * 0.75,
                                         decoration: BoxDecoration(
-                                            color: Colors.grey[350],
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30))),
-                                        child: Row(
+                                            border: Border.all(
+                                                color: Colors.grey[400],
+                                                width: 3.5),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Column(
                                           children: [
                                             SizedBox(
-                                              width: 5,
+                                              height: 2,
                                             ),
                                             Container(
-                                              height: 15,
-                                              width: 15,
+                                              width: widthScreen - 35 - 20,
+                                              height: 20,
                                               decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  color: Colors.grey[350],
                                                   borderRadius:
                                                       BorderRadius.all(
-                                                          Radius.circular(20))),
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Container(
-                                                height: 15,
-                                                width: 20,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(10),
-                                                            topRight:
+                                                          Radius.circular(30))),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Container(
+                                                    height: 15,
+                                                    width: 15,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
                                                                 Radius.circular(
-                                                                    10)))),
+                                                                    20))),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Container(
+                                                      height: 15,
+                                                      width: 20,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10)))),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Container(
+                                                    height: 15,
+                                                    width: 15,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20))),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Container(
+                                                      height: 13,
+                                                      width: 20,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
                                             SizedBox(
-                                              width: 5,
+                                              height: 10,
                                             ),
+
                                             Container(
-                                              height: 15,
-                                              width: 15,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20))),
-                                            ),
-                                            SizedBox(
-                                              width: 20,
-                                            ),
-                                            Container(
-                                                height: 13,
-                                                width: 20,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                )),
+                                                width:
+                                                    widthScreen - 35 -10,
+                                                height:
+                                                    heightScreen * 0.65,
+                                                color: Colors.white,
+                                                child: GridView(
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  gridDelegate:
+                                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 5),
+                                                  children: abc(sodoList),
+                                                ))
                                           ],
                                         ),
                                       ),
-                                      // SizedBox(
-                                      //   height: 10,
-                                      // ),
-
-                                      Container(
-                                          width: widthScreen - 35 - 20 - 20,
-                                          height: heightScreen * 0.65 - 50,
-                                          color: Colors.white,
-                                          child: GridView(
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 5),
-                                            children: abc(sodoList),
-                                          ))
+                                      Column(
+                                        children: [
+                                          Container(
+                                            height: 50,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(8),
+                                                    bottomRight:
+                                                        Radius.circular(8))),
+                                          ),
+                                          SizedBox(
+                                            height: 230,
+                                          ),
+                                          Container(
+                                            height: 50,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(8),
+                                                    bottomRight:
+                                                        Radius.circular(8))),
+                                          ),
+                                        ],
+                                      ),
                                     ],
-                                  ),
-                                ),
-                                Column(
+                                  )
+                                ],
+                              );
+                            }
+                          }
+                        }
+                        return Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
+                                Text(
+                                    'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
+                              ]),
+                        );
+                      },
+                    ))
+                  ],
+                ),
+              )
+            : Center(
+                child: Text('Không tìm thấy chuyến đi'),
+              ),
+        floatingActionButton: checkHaschuyendiganday != 'no data'
+            ? SpeedDial(
+                overlayColor: Colors.grey,
+                backgroundColor: activeColor,
+                activeBackgroundColor: inactiveColor,
+                activeIcon: activeIcon,
+                animationAngle: 3.14 / 2,
+                buttonSize: activefab
+                    ? Size(activeButtonSize, activeButtonSize)
+                    : Size(inactiveButtonSize, inactiveButtonSize),
+                icon: inactiveIcon,
+                onOpen: () {
+                  setState(() {
+                    activefab = true;
+                  });
+                },
+                onClose: () {
+                  setState(() {
+                    activefab = false;
+                  });
+                },
+                children: [
+                  SpeedDialChild(
+                      backgroundColor: chuyendoilenhButtonColor,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => banveghephu(
+                                    chuyendiGanday.data.guidLoTrinh)));
+                      },
+                      label: 'Bán vé ghế phụ',
+                      child: SvgPicture.asset(
+                        'asset/icons/ticket.svg',
+                        width: 20,
+                        height: 20,
+                      )),
+                  SpeedDialChild(
+                      // backgroundColor: Colors.red,
+                      onTap: () {
+                        loadDSGhePhu();
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 15),
+                                height: 300,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
-                                    Container(
-                                      height: 50,
-                                      width: 6,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(8),
-                                              bottomRight: Radius.circular(8))),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text('Hủy',
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 15)),
+                                      ),
                                     ),
+                                    Text('Khách mua vé ghế phụ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18)),
+                                    FutureBuilder(
+                                        future: dshanhkhachghephuFuture,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text('Lỗi'),
+                                            );
+                                          } else if (snapshot.hasData) {
+                                            DSHanhKhachGhePhu
+                                                dshanhkhachghephu =
+                                                snapshot.data;
+                                            List<DataDSHanhKhachGhePhu> listds =
+                                                dshanhkhachghephu.data;
+                                            if (listds.length == 0) {
+                                              return Center(
+                                                child: Text('Không có dữ liệu'),
+                                              );
+                                            }
+                                            return Expanded(
+                                              child: ListView.builder(
+                                                  itemCount: listds.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Row(
+                                                      children: [
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 15,
+                                                            ),
+                                                            Row(children: [
+                                                              Text(
+                                                                  'Số điện thoại: ',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13)),
+                                                              Text(
+                                                                  '${listds[index].soDienThoai}',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ]),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(children: [
+                                                              Text('Giá vé: ',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13)),
+                                                              Text(
+                                                                  '${listds[index].giaVe}đ',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .red,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ]),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(children: [
+                                                              Text(
+                                                                  'Điểm xuống: ',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13)),
+                                                              Text(
+                                                                  '${listds[index].diemXuong}',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ]),
+                                                            Divider(
+                                                              color:
+                                                                  Colors.black,
+                                                              height: 1,
+                                                              thickness: 0.5,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 40,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.print,
+                                                              color: Colors
+                                                                  .black54,
+                                                            ),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            SvgPicture.asset(
+                                                                'asset/icons/arrowdown.svg',
+                                                                width: 20,
+                                                                height: 20,
+                                                                color: Colors
+                                                                    .black54)
+                                                          ],
+                                                        )
+                                                      ],
+                                                    );
+                                                  }),
+                                            );
+                                          }
+                                          return Expanded(
+                                            child: Center(
+                                              child: Text('Không có dữ liệu'),
+                                            ),
+                                          );
+                                        }),
                                     SizedBox(
-                                      height: 230,
-                                    ),
-                                    Container(
-                                      height: 50,
-                                      width: 6,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(8),
-                                              bottomRight: Radius.circular(8))),
+                                      height: 40,
                                     ),
                                   ],
                                 ),
-                              ],
-                            )
-                          ],
-                        );
-                      }
-                      //   return Center(
-                      //   child: Column(children: [
-                      //     Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
-                      //     Text(
-                      //         'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
-                      //   ]),
-                      // );
-                    }
-                  }
-                  return Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
-                          Text(
-                              'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
-                        ]),
-                  );
-                },
-              ))
-            ],
-          ),
-        ),
-        floatingActionButton: SpeedDial(
-          overlayColor: Colors.grey,
-          backgroundColor: activeColor,
-          activeBackgroundColor: inactiveColor,
-          activeIcon: activeIcon,
-          animationAngle: 3.14 / 2,
-          buttonSize: activefab
-              ? Size(activeButtonSize, activeButtonSize)
-              : Size(inactiveButtonSize, inactiveButtonSize),
-          icon: inactiveIcon,
-          onOpen: () {
-            setState(() {
-              activefab = true;
-            });
-          },
-          onClose: () {
-            setState(() {
-              activefab = false;
-            });
-          },
-          children: [
-            SpeedDialChild(
-                backgroundColor: chuyendoilenhButtonColor,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              banveghephu(chuyendiGanday.data.guidLoTrinh)));
-                },
-                label: 'Bán vé ghế phụ',
-                child: SvgPicture.asset(
-                  'asset/icons/ticket.svg',
-                  width: 20,
-                  height: 20,
-                )),
-            SpeedDialChild(
-                // backgroundColor: Colors.red,
-                onTap: () {
-                  loadDSGhePhu();
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                          height: 300,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text('Hủy',
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 15)),
-                                ),
-                              ),
-                              Text('Khách mua vé ghế phụ',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18)),
-                              FutureBuilder(
-                                  future: dshanhkhachghephuFuture,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else if (snapshot.hasError) {
-                                      return Center(
-                                        child: Text('Lỗi'),
-                                      );
-                                    } else if (snapshot.hasData) {
-                                      DSHanhKhachGhePhu dshanhkhachghephu =
-                                          snapshot.data;
-                                      List<DataDSHanhKhachGhePhu> listds =
-                                          dshanhkhachghephu.data;
-                                      if (listds.length == 0) {
-                                        return Center(
-                                          child: Text('Không có dữ liệu'),
-                                        );
-                                      }
-                                      return Expanded(
-                                        child: ListView.builder(
-                                            itemCount: listds.length,
-                                            itemBuilder: (context, index) {
-                                              return Row(
-                                                children: [
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 15,
-                                                      ),
-                                                      Row(children: [
-                                                        Text('Số điện thoại: ',
-                                                            style: TextStyle(
-                                                                fontSize: 13)),
-                                                        Text(
-                                                            '${listds[index].soDienThoai}',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .green,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ]),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Row(children: [
-                                                        Text('Giá vé: ',
-                                                            style: TextStyle(
-                                                                fontSize: 13)),
-                                                        Text(
-                                                            '${listds[index].giaVe}đ',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    Colors.red,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ]),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Row(children: [
-                                                        Text('Điểm xuống: ',
-                                                            style: TextStyle(
-                                                                fontSize: 13)),
-                                                        Text(
-                                                            '${listds[index].diemXuong}',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .orange,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      ]),
-                                                      Divider(
-                                                        color: Colors.black,
-                                                        height: 1,
-                                                        thickness: 0.5,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    width: 40,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.print,
-                                                        color: Colors.black54,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      SvgPicture.asset(
-                                                          'asset/icons/arrowdown.svg',
-                                                          width: 20,
-                                                          height: 20,
-                                                          color: Colors.black54)
-                                                    ],
-                                                  )
-                                                ],
-                                              );
-                                            }),
-                                      );
-                                    }
-                                    return Expanded(
-                                      child: Center(
-                                        child: Text('Không có dữ liệu'),
-                                      ),
-                                    );
-                                  }),
-                              SizedBox(
-                                height: 40,
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                  print('dung hanh trinh');
-                },
-                label: 'Khách ngồi ghế phụ',
-                child: Icon(Icons.chair_alt, color: Colors.black))
-          ],
-        ));
+                              );
+                            });
+                        print('dung hanh trinh');
+                      },
+                      label: 'Khách ngồi ghế phụ',
+                      child: Icon(Icons.chair_alt, color: Colors.black))
+                ],
+              )
+            : null);
   }
 
   Column seatItem1(String num, List<sodochoData> listdata, int cot, int hang) {
@@ -808,11 +846,11 @@ LichSuChuyenDiNotify();
           Column(
             children: [
               SizedBox(
-                height: 7,
+                height: 9,
               ),
               Container(
-                height: 32,
-                width: 45,
+                height: 33,
+                width: 50,
                 decoration: BoxDecoration(
                   color: Colors.grey[350],
                 ),
@@ -829,7 +867,7 @@ LichSuChuyenDiNotify();
                         var index = listdata.indexWhere((element) =>
                             element.viTriCot == cot &&
                             element.viTriHang == hang);
-                        // pos = index;
+                        pos = index;
                         print('index: ${listdata[index].id}');
                         print('poss: ${listdata[index].tenCho}');
                         // if (sodoList[index].trangThai.tenTrangThai ==
@@ -842,12 +880,12 @@ LichSuChuyenDiNotify();
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    banve(chuyendiGanday.data.guidLoTrinh)));
+                                    banve(chuyendiGanday.data.guidLoTrinh,chuyendiGanday.data.guidXe,changeSodocho,listdata[index].id)));
                       });
                     },
                     child: Container(
-                      height: 35,
-                      width: 39,
+                      height: 37,
+                      width: 43,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.grey[350]),
@@ -859,13 +897,13 @@ LichSuChuyenDiNotify();
                       top: 30,
                       left: 7,
                       child: Container(
-                        height: 5,
-                        width: 24,
+                        height: 7,
+                        width: 27,
                         decoration: BoxDecoration(
                             color: Colors.grey[350],
                             borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(3),
-                                topRight: Radius.circular(3))),
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4))),
                       )),
                 ],
               )),
@@ -884,11 +922,11 @@ LichSuChuyenDiNotify();
           Column(
             children: [
               SizedBox(
-                height: 7,
+                height: 9,
               ),
               Container(
-                height: 32,
-                width: 45,
+                height: 33,
+                width: 50,
                 decoration: BoxDecoration(
                   color: Colors.grey[350],
                 ),
@@ -1312,8 +1350,8 @@ LichSuChuyenDiNotify();
                         });
                       },
                       child: Container(
-                        height: 35,
-                        width: 39,
+                        height: 37,
+                        width: 43,
                         decoration: BoxDecoration(
                             color: Colors.blue[600],
                             // border: Border.all(color: Colors.grey[350]),
@@ -1328,8 +1366,8 @@ LichSuChuyenDiNotify();
                       top: 30,
                       left: 7,
                       child: Container(
-                        height: 5,
-                        width: 24,
+                        height: 7,
+                        width: 27,
                         decoration: BoxDecoration(
                             color: Colors.grey[350],
                             borderRadius: BorderRadius.only(
@@ -1371,46 +1409,13 @@ LichSuChuyenDiNotify();
     // print('abc.list.length = ${list.length}');
     return list;
   }
-
-  // Container checkStatus(int ind, String num) {
-  //   if (temp[ind].trangThai.tenTrangThai == null) {
-  //     return Container(
-  //       height: 35,
-  //       width: 39,
-  //     );
-  //   } else if (temp[ind].trangThai.tenTrangThai == 'Có khách') {
-  //     return Container(
-  //       height: 35,
-  //       width: 39,
-  //       decoration: BoxDecoration(
-  //           color: Colors.blue[600],
-  //           // border: Border.all(color: Colors.grey[350]),
-  //           borderRadius: BorderRadius.circular(4)),
-  //       child: Center(
-  //           child: SvgPicture.asset(
-  //         'asset/icons/account-check.svg',
-  //         color: Colors.white,
-  //       )),
-  //     );
-  //   } else {
-  //     Container(
-  //       height: 35,
-  //       width: 39,
-  //       decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           border: Border.all(color: Colors.grey[350]),
-  //           borderRadius: BorderRadius.circular(4)),
-  //       child: Center(child: Text(num)),
-  //     );
-  //   }
-  // }
 }
 
 Row seatItemLX(String num) {
   return Row(
     children: [
       SizedBox(
-        width: 10,
+        width: 5,
       ),
       Stack(
         children: [
@@ -1424,11 +1429,11 @@ Row seatItemLX(String num) {
                   Column(
                     children: [
                       SizedBox(
-                        height: 5,
+                        height: 9,
                       ),
                       Container(
-                        height: 35,
-                        width: 45,
+                        height: 33,
+                        width: 50,
                         decoration: BoxDecoration(
                           color: Colors.grey[350],
                         ),
@@ -1442,8 +1447,8 @@ Row seatItemLX(String num) {
                           InkWell(
                             onTap: () {},
                             child: Container(
-                              height: 35,
-                              width: 39,
+                              height: 37,
+                              width: 43,
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   border: Border.all(color: Colors.grey[350]),
@@ -1455,8 +1460,8 @@ Row seatItemLX(String num) {
                               top: 30,
                               left: 7,
                               child: Container(
-                                height: 5,
-                                width: 24,
+                                height: 7,
+                                width: 27,
                                 decoration: BoxDecoration(
                                     color: Colors.grey[350],
                                     borderRadius: BorderRadius.only(
@@ -1470,12 +1475,12 @@ Row seatItemLX(String num) {
             ],
           ),
           Positioned(
-              bottom: 42,
+              bottom: 40,
               left: 12,
               child: Image.asset(
                 'asset/images/volant.png',
-                width: 20,
-                height: 20,
+                width: 21,
+                height: 21,
               ))
         ],
       ),
@@ -1551,62 +1556,3 @@ Container itemBottomSheet1(TrangThaiData data) {
     ),
   );
 }
-
-
-
-// fetch all items from api trang thai ghe
-// ListView.builder(
-//                 itemCount: listTrangThai.length,
-//                 itemBuilder: (context, index) {
-//                     return itemBottomSheet(HexColor.fromHex(listTrangThai[index].maMau), listTrangThai[index].tenTrangThai, '${listTrangThai[index].soLuong}', '${listTrangThai[index].soLuong}');
-                
-//               })
-
-
-//  return Container(
-//                                         padding: EdgeInsets.symmetric(
-//                                             horizontal: 25, vertical: 30),
-//                                         height: 250,
-//                                         child: Column(
-//                                           mainAxisAlignment:
-//                                               MainAxisAlignment.spaceBetween,
-//                                           children: [
-//                                             itemBottomSheet(
-//                                                 HexColor.fromHex(
-//                                                     listTrangThai[0].maMau),
-//                                                 '${listTrangThai[0].tenTrangThai}: ',
-//                                                 '${listTrangThai[0].soLuong}',
-//                                                 '${listTrangThai[0].soLuong}',
-//                                                 true,
-//                                                 Colors.black),
-//                                             itemBottomSheet(
-//                                                 HexColor.fromHex(
-//                                                     listTrangThai[1].maMau),
-//                                                 '${listTrangThai[1].tenTrangThai}: ',
-//                                                 '${listTrangThai[1].soLuong}',
-//                                                 '${listTrangThai[1].soLuong}',
-//                                                 false,
-//                                                 Colors.white),
-//                                             itemBottomSheet(
-//                                                 HexColor.fromHex(
-//                                                     listTrangThai[2].maMau),
-//                                                 '${listTrangThai[2].tenTrangThai}: ',
-//                                                 '${listTrangThai[2].soLuong}',
-//                                                 '${listTrangThai[2].soLuong}',
-//                                                 false,
-//                                                 Colors.white),
-//                                             itemBottomSheet(
-//                                                 HexColor.fromHex(
-//                                                     listTrangThai[3].maMau),
-//                                                 '${listTrangThai[3].tenTrangThai}: ',
-//                                                 '${listTrangThai[3].soLuong}',
-//                                                 '${listTrangThai[3].soLuong}',
-//                                                 false,
-//                                                 Colors.white),
-//                                           ],
-//                                         ));
-
-
-
-
-

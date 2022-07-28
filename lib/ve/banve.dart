@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/DSDiemXuong.dart';
+import 'package:flutter_ui_kit/uikit.dart';
 
 import '../componentsFuture/bottomshetHK.dart';
 import '../model/DonGiaTheoTuyen.dart';
@@ -14,7 +15,10 @@ import '../other/homeConstant.dart';
 
 class banve extends StatefulWidget {
   String guidlotrinh;
-  banve(this.guidlotrinh);
+  String guidxe;
+  String machuyendi;
+  String idghe;
+  banve(this.guidlotrinh, this.guidxe, this.machuyendi, this.idghe);
 
   @override
   State<banve> createState() => _banveState();
@@ -25,7 +29,7 @@ class _banveState extends State<banve> {
   final formkey1 = GlobalKey<FormState>();
   final formTTHK = GlobalKey<FormState>();
   final abc = GlobalKey<FormState>();
-String diemxuong;
+  DiemXuongData diemxuong;
   final lowPrice =
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
   bool cash = true;
@@ -43,7 +47,7 @@ String diemxuong;
     super.initState();
     loadDonGia(widget.guidlotrinh);
     print(widget.guidlotrinh);
-    loadDSDiemXuong();
+   
   }
 
   void loadDSDiemXuong() async {
@@ -52,6 +56,17 @@ String diemxuong;
 
   void loadDonGia(String idLoTRinh) async {
     DonGia = await ApiHelper.getDonGiaTheoTuyen(idLoTRinh);
+    if(DonGia.status){
+      loadDSDiemXuong();
+      setState(() {
+        
+      });
+    }
+    else{
+      // setState(() {
+        
+      // });
+    }
   }
 
   @override
@@ -60,284 +75,340 @@ String diemxuong;
       appBar: AppBar(
         title: Text('THANH TOÁN BÁN VÉ'),
       ),
-      body: FutureBuilder(
-          future: DSDiemXuongFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasData) {
-              data = DonGia.data;
-              DSDiemXuong dsdiemxuong = snapshot.data;
-              List<DiemXuongData> listdiemxuong = dsdiemxuong.data;
-              String initDropValue = listdiemxuong[0].tenDiemXuong;
-              return Container(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Form(
-                        key: formkey1,
-                        child: TextFormField(
-                          controller: sdtControlller,
-                          decoration: InputDecoration(
-                              // hintText: 'nhập số điện thoại',
-                              labelText: 'Số điện thoại',
-                              suffixIcon: Icon(Icons.qr_code_scanner_rounded)),
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+            future: DSDiemXuongFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasData) {
+                data = DonGia.data;
+                DSDiemXuong dsdiemxuong = snapshot.data;
+                List<DiemXuongData> listdiemxuong = dsdiemxuong.data;
+                String initDropValue = listdiemxuong[0].tenDiemXuong;
+                return Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Form(
+                          key: formkey1,
+                          child: TextFormField(
+                            controller: sdtControlller,
+                            decoration: InputDecoration(
+                                // hintText: 'nhập số điện thoại',
+                                labelText: 'Số điện thoại',
+                                suffixIcon:
+                                    Icon(Icons.qr_code_scanner_rounded)),
 
-                          // controller: sdtNhanController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            FilteringTextInputFormatter.deny(
-                                RegExp(r'^[1-9]+')),
-                            LengthLimitingTextInputFormatter(10)
-                          ],
-                          validator: (sodt) {
-                            if (sodt == null || sodt.isEmpty) {
-                              return 'Số điện thoại không được để trống';
-                            } else if (sodt.length <= 10) {
-                              return 'Sai định dạng số điện thoại';
-                            }
-                            return null;
-                          },
-                          onChanged: (vl1) {
-                            if(vl1.length< 10){
-                              setState(() {
-                                sdt = null;
-                                
-                              });
-                             
-                            }
-                            else{
+                            // controller: sdtNhanController,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                              FilteringTextInputFormatter.deny(
+                                  RegExp(r'^[1-9]+')),
+                              LengthLimitingTextInputFormatter(10)
+                            ],
+                            validator: (sodt) {
+                              if (sodt == null || sodt.isEmpty) {
+                                return 'Số điện thoại không được để trống';
+                              } else if (sodt.length <= 10) {
+                                return 'Sai định dạng số điện thoại';
+                              }
+                              return null;
+                            },
+                            onChanged: (vl1) {
+                              if (vl1.length < 10) {
+                                setState(() {
+                                  sdt = null;
+                                });
+                              } else {
                                 setState(() {
                                   sdt = vl1;
-                                sdtControlller.text= vl1;
+                                  sdtControlller.text = vl1;
                                 });
-                                
-                            }
-                            xacnhan();
-                          },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                              }
+                              xacnhan();
+                            },
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                          ),
                         ),
-                      ),
-                      DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            labelText: 'Điểm xuống',
-                            hintText: 'Chọn điểm xuống'),
-                        items: listdiemxuong.map((DiemXuongData text) {
-                          return new DropdownMenuItem(
-                            child: Container(
-                                child: Text(text.tenDiemXuong,
-                                    style: TextStyle(fontSize: 15))),
-                            value: text,
-                          );
-                        }).toList(),
-                        // value: initDropValue,
-                        onChanged: (DiemXuongData t1) {
-                          xacnhan();
-                          setState(() {
-                            diemxuong = t1.tenDiemXuong;
-                          });
-                        },
-                        menuMaxHeight: 200,
-                        validator: (vl1) {
-                          if (vl1 == null || vl1.isEmpty) {
-                            return 'Chưa chọn diem xuong';
-                          }
-                          return null;
-                        },
-                      ),
-                      Form(
-                        key: formTTHK,
-                        child: TextFormField(
+                        DropdownButtonFormField(
                           decoration: InputDecoration(
-                              hintText: '', label: Text('Giá vé(*)')),
-                          controller: lowPrice,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                          ],
-                          validator: (sodt) {
-                            if (sodt == null || sodt.isEmpty) {
-                              return 'abc';
+                              labelText: 'Điểm xuống',
+                              hintText: 'Chọn điểm xuống'),
+                          items: listdiemxuong.map((DiemXuongData text) {
+                            return new DropdownMenuItem(
+                              child: Container(
+                                  child: Text(text.tenDiemXuong,
+                                      style: TextStyle(fontSize: 15))),
+                              value: text,
+                            );
+                          }).toList(),
+                          // value: initDropValue,
+                          onChanged: (DiemXuongData t1) {
+                            xacnhan();
+                            setState(() {
+                              diemxuong = t1;
+                            });
+                          },
+                          menuMaxHeight: 200,
+                          validator: (vl1) {
+                            if (vl1 == null || vl1.isEmpty) {
+                              return 'Chưa chọn diem xuong';
                             }
                             return null;
                           },
-                          onChanged: (vl2) {
-                            setState(() {
-                              giave = vl2;
-                              
-                            });
-                            xacnhan();
-                          },
                         ),
-                      ),
-                      data.length != 0
-                          ? Wrap(children: [
-                              ...data.map((e) => InkWell(
-                                    onTap: () {
-                                      print(e.giaVe);
-                                      lowPrice.text = e.giaVe.toString();
-                                    },
-                                    child: Container(
-                                        margin:
-                                            EdgeInsets.symmetric(horizontal: 5),
-                                        child: Chip(
-                                          label: Text(e.giaVe.toString()),
-                                          backgroundColor: Colors.grey[350],
-                                        )),
-                                  ))
-                            ])
-                          : Text(''),
-                      Row(
-                        children: [
-                          Checkbox(
-                              value: checkbox,
-                              activeColor: Color.fromARGB(255, 21, 128, 216),
-                              onChanged: (value) {
-                                setState(() {
-                                  checkbox = value;
-                                  print(checkbox);
-                                });
-                              }),
-                          Text('Phát hành & In vé'),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text('Chọn hình thức thu tiền',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Form(
+                          key: formTTHK,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                hintText: '', label: Text('Giá vé(*)')),
+                            controller: lowPrice,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]'))
+                            ],
+                            validator: (sodt) {
+                              if (sodt == null || sodt.isEmpty) {
+                                return 'abc';
+                              }
+                              return null;
+                            },
+                            onChanged: (vl2) {
+                              setState(() {
+                                giave = vl2;
+                              });
+                              xacnhan();
+                            },
+                          ),
+                        ),
+                        data.length != 0
+                            ? Wrap(children: [
+                                ...data.map((e) => InkWell(
+                                      onTap: () {
+                                        print(e.giaVe);
+                                        lowPrice.text = e.giaVe.toString();
+                                      },
+                                      child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: Chip(
+                                            label: Text(e.giaVe.toString()),
+                                            backgroundColor: Colors.grey[350],
+                                          )),
+                                    ))
+                              ])
+                            : Text(''),
+                        Row(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  cash = true;
-                                  bank = false;
-                                });
-                              },
-                              child: Container(
-                                height: 39,
-                                padding: EdgeInsets.all(5),
-                                width: MediaQuery.of(context).size.width * 0.35,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: cash == true
-                                        ? Border.all(
-                                            color: Colors.blue, width: 2)
-                                        : null,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.12),
-                                          offset: Offset(0, 1),
-                                          blurRadius: 0.1,
-                                          spreadRadius: 2)
-                                    ]),
-                                child: Row(children: [
-                                  SvgPicture.asset(
-                                    'asset/icons/cash.svg',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text('TIỀN MẶT/CASH\nCHANGE',
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.black87),
-                                      textAlign: TextAlign.start),
-                                ]),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  bank = true;
-                                  cash = false;
-                                });
-                              },
-                              child: Container(
+                            Checkbox(
+                                value: checkbox,
+                                activeColor: Color.fromARGB(255, 21, 128, 216),
+                                onChanged: (value) {
+                                  setState(() {
+                                    checkbox = value;
+                                    print(checkbox);
+                                  });
+                                }),
+                            Text('Phát hành & In vé'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text('Chọn hình thức thu tiền',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    cash = true;
+                                    bank = false;
+                                  });
+                                },
+                                child: Container(
                                   height: 39,
                                   padding: EdgeInsets.all(5),
                                   width:
                                       MediaQuery.of(context).size.width * 0.35,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
-                                      border: bank == true
+                                      border: cash == true
                                           ? Border.all(
                                               color: Colors.blue, width: 2)
-                                          : Border.all(
-                                              color: Colors.grey[200],
-                                              width: 2),
+                                          : null,
                                       borderRadius: BorderRadius.circular(5),
                                       boxShadow: [
                                         BoxShadow(
                                             color:
                                                 Colors.black.withOpacity(0.12),
                                             offset: Offset(0, 1),
-                                            blurRadius: 0.0,
+                                            blurRadius: 0.1,
                                             spreadRadius: 2)
                                       ]),
-                                  child: SvgPicture.asset(
-                                      'asset/icons/vietinbank logo svg.svg')),
-                            ),
-                          ]),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
-                        onPressed: xacnhan()
-                            ? ()async {
-                                var resp = await ApiHelper.post('http://vedientu.nguyencongtuyen.local:19666/api/DonHang/thuc-hien-ban-ve-tai-app-lai-xe', {
-                                  'danhSachMaSoGhe':[],
-                                  'email':'',
-                                  'ghiChu':'',
-                                  'guidDoanhNghiep':'${LoginHelper.Default.userToken.GuidDoanhNghiep}',
-                                  'guidXe':'',
-                                  'hoTen':'',
-                                  'maChuyenDi':'',
-                                  'maDiemXuong':'',
-                                  'phatHanhVe':'',
-                                  'soDienThoai':'',
-                                  'tenDiemXuong':'',
-                                  'toaDo':'',
-                                  'tongTienThanhToan':''
-                                });
-                              }
-                            : null,
-                        child: Text(
-                          'BÁN VÉ',
-                          style: TextStyle(fontSize: 12, color: Colors.white),
+                                  child: Row(children: [
+                                    SvgPicture.asset(
+                                      'asset/icons/cash.svg',
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('TIỀN MẶT/CASH\nCHANGE',
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.black87),
+                                        textAlign: TextAlign.start),
+                                  ]),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    bank = true;
+                                    cash = false;
+                                  });
+                                },
+                                child: Container(
+                                    height: 39,
+                                    padding: EdgeInsets.all(5),
+                                    width: MediaQuery.of(context).size.width *
+                                        0.35,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: bank == true
+                                            ? Border.all(
+                                                color: Colors.blue, width: 2)
+                                            : Border.all(
+                                                color: Colors.grey[200],
+                                                width: 2),
+                                        borderRadius: BorderRadius.circular(5),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.12),
+                                              offset: Offset(0, 1),
+                                              blurRadius: 0.0,
+                                              spreadRadius: 2)
+                                        ]),
+                                    child: SvgPicture.asset(
+                                        'asset/icons/vietinbank logo svg.svg')),
+                              ),
+                            ]),
+                        SizedBox(
+                          height: 15,
                         ),
-                      )
-                    ],
-                  ));
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Không có dữ liệu'),
+                        ElevatedButton(
+                          onPressed: xacnhan()
+                              ? () async {
+                                  var resp = await ApiHelper.post(
+                                      'http://113.176.29.57:19666/api/DonHang/thuc-hien-ban-ve-tai-app-lai-xe',
+                                      {
+                                        'danhSachMaSoGhe': [widget.idghe],
+                                        'email': '',
+                                        'ghiChu': '',
+                                        'guidDoanhNghiep':
+                                            '${LoginHelper.Default.userToken.GuidDoanhNghiep}',
+                                        'guidXe': '${widget.guidxe}',
+                                        'hoTen': '',
+                                        'maChuyenDi': '${widget.machuyendi}',
+                                        'maDiemXuong':
+                                            '${diemxuong.guidDiemXuong}',
+                                        'phatHanhVe': '${checkbox.toString()}',
+                                        'soDienThoai': '${sdtControlller.text}',
+                                        'tenDiemXuong':
+                                            '${diemxuong.tenDiemXuong}',
+                                        'toaDo': '',
+                                        'tongTienThanhToan':
+                                            '${lowPrice.text.substring(0, lowPrice.text.length - 3)}'
+                                      });
+                                      // print(resp['message']);
+                                      // print(widget.idghe);
+                                      // print(widget.guidxe);
+                                      // print(widget.machuyendi);
+                                      // print(diemxuong.guidDiemXuong);
+                                      // print(sdtControlller.text);
+                                      // print(diemxuong.tenDiemXuong);
+                                      // print(lowPrice.text.substring(0, lowPrice.text.length - 3));
+                                      // print(widget.idghe);
+                                  if (resp['status']) {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UIKitPage(1)));
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible:
+                                          false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Lỗi'),
+                                          content: Text('${resp['message']}'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Đã hiểu'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                              : null,
+                          child: Text(
+                            'BÁN VÉ',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        )
+                      ],
+                    ));
+              } else if (snapshot.hasError) {
+                return Expanded(
+                  child: Center(
+                    child: Text('Không có dữ liệu'),
+                  ),
+                );
+              }
+              return Expanded(
+                child: Center(
+                  child: Text('Lỗi kết nối'),
+                ),
               );
-            }
-            return Center(
-              child: Text('Lỗi kết nối'),
-            );
-          }),
+            }),
+      ),
     );
   }
 
   bool xacnhan() {
-    if (lowPrice.text != '0,00VNĐ' && giave != '0,00VNĐ' && sdt != null && sdtControlller.text != null && diemxuong != null) {
+    if (lowPrice.text != '0,00VNĐ' &&
+        giave != '0,00VNĐ' &&
+        sdt != null &&
+        sdtControlller.text != null &&
+        diemxuong.tenDiemXuong != null) {
       return true;
     } else
       return false;
