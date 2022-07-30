@@ -66,7 +66,7 @@ class ApiHelper {
       "authorization": "Bearer ${LoginHelper.Default.access_token}",
     }).then((resp) {
       if (resp.body.isNotEmpty) print('infoapi ${resp.body.toString()}');
-      return ChiTietLenh.fromJson(jsonDecode(resp.body));
+      return ChiTietLenh.fromJson(json.decode(resp.body));
     });
   }
 

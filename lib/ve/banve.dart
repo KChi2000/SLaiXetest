@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -320,6 +322,7 @@ class _banveState extends State<banve> {
                         ElevatedButton(
                           onPressed: xacnhan()
                               ? () async {
+                                  String money = lowPrice.text.replaceAll(RegExp('[^0-9]'), '');
                                   var resp = await ApiHelper.post(
                                       'http://113.176.29.57:19666/api/DonHang/thuc-hien-ban-ve-tai-app-lai-xe',
                                       {
@@ -333,23 +336,16 @@ class _banveState extends State<banve> {
                                         'maChuyenDi': '${widget.machuyendi}',
                                         'maDiemXuong':
                                             '${diemxuong.guidDiemXuong}',
-                                        'phatHanhVe': '${checkbox.toString()}',
+                                        'phatHanhVe' :jsonDecode(checkbox.toString()),
                                         'soDienThoai': '${sdtControlller.text}',
                                         'tenDiemXuong':
                                             '${diemxuong.tenDiemXuong}',
                                         'toaDo': '',
-                                        'tongTienThanhToan':
-                                            '${lowPrice.text.substring(0, lowPrice.text.length - 3)}'
+                                        'tongTienThanhToan': int.parse(money)
                                       });
-                                      // print(resp['message']);
-                                      // print(widget.idghe);
-                                      // print(widget.guidxe);
-                                      // print(widget.machuyendi);
-                                      // print(diemxuong.guidDiemXuong);
-                                      // print(sdtControlller.text);
-                                      // print(diemxuong.tenDiemXuong);
-                                      // print(lowPrice.text.substring(0, lowPrice.text.length - 3));
-                                      // print(widget.idghe);
+                                      print(money);
+                                     
+                                     
                                   if (resp['status']) {
                                     Navigator.pushReplacement(
                                         context,

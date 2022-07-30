@@ -72,7 +72,8 @@ class TaikhoanState extends State<Taikhoan> {
     datafuture = ApiHelper.get(
         'http://113.176.29.57:19666/api/Driver/lay-thong-tin-ca-nhan');
     data = await datafuture;
-    tinh = '';
+    if(data!=null){
+      tinh = '';
     idTinh = data['data']['idTinh'];
     print('ttttt ${data['data']['idTinh']}');
     tinhfuture = ApiHelper.getProvince(
@@ -81,6 +82,7 @@ class TaikhoanState extends State<Taikhoan> {
     province = dataTinh.data;
     if (idTinh != null) {
       loadHuyen(false);
+    }
     }
     setState(() {});
   }
@@ -159,11 +161,15 @@ class TaikhoanState extends State<Taikhoan> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: 10, right: 20),
-                    child: Text(
-                      '${LoginHelper.Default.userToken.given_name} ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      width: 200,
+                      child: Text(
+                        '${LoginHelper.Default.userToken.given_name} ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
                       ),
                     ),
                   ),
@@ -179,7 +185,7 @@ class TaikhoanState extends State<Taikhoan> {
               )
             ],
           ),
-          FutureBuilder<Map<String, dynamic>>(
+         data!=null? FutureBuilder<Map<String, dynamic>>(
               future: datafuture,
               builder: (context, snapshot) {
                 // By default, show a loading spinner.
@@ -236,7 +242,7 @@ class TaikhoanState extends State<Taikhoan> {
                                 true, ()async {
                              var datetemp= await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.parse(fetchdata['data']['ngaySinh']).toLocal(),
+                                      initialDate:fetchdata['data']['ngaySinh'] != null? DateTime.parse(fetchdata['data']['ngaySinh']).toLocal(): DateTime.now(),
                                       firstDate: DateTime(1900),
                                       lastDate: DateTime(2222));
                               //     .then((value) {
@@ -249,10 +255,14 @@ class TaikhoanState extends State<Taikhoan> {
                                                 'tenTruong':'ngaySinh'
                                               });
                                               if(res['status']){
-                                                  loadInfo();
+                                                  // 
+                                                  setState(() {
+                                                    loadInfo();
+                                                  });
                                                   // Navigator.pop(context, 'OK');
                                               }else{
                                                 print('failed');
+                                                //  Navigator.pop(context, 'OK');
                                               }
                                   
                                   
@@ -379,6 +389,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                   Navigator.pop(context, 'OK');
                                               }else{
                                                 print('failed');
+                                                 Navigator.pop(context, 'OK');
                                               }
                                               
                                             }
@@ -650,7 +661,7 @@ class TaikhoanState extends State<Taikhoan> {
                   );
                 }
                 return Center(child: Text('No data'));
-              }),
+              }): Center(child: Text('Lỗi 401 nhé !'),),
         ],
       )),
     );

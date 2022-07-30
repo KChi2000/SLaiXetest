@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/QRScanner/QRpage.dart';
 import 'package:flutter_ui_kit/extensions/extensions.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/TrangThaiChoNgoi.dart';
@@ -201,14 +202,6 @@ class VeState extends State<Ve> {
                                                       .format(time);
                                               return GestureDetector(
                                                 onTap: () {
-                                                  // print(lichsulist[index].maChuyenDi);
-                                                  // print(title);
-                                                  // print(value);
-                                                  // title = lichsulist[index]
-                                                  //       .maChuyenDi;
-                                                  // setState(() {
-                                                  //   value = title;
-                                                  // },);
                                                   print(title);
                                                   Navigator.pop(context);
 
@@ -326,7 +319,10 @@ class VeState extends State<Ve> {
                     Icons.qr_code_scanner_rounded,
                     color: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => QRpage()));
+                  },
                 ),
                 FutureBuilder(
                   future: TrangThaiChoNgoiFuture,
@@ -464,7 +460,7 @@ class VeState extends State<Ve> {
                                       ),
                                       Container(
                                         width: widthScreen - 35,
-                                        height: heightScreen * 0.75,
+                                        height: heightScreen * 0.70,
                                         decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: Colors.grey[400],
@@ -541,14 +537,11 @@ class VeState extends State<Ve> {
                                               ),
                                             ),
                                             SizedBox(
-                                              height: 10,
+                                              height: 3,
                                             ),
-
                                             Container(
-                                                width:
-                                                    widthScreen - 35 -10,
-                                                height:
-                                                    heightScreen * 0.65,
+                                                width: widthScreen - 35 - 10,
+                                                height: heightScreen * 0.65,
                                                 color: Colors.white,
                                                 child: GridView(
                                                   physics:
@@ -643,7 +636,8 @@ class VeState extends State<Ve> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => banveghephu(
-                                    chuyendiGanday.data.guidLoTrinh)));
+                                    chuyendiGanday.data.guidLoTrinh,
+                                    changeSodocho)));
                       },
                       label: 'Bán vé ghế phụ',
                       child: SvgPicture.asset(
@@ -801,12 +795,67 @@ class VeState extends State<Ve> {
                                                             SizedBox(
                                                               width: 10,
                                                             ),
-                                                            SvgPicture.asset(
-                                                                'asset/icons/arrowdown.svg',
-                                                                width: 20,
-                                                                height: 20,
-                                                                color: Colors
-                                                                    .black54)
+                                                            InkWell(
+                                                              onTap: () async {
+                                                                var resp =
+                                                                    await ApiHelper
+                                                                        .post(
+                                                                            'http://113.176.29.57:19666/api/doi-soat/thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
+                                                                            {
+                                                                      'guidXe': chuyendiGanday
+                                                                          .data
+                                                                          .guidXe,
+                                                                      'maChuyenDi':
+                                                                          value,
+                                                                      'maDatCho':
+                                                                          listds[index]
+                                                                              .maDatCho,
+                                                                      'toaDo':
+                                                                          ""
+                                                                    });
+                                                                if (resp[
+                                                                    'status']) {
+                                                                  loadDSGhePhu();
+
+                                                                  // Navigator.pop(
+                                                                  //     context);
+                                                                } else {
+                                                                  showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    barrierDismissible:
+                                                                        false, // user must tap button!
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return AlertDialog(
+                                                                        title: const Text(
+                                                                            'Lỗi'),
+                                                                        content:
+                                                                            Text('${resp['message']}'),
+                                                                        actions: <
+                                                                            Widget>[
+                                                                          TextButton(
+                                                                            child:
+                                                                                const Text('Đã hiểu'),
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  );
+                                                                }
+                                                              },
+                                                              child: SvgPicture.asset(
+                                                                  'asset/icons/arrowdown.svg',
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  color: Colors
+                                                                      .black54),
+                                                            )
                                                           ],
                                                         )
                                                       ],
@@ -879,8 +928,11 @@ class VeState extends State<Ve> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    banve(chuyendiGanday.data.guidLoTrinh,chuyendiGanday.data.guidXe,changeSodocho,listdata[index].id)));
+                                builder: (context) => banve(
+                                    chuyendiGanday.data.guidLoTrinh,
+                                    chuyendiGanday.data.guidXe,
+                                    changeSodocho,
+                                    listdata[index].id)));
                       });
                     },
                     child: Container(
@@ -1012,6 +1064,7 @@ class VeState extends State<Ve> {
                                                   ),
                                                   IconButton(
                                                       onPressed: () {
+                                                        // print(data.)
                                                         phoneController.text =
                                                             data.soDienThoai;
                                                         nameController.text =
@@ -1150,7 +1203,7 @@ class VeState extends State<Ve> {
                                                                           ],
                                                                         ),
                                                                         Text(
-                                                                          'Đã thanh toán',
+                                                                          '${data.trangThaiThanhToan.tenTrangThai}',
                                                                           style: TextStyle(
                                                                               // fontWeight: fontStyleListStatus,
                                                                               color: Colors.black),
@@ -1180,7 +1233,7 @@ class VeState extends State<Ve> {
                                                                           ],
                                                                         ),
                                                                         Text(
-                                                                          'Yên Nghĩa',
+                                                                          '${data.tenDiemXuong}',
                                                                           style: TextStyle(
                                                                               // fontWeight: fontStyleListStatus,
                                                                               color: Colors.black),
@@ -1193,11 +1246,45 @@ class VeState extends State<Ve> {
                                                                     ),
                                                                     FlatButton(
                                                                       onPressed:
-                                                                          () {
-                                                                        // formTTHK.currentState.validate();
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => componentArea(nameController.text, phoneController.text)));
+                                                                          () async {
+                                                                        var resp = await ApiHelper.post(
+                                                                            'http://113.176.29.57:19666/api/DonHang/thuc-hien-sua-thong-tin-hanh-khach',
+                                                                            {
+                                                                              'guidChoNgoi': data.guidChoNgoi,
+                                                                              'guidChuyenDi': changeSodocho,
+                                                                              'guidDiemXuong': data.guidDiemXuong,
+                                                                              'maDatCho': data.maDatCho,
+                                                                              'soDienThoai': phoneController.text,
+                                                                              'tenDiemXuong': data.tenDiemXuong,
+                                                                              'tenKhachHang': nameController.text
+                                                                            });
+                                                                        if (resp[
+                                                                            'status']) {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        } else {
+                                                                          showDialog(
+                                                                            context:
+                                                                                context,
+                                                                            barrierDismissible:
+                                                                                false, // user must tap button!
+                                                                            builder:
+                                                                                (BuildContext context) {
+                                                                              return AlertDialog(
+                                                                                title: const Text('Lỗi'),
+                                                                                content: Text('${resp['message']}'),
+                                                                                actions: <Widget>[
+                                                                                  TextButton(
+                                                                                    child: const Text('Đã hiểu'),
+                                                                                    onPressed: () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        }
                                                                       },
                                                                       child:
                                                                           Text(
@@ -1322,8 +1409,56 @@ class VeState extends State<Ve> {
                                                             color: Colors.blue),
                                                       )),
                                                   FlatButton(
-                                                    onPressed: () {
-                                                      // formTTHK.currentState.validate();
+                                                    onPressed: () async {
+                                                      var resp =
+                                                          await ApiHelper.post(
+                                                              'http://113.176.29.57:19666/api/doi-soat/thuc-hien-xac-nhan-khach-xuong-xe',
+                                                              {
+                                                            'guidXe':
+                                                                chuyendiGanday
+                                                                    .data
+                                                                    .guidXe,
+                                                            'maChuyenDi':
+                                                                data.maChuyenDi,
+                                                            'maDatCho':
+                                                                data.maDatCho,
+                                                            'tenCho':
+                                                                listdata[index]
+                                                                    .tenCho,
+                                                            'toaDo': ''
+                                                          });
+                                                      if (resp['status']) {
+                                                        loadLichSuChuyenDi();
+
+                                                        Navigator.pop(context);
+                                                      } else {
+                                                        showDialog(
+                                                          context: context,
+                                                          barrierDismissible:
+                                                              false, // user must tap button!
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                  'Lỗi'),
+                                                              content: Text(
+                                                                  '${resp['message']}'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child: const Text(
+                                                                      'Đã hiểu'),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      }
                                                     },
                                                     child: Text(
                                                       'XUỐNG XE',

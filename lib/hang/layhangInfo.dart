@@ -43,7 +43,7 @@ class _layhangInfoState extends State<layhangInfo> {
   String Dropdownselected;
   final lowPrice =
       MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
-  final List<XFile> image = [];
+  List<XFile> image = [];
   int count = 0;
   var dsdiemxuongFuture;
   @override
@@ -111,7 +111,8 @@ class _layhangInfoState extends State<layhangInfo> {
                           controller: sdtNhanController,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            FilteringTextInputFormatter.deny(RegExp(r'^[1-9]+')),
+                            FilteringTextInputFormatter.deny(
+                                RegExp(r'^[1-9]+')),
                             LengthLimitingTextInputFormatter(10)
                           ],
                           validator: (sodt) {
@@ -120,7 +121,7 @@ class _layhangInfoState extends State<layhangInfo> {
                             } else if (validateMobile(sodt)) {
                               return 'Sai định dạng số điện thoại';
                             }
-      
+
                             return null;
                           },
                           onChanged: (phone) {
@@ -131,7 +132,7 @@ class _layhangInfoState extends State<layhangInfo> {
                               setState(() {
                                 phone.replaceAll(' ', '');
                                 nhan = phone;
-      
+
                                 print(phone);
                                 // formkey.currentState.activate();
                               });
@@ -191,14 +192,14 @@ class _layhangInfoState extends State<layhangInfo> {
                             String filter = gia.substring(0, gia.length - 3);
                             print('filter $filter');
                             print(gia);
-      
+
                             setState(() {
                               // cuoc = double.parse(gia);
                               gia.replaceAll(' ', '');
                               cuoc = filter;
-      
+
                               print('xac nhan ${xacnhan()}');
-      
+
                               // filter.replaceAll(RegExp(r','), '');
                               // cuoc = double.tryParse(filter);
                               // print(filter);
@@ -218,7 +219,8 @@ class _layhangInfoState extends State<layhangInfo> {
                           // controller: sdtNhanController,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            FilteringTextInputFormatter.deny(RegExp(r'^[1-9]+')),
+                            FilteringTextInputFormatter.deny(
+                                RegExp(r'^[1-9]+')),
                             LengthLimitingTextInputFormatter(10)
                           ],
                           validator: (sodt) {
@@ -248,7 +250,7 @@ class _layhangInfoState extends State<layhangInfo> {
                             labelText: 'Thời gian giao hàng dự kiến',
                             suffixIcon: Icon(Icons.date_range)),
                         // initialValue: datetime,
-      
+
                         onTap: () async {
                           // Below line stops keyboard from appearing
                           FocusScope.of(context).requestFocus(new FocusNode());
@@ -306,8 +308,8 @@ class _layhangInfoState extends State<layhangInfo> {
                             width: 10,
                           ),
                           Text('TIỀN MẶT/CASH\nCHANGE',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black87),
+                              style: TextStyle(
+                                  fontSize: 10, color: Colors.black87),
                               textAlign: TextAlign.start),
                         ]),
                       ),
@@ -331,143 +333,135 @@ class _layhangInfoState extends State<layhangInfo> {
                           )
                         ],
                       ),
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                child: Container(
-                                  height: 60,
-                                  width: 50,
-                                  child: Image.asset(
-                                    'asset/images/6.jpg',
-                                    width: 60,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 45,
-                                left: 35,
-                                child: IconButton(
-                                  icon: SvgPicture.asset(
-                                    'asset/icons/cancel.svg',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              )
-                            ],
-                          ),
-                          Stack(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                child: Container(
-                                  height: 60,
-                                  width: 50,
-                                  child: Image.asset(
-                                    'asset/images/6.jpg',
-                                    width: 60,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 45,
-                                left: 35,
-                                child: IconButton(
-                                  icon: SvgPicture.asset(
-                                    'asset/icons/cancel.svg',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: DottedBorder(
-                              child: GestureDetector(
-                                child: Container(
-                                  height: 55,
-                                  width: 50,
-                                  child: Center(
-                                      child: SvgPicture.asset(
-                                    'asset/icons/camera-plus.svg',
-                                    color: Colors.black54,
-                                  )),
-                                ),
-                                onTap: () {
-                                  return showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          content: Container(
-                                            width: 60,
-                                            child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  GestureDetector(
-                                                    child: Text('Chụp ảnh mới'),
-                                                    onTap: () async {
-                                                      print('chọn chụp ảnh');
-                                                      Navigator.pop(context);
-                                                      await ImagePicker()
-                                                          .pickImage(
-                                                              source: ImageSource
-                                                                  .camera);
-                                                    },
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  GestureDetector(
-                                                    child: Text('Chọn ảnh'),
-                                                    onTap: () async {
-                                                      print('chọn ảnh');
-                                                      Navigator.pop(context);
-                                                      imageitem =
-                                                          await ImagePicker()
-                                                              .pickImage(
-                                                                  source:
-                                                                      ImageSource
-                                                                          .gallery);
-                                                      if (imageitem == null) {
-                                                        return;
-                                                      }
-                                                      image.add(imageitem);
-                                                      setState(() {
-                                                        count = image.length;
-                                                      });
-                                                    },
-                                                  ),
-                                                ]),
-                                          ),
-                                        );
-                                      });
-                                },
-                              ),
-                              color: Colors.black54,
-                              strokeWidth: 1,
-                              radius: Radius.circular(10),
+                      SizedBox(
+                        height: 100,
+                        width: double.infinity,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            ...image.map(
+                              (e) {
+                                return itemImage(e, () {
+                                  setState(
+                                    () {
+                                      image.remove(e);
+                                      count = image.length;
+                                    },
+                                  );
+                                });
+                              },
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              width: 5,
+                            ),
+                            image.length < 3
+                                ? Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      GestureDetector(
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: DottedBorder(
+                                            child: Container(
+                                              height: 55,
+                                              width: 50,
+                                              child: Center(
+                                                  child: SvgPicture.asset(
+                                                'asset/icons/camera-plus.svg',
+                                                color: Colors.black54,
+                                              )),
+                                            ),
+                                            color: Colors.black54,
+                                            strokeWidth: 1,
+                                            radius: Radius.circular(10),
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          return showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  content: Container(
+                                                    width: 60,
+                                                    child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            child: Text(
+                                                                'Chụp ảnh mới'),
+                                                            onTap: () async {
+                                                              print(
+                                                                  'chọn chụp ảnh');
+                                                              Navigator.pop(
+                                                                  context);
+                                                              imageitem = await ImagePicker()
+                                                                  .pickImage(
+                                                                      source: ImageSource
+                                                                          .camera);
+                                                              if (imageitem ==
+                                                                  null) {
+                                                                return;
+                                                              }
+
+                                                              setState(() {
+                                                                image.add(
+                                                                    imageitem);
+                                                                count = image
+                                                                    .length;
+                                                              });
+                                                              print(
+                                                                  'count: $count');
+                                                            },
+                                                          ),
+                                                          SizedBox(
+                                                            height: 20,
+                                                          ),
+                                                          GestureDetector(
+                                                            child: Text(
+                                                                'Chọn ảnh'),
+                                                            onTap: () async {
+                                                              print('chọn ảnh');
+                                                              Navigator.pop(
+                                                                  context);
+                                                              imageitem = await ImagePicker()
+                                                                  .pickImage(
+                                                                      source: ImageSource
+                                                                          .gallery);
+                                                              if (imageitem ==
+                                                                  null) {
+                                                                return;
+                                                              }
+                                                              // image.add(imageitem);
+                                                              setState(() {
+                                                                image.add(
+                                                                    imageitem);
+                                                                count = image
+                                                                    .length;
+                                                              });
+                                                              print(
+                                                                  'count: $count');
+                                                            },
+                                                          ),
+                                                        ]),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : Text(''),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 15,
@@ -475,10 +469,14 @@ class _layhangInfoState extends State<layhangInfo> {
                       FlatButton(
                         onPressed: xacnhan()
                             ? () async {
-                                DateTime sendDatetime = new DateTime(date.year,
-                                    date.month, date.day, time.hour, time.minute);
-                                // print(sendDatetime);
-                                // print(sendDatetime.toUtc().toIso8601String());
+                                DateTime sendDatetime = new DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    time.hour,
+                                    time.minute);
+                                print(sendDatetime);
+                                print(sendDatetime.toUtc().toIso8601String());
                                 var resp = await ApiHelper.postMultipart(
                                     'http://113.176.29.57:19666/api/HangHoa/thuc-hien-nhan-van-chuyen-hang-hoa',
                                     {
@@ -498,14 +496,34 @@ class _layhangInfoState extends State<layhangInfo> {
                                       'daTraCuoc': '$checkbox',
                                       'toaDoGuiHang': ''
                                     });
-      
+
                                 if (resp == 'Uploadd') {
                                   print('okkkkkkkkkkk');
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(3)));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UIKitPage(3)));
                                 } else {
-                                  print('failed');
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Lỗi'),
+                                        content: Text('Lỗi kết nối'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Đã hiểu'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
-                                // print(lowPrice.text.substring(0,lowPrice.text.length-3));
                               }
                             : null,
                         child: Text(
@@ -547,5 +565,37 @@ class _layhangInfoState extends State<layhangInfo> {
       return true;
     }
     return false;
+  }
+
+  Stack itemImage(XFile imagedata, Function onDelete) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            height: 60,
+            width: 50,
+            child: Image.file(
+              File(imagedata.path),
+              height: 50,
+              width: 45,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 65,
+          left: 35,
+          child: IconButton(
+            icon: SvgPicture.asset(
+              'asset/icons/cancel.svg',
+              width: 20,
+              height: 20,
+            ),
+            onPressed: onDelete,
+          ),
+        )
+      ],
+    );
   }
 }

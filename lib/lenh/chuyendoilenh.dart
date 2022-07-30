@@ -32,13 +32,15 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    datetemp =
-        new DateTime(datetime.year, datetime.month, datetime.day, 0, 0, 0)
-            .toUtc()
-            .toIso8601String();
+    if (widget.idLenhdientu != null) {
+      datetemp =
+          new DateTime(datetime.year, datetime.month, datetime.day, 0, 0, 0)
+              .toUtc()
+              .toIso8601String();
 
-    loadDSLenh();
-    print(widget.idLenhdientu);
+      loadDSLenh();
+      // print(widget.idLenhdientu);
+    }
   }
 
   void loadDSLenh() async {
@@ -61,7 +63,9 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
         'http://113.176.29.57:19666/api/Driver/lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
         postdata);
 
-    // }
+    setState(() {
+      
+    });
   }
 
   void loadDSHanhKhachTrenXe() {
@@ -172,56 +176,60 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
             SizedBox(
               height: 20,
             ),
-            FutureBuilder<DSLenh>(
-              future: DSLenhFuture,
-              builder: ((context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Expanded(
-                    child: Center(
-                      child: Text('Lỗi'),
-                    ),
-                  );
-                } else if (snapshot.hasData) {
-                  DSLenh getdata = snapshot.data;
-                  Data datatemp = getdata.data;
+            widget.idLenhdientu != null
+                ? FutureBuilder<DSLenh>(
+                    future: DSLenhFuture,
+                    builder: ((context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Expanded(
+                          child: Center(
+                            child: Text('Lỗi'),
+                          ),
+                        );
+                      } else if (snapshot.hasData) {
+                        DSLenh getdata = snapshot.data;
+                        Data datatemp = getdata.data;
 
-                  if (!getdata.status) {
-                    print('aheeeeeeee');
-                    return Expanded(
-                      child: Center(
+                        if (!getdata.status) {
+                          print('aheeeeeeee');
+                          return Expanded(
+                            child: Center(
+                              child: Text('Không có dữ liệu'),
+                            ),
+                          );
+                        }
+                        List<Lenh> listdata = datatemp.list;
+                        return Expanded(
+                          child: ListView.builder(
+                              itemCount: listdata.length,
+                              itemBuilder: (context, index) {
+                                var time;
+
+                                time = DateTime.parse(
+                                        listdata[index].thoiGianXuatBenKeHoach)
+                                    .toLocal();
+
+                                String timeHieuLuc =
+                                    DateFormat('kk:mm dd/MM/yyyy').format(time);
+                                return itemWhenAccepted(timeHieuLuc, listdata,
+                                    index, context, widthScreen);
+                              }),
+                        );
+                      }
+                      return Center(
                         child: Text('Không có dữ liệu'),
-                      ),
-                    );
-                  }
-                  List<Lenh> listdata = datatemp.list;
-                  return Expanded(
-                    child: ListView.builder(
-                        itemCount: listdata.length,
-                        itemBuilder: (context, index) {
-                          var time;
-
-                          time = DateTime.parse(
-                                  listdata[index].thoiGianXuatBenKeHoach)
-                              .toLocal();
-
-                          String timeHieuLuc =
-                              DateFormat('kk:mm dd/MM/yyyy').format(time);
-                          return itemWhenAccepted(timeHieuLuc, listdata, index,
-                              context, widthScreen);
-                        }),
-                  );
-                }
-                return Center(
-                  child: Text('Không có dữ liệu'),
-                );
-              }),
-            ),
+                      );
+                    }),
+                  )
+                : Center(
+                    child: Text('Không có dữ liệu lệnh'),
+                  ),
           ],
         ),
       ),
@@ -370,132 +378,181 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                            FutureBuilder<DSHanhKhachMuaVe>(
-                              future: DshanhkhachmuaveFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                if (snapshot.hasData) {
-                                  DSHanhKhachMuaVe dshanhkhachmuave =
-                                      snapshot.data;
-                                  listCheck = dshanhkhachmuave.data;
-                                  if (listCheck.length == 0) {
-                                    return Center(
-                                      child: Column(
+                              FutureBuilder<DSHanhKhachMuaVe>(
+                                  future: DshanhkhachmuaveFuture,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    if (snapshot.hasData) {
+                                      DSHanhKhachMuaVe dshanhkhachmuave =
+                                          snapshot.data;
+                                      listCheck = dshanhkhachmuave.data;
+                                      if (listCheck.length == 0) {
+                                        return Center(
+                                          child: Column(
+                                            children: [
+                                              Image.asset(
+                                                'asset/images/warning.png',
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                'Xác nhận chuyển đổi lệnh',
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              Text(
+                                                  'Bạn có chắc chắn muốn chuyên sang lệnh'),
+                                              Text('${listdata[0].maLenh}',
+                                                  style:
+                                                      TextStyle(fontSize: 16)),
+                                              SizedBox(
+                                                height: 10,
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      Column(
                                         children: [
-                                          Image.asset('asset/images/warning.png',width: 80,height: 80,),
-                                          SizedBox(height: 10,),
-                                          Text('Xác nhận chuyển đổi lệnh',style: TextStyle(fontSize: 18),),
-                                          Text('Bạn có chắc chắn muốn chuyên sang lệnh'),
-                                          Text('${listdata[0].maLenh}',style: TextStyle(fontSize: 16)),
-                                          SizedBox(height: 10,)
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Danh sách vé chuyển đổi lệnh',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      Expanded(
-                                        child: ListView(
-                                          children: [
-                                            Column(
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'Danh sách vé chuyển đổi lệnh',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                          ),
+                                          Expanded(
+                                            child: ListView(
                                               children: [
-                                                Row(
+                                                Column(
                                                   children: [
-                                                    Checkbox(
-                                                        value: AllChecked,
-                                                        onChanged:
-                                                            setAllChecked),
-                                                    Text(
-                                                        'Tất cả(${listCheck.length})')
-                                                  ],
-                                                ),
-                                                Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                                    Row(
+                                                      children: [
+                                                        Checkbox(
+                                                            value: AllChecked,
+                                                            onChanged:
+                                                                setAllChecked),
+                                                        Text(
+                                                            'Tất cả(${listCheck.length})')
+                                                      ],
+                                                    ),
+                                                    Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             0.7,
-                                                    child: Divider(
-                                                      color: Colors.black,
-                                                    ))
+                                                        child: Divider(
+                                                          color: Colors.black,
+                                                        ))
+                                                  ],
+                                                ),
+                                                ...listCheck
+                                                    .map(itemChuyenDoiLenh)
+                                                    .toList()
                                               ],
                                             ),
-                                            ...listCheck
-                                                .map(itemChuyenDoiLenh)
-                                                .toList()
-                                          ],
-                                        ),
-                                      ),
-                                      
-                                    ],
-                                  );
-                                }
-                                if (snapshot.hasError) {
-                                  return Center(
-                                    child: Text('Lỗi'),
-                                  );
-                                }
-                                return Center(
-                                  child: Text('Không có dữ liệu'),
-                                );
-                              }),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text('Lỗi'),
+                                      );
+                                    }
+                                    return Center(
+                                      child: Text('Không có dữ liệu'),
+                                    );
+                                  }),
                               Divider(
-                                        thickness: 1.5,
-                                        height: 1,
-                                      ),
-                                      IntrinsicHeight(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            FlatButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
+                                thickness: 1.5,
+                                height: 1,
+                              ),
+                              IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('HỦY',
+                                          style: TextStyle(color: Colors.red)),
+                                      height: 18,
+                                      // color: Colors.black,
+                                    ),
+                                    VerticalDivider(
+                                      width: 2,
+                                      thickness: 1.5,
+                                    ),
+                                    FlatButton(
+                                        onPressed: () async {
+                                          print(
+                                              'idlenh cu: ${widget.idLenhdientu}');
+                                          print(
+                                              'idlenh moi: ${listdata.first.guidLenh}');
+                                          var resp = await ApiHelper.post(
+                                              'http://113.176.29.57:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di',
+                                              {
+                                                'ToaDo': '',
+                                                'idDonHangs': [],
+                                                'idLenhCu':
+                                                    '${widget.idLenhdientu}',
+                                                'idLenhMoi':
+                                                    '${listdata.first.guidLenh}'
+                                              });
+                                          if (resp['status']) {
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              loadDSLenh();
+                                            },);
+                                          } else {
+                                             Navigator.pop(context);
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible:
+                                                  false, // user must tap button!
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Lỗi'),
+                                                  content:
+                                                      Text(resp['message']),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child:
+                                                          const Text('Đã hiểu'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
                                               },
-                                              child: Text('HỦY',
-                                                  style: TextStyle(
-                                                      color: Colors.red)),
-                                              height: 18,
-                                              // color: Colors.black,
-                                            ),
-                                            VerticalDivider(
-                                              width: 2,
-                                              thickness: 1.5,
-                                            ),
-                                            FlatButton(
-                                                onPressed: () {
-                                                  print('idlenh cu: ${widget.idLenhdientu}');
-                                                   print('idlenh moi: ${listdata.first.guidLenh}');
-                                                var resp = ApiHelper.post('http://113.176.29.57:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di', {
-                                                  'ToaDo':'',
-                                                  'idDonHangs':[],
-                                                  'idLenhCu':'${widget.idLenhdientu}',
-                                                  'idLenhMoi':'${listdata.first.guidLenh}'
-                                                });
-                                                },
-                                                child: Text('ĐỒNG Ý',
-                                                    style: TextStyle(
-                                                        color: Colors.blue)),
-                                                height: 18)
-                                          ],
-                                        ),
-                                      )
-                          ],),
+                                            );
+                                          }
+                                        },
+                                        child: Text('ĐỒNG Ý',
+                                            style:
+                                                TextStyle(color: Colors.blue)),
+                                        height: 18)
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         );
                       });
                     });

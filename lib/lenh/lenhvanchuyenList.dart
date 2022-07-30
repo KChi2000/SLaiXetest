@@ -95,9 +95,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
         postdata);
     maplenh = await DSLenhFuture;
     setState(() {});
-    if (maplenh != null) {
-      print('postttt ${maplenh.message}');
-    }
+   
   }
 
   void checkdropdownTuyen() {
@@ -345,8 +343,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
             Data datatemp = getdata.data;
             List<Lenh> listdata = datatemp.list;
             // print('tttttt: ${listdata[0].bienKiemSoat}');
-            print(listdata.length);
-            if (listdata.length == 0) {
+            print(datatemp.list == null);
+            if (datatemp.list == null) {
               print('aheeeeeeee');
               return Center(
                 child: Text('Không có dữ liệu'),
@@ -743,13 +741,42 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       height: 5,
                                     ),
                                     RaisedButton(
-                                      onPressed: () {
+                                      onPressed: ()async {
                                         if(formKey.currentState.validate()){
-                                          ApiHelper.post('http://l113.176.29.57:19666/api/Driver/lai-xe-huy-nhan-lenh', {
+                                        var resp=  await ApiHelper.post('http://l113.176.29.57:19666/api/Driver/lai-xe-huy-nhan-lenh', {
                                             'guidLenh':'${listdata[index].guidLenh}',
                                             'lyDo':'${lidoController.text}',
                                             'toaDo':''
                                           });
+                                          if(resp['status']){
+                                            Navigator.pop(context);
+                                              setState(() {
+                                                loadDSLenh();
+                                              },);
+                                          }else{
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible:
+                                                  false, // user must tap button!
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Lỗi'),
+                                                  content:
+                                                      Text(resp['message']),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child:
+                                                          const Text('Đã hiểu'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
                                         }
                                       },
                                       child: Text(
@@ -800,7 +827,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       'guidLenh':'${listdata[index].guidLenh}',
                                       'toaDo':''
                                     });
-                                    if(resp['status']){}
+                                    if(resp['status']){
+                                      loadDSLenh();
+                                    }
                                     else{
                                       showDialog(context: context, builder: (context){
                                         return AlertDialog(

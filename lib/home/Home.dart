@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/QRScanner/QRpage.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../model/KhachTrenXe.dart';
 import '../model/LenhHienTai.dart';
 import '../model/lenhModel.dart';
@@ -18,10 +20,11 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  
   var lenhHienTaiFuture;
   var khachTrenXeFuture;
   LenhHienTai lenhhientai;
-
+  String checklenh= 'has data';
   var datetime;
   String timeXuatBen;
   @override
@@ -36,10 +39,15 @@ class HomeState extends State<Home> {
         'http://113.176.29.57:19666/api/Driver/lay-lenh-hien-tai-cua-lai-xe');
     lenhhientai = await lenhHienTaiFuture;
 
-    convertDateTime();
+    if(lenhhientai.data.maLenh != null){
+      convertDateTime();
     if (lenhhientai != null) {
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
           'http://113.176.29.57:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
+    }
+    }
+    else{
+      checklenh = 'no data';
     }
     setState(() {});
   }
@@ -87,12 +95,17 @@ class HomeState extends State<Home> {
                     SizedBox(
                       width: spaceBetween,
                     ),
-                    Text(
-                      '${LoginHelper.Default.userToken.given_name}',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: mainColor,
-                          fontSize: fontSize),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        '${LoginHelper.Default.userToken.given_name}',
+                        style: TextStyle(
+                          
+                            fontWeight: FontWeight.bold,
+                            color: mainColor,
+                            fontSize: fontSize),
+                            maxLines: 2,
+                      ),
                     ),
                   ],
                 ),
@@ -108,13 +121,13 @@ class HomeState extends State<Home> {
                             color: Colors.white,
                           ))),
                   onTap: () {
-                    print('inkwell');
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> QRpage()));
                   },
                 )
               ],
             ),
           ),
-          FutureBuilder<KhachTrenXe>(
+         checklenh != 'no data' ? FutureBuilder<KhachTrenXe>(
               future: khachTrenXeFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -247,9 +260,10 @@ class HomeState extends State<Home> {
                     child: Text('Không có dữ liệu'),
                   ),
                 );
-              })
+              }): Expanded(child: Center(child: Text('Không có dữ liệu'),))
         ],
       ),
-    ));
+    )
+    );
   }
 }
