@@ -44,7 +44,8 @@ class _SignUpState extends State<SignUp> {
                   'THÔNG TIN ĐĂNG KÍ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 25,
+                    fontSize: 24,
+                    fontFamily: 'Roboto Regular'
                   ),
                 ),
                 SizedBox(
@@ -64,7 +65,7 @@ class _SignUpState extends State<SignUp> {
                               labelText: 'Họ tên(*)',
                               border: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(width: 1, color: Colors.blue),
+                                    BorderSide(color: Colors.blue),
                               ),
                             ),
                             validator: (name) {
@@ -88,7 +89,7 @@ class _SignUpState extends State<SignUp> {
                                 labelText: 'Số điện thoại(*)',
                                 border: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(width: 1, color: Colors.blue),
+                                      BorderSide(color: Colors.blue),
                                 )),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
@@ -118,10 +119,10 @@ class _SignUpState extends State<SignUp> {
                             decoration: InputDecoration(
                                 isDense: true,
                                 labelText: 'Ngày sinh(*)',
-                                suffixIcon: Icon(Icons.calendar_month),
+                                suffixIcon: Icon(Icons.calendar_month,size: 24,),
                                 border: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(width: 1, color: Colors.blue),
+                                      BorderSide(color: Colors.blue),
                                 )),
                             onTap: () async {
                               FocusScope.of(context)
@@ -156,7 +157,7 @@ class _SignUpState extends State<SignUp> {
                               labelText: 'Số GPLX(*)',
                               border: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(width: 1, color: Colors.blue),
+                                    BorderSide( color: Colors.blue),
                               ),
                             ),
                             validator: (gplx) {
@@ -180,7 +181,7 @@ class _SignUpState extends State<SignUp> {
                                 labelText: 'Hạng bằng(*)',
                                 border: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(width: 1, color: Colors.blue),
+                                      BorderSide( color: Colors.blue),
                                 )),
                             validator: (bang) {
                               if (bang == null || bang.isEmpty) {

@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         accentColor: Colors.brown,
         brightness: Brightness.light,
+        
         scaffoldBackgroundColor: Colors.white,
       ),
       home: Login()

@@ -100,10 +100,10 @@ class HomeState extends State<Home> {
                       child: Text(
                         '${LoginHelper.Default.userToken.given_name}',
                         style: TextStyle(
-                          
-                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto Italic',
+                            // fontWeight: FontWeight.bold,
                             color: mainColor,
-                            fontSize: fontSize),
+                            fontSize: 14),
                             maxLines: 2,
                       ),
                     ),
@@ -174,7 +174,9 @@ class HomeState extends State<Home> {
                                 Text(
                                   '$timeXuatBen',
                                   style: TextStyle(
-                                    fontWeight: fontStyleListItem,
+                                    fontFamily: 'Roboto Bold',
+                                    fontSize: 14,
+                                    
                                   ),
                                 ),
                               ],
@@ -182,7 +184,8 @@ class HomeState extends State<Home> {
                             Text(
                               '${lenhhientai.data.trangThai}',
                               style: TextStyle(
-                                  fontWeight: fontStyleListStatus,
+                                  fontFamily: 'Roboto Bold',
+                                    fontSize: 14,
                                   color: statusText),
                             )
                           ],
@@ -199,7 +202,8 @@ class HomeState extends State<Home> {
                             ),
                             Text(
                               '${lenhhientai.data.bienKiemSoat} (${lenhhientai.data.maLenh})',
-                              style: TextStyle(fontWeight: fontStyleListItem),
+                              style: TextStyle(fontFamily: 'Roboto Bold',
+                                    fontSize: 14,),
                             )
                           ],
                         ),
@@ -216,7 +220,8 @@ class HomeState extends State<Home> {
                             Text(
                               '${lenhhientai.data.tenTuyen}\n(${lenhhientai.data.maTuyen})',
                               style: TextStyle(
-                                  fontWeight: fontStyleListItem, fontSize: 14),
+                                  fontFamily: 'Roboto Bold',
+                                    fontSize: 14,),
                             )
                           ],
                         ),
@@ -232,7 +237,8 @@ class HomeState extends State<Home> {
                             ),
                             Text(
                               '${data.data.soKhachTrenXe} khách',
-                              style: TextStyle(fontWeight: fontStyleListItem),
+                              style: TextStyle(fontFamily: 'Roboto Bold',
+                                    fontSize: 14,),
                             )
                           ],
                         ),
@@ -250,7 +256,7 @@ class HomeState extends State<Home> {
                                               builder: (context) =>
                                                   UIKitPage(2)));
                                     },
-                                    child: Text('XEM LỆNH'))))
+                                    child: Text('XEM LỆNH',style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 14,letterSpacing: 1.25),))))
                       ],
                     ),
                   );

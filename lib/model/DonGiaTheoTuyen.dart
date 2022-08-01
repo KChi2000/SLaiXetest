@@ -39,6 +39,7 @@ class DataDonGiaTheoTuyen {
   String updatedAt;
   String updatedBy;
   bool isDelete;
+  bool chipselected=false;
   String guidLuongTuyenNavigation;
 
   DataDonGiaTheoTuyen(
@@ -50,7 +51,8 @@ class DataDonGiaTheoTuyen {
       this.updatedAt,
       this.updatedBy,
       this.isDelete,
-      this.guidLuongTuyenNavigation});
+      this.guidLuongTuyenNavigation,
+      this.chipselected});
 
   DataDonGiaTheoTuyen.fromJson(Map<String, dynamic> json) {
     guidDonGia = json['guidDonGia'];

@@ -20,6 +20,7 @@ class banve extends StatefulWidget {
   String guidxe;
   String machuyendi;
   String idghe;
+
   banve(this.guidlotrinh, this.guidxe, this.machuyendi, this.idghe);
 
   @override
@@ -31,9 +32,9 @@ class _banveState extends State<banve> {
   final formkey1 = GlobalKey<FormState>();
   final formTTHK = GlobalKey<FormState>();
   final abc = GlobalKey<FormState>();
+  String chipSelected;
   DiemXuongData diemxuong;
-  final lowPrice =
-      TextEditingController(text: '0đ');
+  final lowPrice = TextEditingController(text: '0đ');
   bool cash = true;
   bool bank = false;
   bool checkbox = false;
@@ -43,6 +44,11 @@ class _banveState extends State<banve> {
   DonGiaTheoTuyen DonGia;
   var DSDiemXuongFuture;
   List<DataDonGiaTheoTuyen> data = [];
+  static const _locale = 'en';
+  String _formatNumber(String s) =>
+      NumberFormat.decimalPattern(_locale).format(int.parse(s));
+  String get _currency =>
+      NumberFormat.compactSimpleCurrency(locale: _locale).currencySymbol;
   @override
   void initState() {
     // TODO: implement initState
@@ -71,7 +77,9 @@ class _banveState extends State<banve> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('THANH TOÁN BÁN VÉ'),
+        title: Text(
+          'THANH TOÁN BÁN VÉ',
+        ),
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -87,7 +95,7 @@ class _banveState extends State<banve> {
                 data = DonGia.data;
                 DSDiemXuong dsdiemxuong = snapshot.data;
                 List<DiemXuongData> listdiemxuong = dsdiemxuong.data;
-                String initDropValue = listdiemxuong[0].tenDiemXuong;
+
                 return Container(
                     padding: EdgeInsets.all(10),
                     child: Column(
@@ -143,12 +151,13 @@ class _banveState extends State<banve> {
                           items: listdiemxuong.map((DiemXuongData text) {
                             return new DropdownMenuItem(
                               child: Container(
-                                  child: Text(text.tenDiemXuong,
-                                      style: TextStyle(fontSize: 15))),
+                                  child: Text(
+                                text.tenDiemXuong,
+                              )),
                               value: text,
                             );
                           }).toList(),
-                          // value: initDropValue,
+                          value: diemxuong,
                           onChanged: (DiemXuongData t1) {
                             xacnhan();
                             setState(() {
@@ -163,6 +172,23 @@ class _banveState extends State<banve> {
                             return null;
                           },
                         ),
+                        // listdiemxuong.length != 0
+                        //     ? Wrap(children: [
+                        //         ...listdiemxuong.map((e) => InkWell(
+                        //               onTap: () {
+                        //                diemxuong = e;
+                        //               },
+                        //               child: Container(
+                        //                   margin: EdgeInsets.symmetric(
+                        //                       horizontal: 5),
+                        //                   child: Chip(
+                        //                     label: Text(e.tenDiemXuong,style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,color: chipSelected == e.tenDiemXuong.toString()?Colors.white: Colors.black)),
+                        //                     backgroundColor:chipSelected == e.tenDiemXuong.toString()?Colors.blue: Colors.grey[320],
+
+                        //                   )),
+                        //             ))
+                        //       ])
+                        //     : Text(''),
                         Form(
                           key: formTTHK,
                           child: TextFormField(
@@ -180,16 +206,22 @@ class _banveState extends State<banve> {
                               return null;
                             },
                             onChanged: (vl2) {
-                              final NumberFormat Currency = NumberFormat('#,###');
+                              // final NumberFormat Currency = NumberFormat('#,###');
+                              // setState(() {
+                              //   giave = Currency.format(double.parse(vl2))+'đ';
+                              //   lowPrice.text = giave;
+                              // });
+                              // xacnhan();
                               setState(() {
-                                giave = vl2;
-                                lowPrice.text = Currency.format(double.parse(vl2))+'đ';
+                                vl2 =
+                                    '${_formatNumber(vl2.replaceAll(',', ''))}';
+                                lowPrice.value = TextEditingValue(
+                                  text: vl2,
+                                  selection: TextSelection.collapsed(
+                                      offset: vl2.length),
+                                );
                               });
                               xacnhan();
-                             
-                              // print(usCurrency.format(double.parse(vl2)));
-                              
-                              // print(ab);
                             },
                           ),
                         ),
@@ -198,14 +230,31 @@ class _banveState extends State<banve> {
                                 ...data.map((e) => InkWell(
                                       onTap: () {
                                         print(e.giaVe);
-                                        lowPrice.text = e.giaVe.toString();
+
+                                        setState(() {
+                                          lowPrice.text = NumberFormat('#,###')
+                                              .format(e.giaVe);
+                                          giave = e.giaVe.toString();
+                                          chipSelected = e.giaVe.toString();
+                                        });
                                       },
                                       child: Container(
                                           margin: EdgeInsets.symmetric(
                                               horizontal: 5),
                                           child: Chip(
-                                            label: Text(e.giaVe.toString()),
-                                            backgroundColor: Colors.grey[350],
+                                            label: Text(e.giaVe.toString(),
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14,
+                                                    color: chipSelected ==
+                                                            e.giaVe.toString()
+                                                        ? Colors.white
+                                                        : Colors.black)),
+                                            backgroundColor: chipSelected ==
+                                                    e.giaVe.toString()
+                                                ? Colors.blue
+                                                : Colors.grey[320],
                                           )),
                                     ))
                               ])
@@ -221,7 +270,11 @@ class _banveState extends State<banve> {
                                     print(checkbox);
                                   });
                                 }),
-                            Text('Phát hành & In vé'),
+                            Text('Phát hành & In vé',
+                                style: TextStyle(
+                                  fontFamily: 'Roboto Regular',
+                                  fontSize: 16,
+                                )),
                           ],
                         ),
                         SizedBox(
@@ -230,7 +283,10 @@ class _banveState extends State<banve> {
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text('Chọn hình thức thu tiền',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                  fontFamily: 'Roboto Regular',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700)),
                         ),
                         SizedBox(
                           height: 15,
@@ -276,8 +332,9 @@ class _banveState extends State<banve> {
                                     ),
                                     Text('TIỀN MẶT/CASH\nCHANGE',
                                         style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.black87),
+                                            fontFamily: 'Roboto Regular',
+                                            fontSize: 9,
+                                            color: Colors.black),
                                         textAlign: TextAlign.start),
                                   ]),
                                 ),
@@ -350,6 +407,7 @@ class _banveState extends State<banve> {
                                   print(money);
 
                                   if (resp['status']) {
+                                    Navigator.of(context).popUntil((route) => route.isFirst);
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
@@ -380,7 +438,11 @@ class _banveState extends State<banve> {
                               : null,
                           child: Text(
                             'BÁN VÉ',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Roboto Medium',
+                                letterSpacing: 1.25,
+                                color: Colors.white),
                           ),
                         )
                       ],
@@ -388,13 +450,23 @@ class _banveState extends State<banve> {
               } else if (snapshot.hasError) {
                 return Expanded(
                   child: Center(
-                    child: Text('Không có dữ liệu'),
+                    child: Text(
+                      'Không có dữ liệu',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Roboto Regular',
+                      ),
+                    ),
                   ),
                 );
               }
               return Expanded(
                 child: Center(
-                  child: Text('Lỗi kết nối'),
+                  child: Text('Lỗi kết nối',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Roboto Regular',
+                      )),
                 ),
               );
             }),
@@ -405,6 +477,7 @@ class _banveState extends State<banve> {
   bool xacnhan() {
     if (lowPrice.text != '0đ' &&
         giave != '0đ ' &&
+        lowPrice.text != null &&
         sdt != null &&
         sdtControlller.text != null &&
         diemxuong.tenDiemXuong != null) {

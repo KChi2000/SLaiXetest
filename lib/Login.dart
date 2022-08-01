@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter_js/flutter_js.dart';
-import 'package:flutter_js/javascript_runtime.dart';
+
 import 'package:flutter_ui_kit/SignUp.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/thongtincanhan.dart';
@@ -21,7 +20,7 @@ class _MyWidgetState extends State<Login> {
   bool showPass = true;
   String username = '';
   String password = '';
-  JavascriptRuntime flutterJs;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -67,7 +66,9 @@ class _MyWidgetState extends State<Login> {
                       'Sơn Phát C&T',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 30,
+                          fontSize: 24,
+                          fontFamily: 'Roboto Regular',
+                          letterSpacing: 0,
                           foreground: Paint()
                             ..shader = LinearGradient(
                               colors: <Color>[Colors.red, Colors.blue],
@@ -86,12 +87,12 @@ class _MyWidgetState extends State<Login> {
                             initialValue: username,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.person),
+                                prefixIcon: Icon(Icons.person,size: 24,),
                                 isDense: true,
                                 labelText: 'Tài khoản',
                                 border: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(width: 1, color: Colors.blue),
+                                      BorderSide( color: Colors.blue),
                                 )),
                             validator: (tk) {
                               if (tk == null || tk.isEmpty) {
@@ -113,12 +114,13 @@ class _MyWidgetState extends State<Login> {
                           obscureText: showPass,
                           initialValue: password,
                           decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon: Icon(Icons.lock,size: 24,),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   showPass
                                       ? Icons.visibility
                                       : Icons.visibility_off,
+                                      size: 24,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -132,7 +134,7 @@ class _MyWidgetState extends State<Login> {
                               labelText: 'Mật khẩu',
                               border: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(width: 1, color: Colors.blue),
+                                    BorderSide( color: Colors.blue),
                               )),
                           validator: (mk) {
                             if (mk == null || mk.isEmpty) {

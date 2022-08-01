@@ -111,7 +111,10 @@ class TaikhoanState extends State<Taikhoan> {
           "Profile",
           style: TextStyle(
             color: titleColor,
+            fontFamily: 'Roboto Medium',
+            fontSize: 20,
             fontWeight: FontWeight.bold,
+            letterSpacing: 0.15
           ),
         ),
         centerTitle: true,
@@ -254,6 +257,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                 'noiDung': '${formattedDate}',
                                                 'tenTruong':'ngaySinh'
                                               });
+                                              print('formatttt $formattedDate');
                                               if(res['status']){
                                                   // 
                                                   setState(() {
