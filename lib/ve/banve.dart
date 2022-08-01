@@ -10,7 +10,7 @@ import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/DSDiemXuong.dart';
 import 'package:flutter_ui_kit/uikit.dart';
-
+import 'package:intl/intl.dart';
 import '../componentsFuture/bottomshetHK.dart';
 import '../model/DonGiaTheoTuyen.dart';
 import '../other/homeConstant.dart';
@@ -33,7 +33,7 @@ class _banveState extends State<banve> {
   final abc = GlobalKey<FormState>();
   DiemXuongData diemxuong;
   final lowPrice =
-      MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
+      TextEditingController(text: '0đ');
   bool cash = true;
   bool bank = false;
   bool checkbox = false;
@@ -49,7 +49,6 @@ class _banveState extends State<banve> {
     super.initState();
     loadDonGia(widget.guidlotrinh);
     print(widget.guidlotrinh);
-   
   }
 
   void loadDSDiemXuong() async {
@@ -58,15 +57,12 @@ class _banveState extends State<banve> {
 
   void loadDonGia(String idLoTRinh) async {
     DonGia = await ApiHelper.getDonGiaTheoTuyen(idLoTRinh);
-    if(DonGia.status){
+    if (DonGia.status) {
       loadDSDiemXuong();
-      setState(() {
-        
-      });
-    }
-    else{
+      setState(() {});
+    } else {
       // setState(() {
-        
+
       // });
     }
   }
@@ -184,10 +180,16 @@ class _banveState extends State<banve> {
                               return null;
                             },
                             onChanged: (vl2) {
+                              final NumberFormat Currency = NumberFormat('#,###');
                               setState(() {
                                 giave = vl2;
+                                lowPrice.text = Currency.format(double.parse(vl2))+'đ';
                               });
                               xacnhan();
+                             
+                              // print(usCurrency.format(double.parse(vl2)));
+                              
+                              // print(ab);
                             },
                           ),
                         ),
@@ -322,7 +324,8 @@ class _banveState extends State<banve> {
                         ElevatedButton(
                           onPressed: xacnhan()
                               ? () async {
-                                  String money = lowPrice.text.replaceAll(RegExp('[^0-9]'), '');
+                                  String money = lowPrice.text
+                                      .replaceAll(RegExp('[^0-9]'), '');
                                   var resp = await ApiHelper.post(
                                       'http://113.176.29.57:19666/api/DonHang/thuc-hien-ban-ve-tai-app-lai-xe',
                                       {
@@ -336,16 +339,16 @@ class _banveState extends State<banve> {
                                         'maChuyenDi': '${widget.machuyendi}',
                                         'maDiemXuong':
                                             '${diemxuong.guidDiemXuong}',
-                                        'phatHanhVe' :jsonDecode(checkbox.toString()),
+                                        'phatHanhVe':
+                                            jsonDecode(checkbox.toString()),
                                         'soDienThoai': '${sdtControlller.text}',
                                         'tenDiemXuong':
                                             '${diemxuong.tenDiemXuong}',
                                         'toaDo': '',
                                         'tongTienThanhToan': int.parse(money)
                                       });
-                                      print(money);
-                                     
-                                     
+                                  print(money);
+
                                   if (resp['status']) {
                                     Navigator.pushReplacement(
                                         context,
@@ -400,8 +403,8 @@ class _banveState extends State<banve> {
   }
 
   bool xacnhan() {
-    if (lowPrice.text != '0,00VNĐ' &&
-        giave != '0,00VNĐ' &&
+    if (lowPrice.text != '0đ' &&
+        giave != '0đ ' &&
         sdt != null &&
         sdtControlller.text != null &&
         diemxuong.tenDiemXuong != null) {

@@ -6,7 +6,7 @@ import 'package:flutter_ui_kit/SignUp.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/thongtincanhan.dart';
 import 'package:flutter_ui_kit/uikit.dart';
-
+import 'package:intl/intl.dart';
 import 'helpers/ApiHelper.dart';
 // import 'dart:js' as js; ???
 
@@ -153,7 +153,7 @@ class _MyWidgetState extends State<Login> {
                 ),
                 FlatButton(
                   onPressed: () async {
-                   
+                      
                       try {
                         await LoginHelper.Default.login(username, password);
                         String token = LoginHelper.Default.access_token;
@@ -182,6 +182,7 @@ class _MyWidgetState extends State<Login> {
                                   ],
                                 ));
                       }
+
                     },
                   
                   child: Text(
