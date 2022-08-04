@@ -52,17 +52,16 @@ class dunglenhthanhcong extends StatelessWidget {
                       Text('Thông báo sẽ được gửi đến đơn vị Công ',
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 0.1,
-                              letterSpacing: 0.0001,
-                              fontSize: 16)),
+                             
+                            fontFamily: 'Roboto Regular',
+                              
+                              fontSize: 14)),
                       Text('ty cổ phần vận tải Thái Nguyên ...',
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 0.1,
-                              letterSpacing: 0.0001,
-                              fontSize: 16)),
+                              fontFamily: 'Roboto Regular',
+                              
+                              fontSize: 14)),
                               Spacer(),
                               
                       FlatButton(
@@ -75,7 +74,7 @@ class dunglenhthanhcong extends StatelessWidget {
                               child: Center(
                                   child: Text('VỀ DANH SÁCH LỆNH',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.white,fontSize: 14,fontFamily: 'Roboto Medium',letterSpacing: 1.25,
                                       ))))),
                       FlatButton(
                           onPressed: () {
@@ -92,7 +91,7 @@ class dunglenhthanhcong extends StatelessWidget {
                               child: Center(
                                   child: Text('VỀ TRANG CHỦ',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: Colors.blue,fontSize: 14,fontFamily: 'Roboto Medium',letterSpacing: 1.25,
                                       ))))),
                                       SizedBox(height: 20,)
                     ],

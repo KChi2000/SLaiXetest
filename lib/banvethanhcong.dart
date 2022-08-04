@@ -25,7 +25,7 @@ class banvethanhcong extends StatelessWidget {
                   ),
             Text(
               'Bán vé thành công !',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontFamily: 'Roboto Medium'),
             ),
             Container(
               width: 250,
@@ -75,7 +75,7 @@ class banvethanhcong extends StatelessWidget {
                       },
                       child: Text(
                         'TIẾP TỤC',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white,fontFamily: 'Roboto Medium',fontSize: 14,letterSpacing: 1.25),
                       ),
                       color: Colors.blue,
                     )

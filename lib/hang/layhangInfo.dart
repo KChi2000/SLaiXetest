@@ -63,7 +63,7 @@ class _layhangInfoState extends State<layhangInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('THÔNG TIN GỬI HÀNG', style: TextStyle(fontSize: 16)),
+        title: Text('THÔNG TIN GỬI HÀNG', style: TextStyle()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -89,7 +89,7 @@ class _layhangInfoState extends State<layhangInfo> {
                     children: [
                       Row(
                         children: [
-                          Text('Đã trả cước'),
+                          Text('Đã trả cước', style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                           Switch(
                               value: flag,
                               activeColor: Color.fromARGB(255, 21, 128, 216),
@@ -164,7 +164,7 @@ class _layhangInfoState extends State<layhangInfo> {
                             xacnhan();
                           });
                         },
-                        hint: Text('chọn điểm trả hàng'),
+                        hint: Text('chọn điểm trả hàng', style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                         menuMaxHeight: 200,
                         validator: (vl1) {
                           if (vl1 == null || vl1.isEmpty) {
@@ -287,7 +287,9 @@ class _layhangInfoState extends State<layhangInfo> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text('Chọn hình thức thu tiền',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontFamily: 'Roboto Regular',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700)),
                       ),
                       SizedBox(
                         height: 15,
@@ -309,7 +311,8 @@ class _layhangInfoState extends State<layhangInfo> {
                           ),
                           Text('TIỀN MẶT/CASH\nCHANGE',
                               style: TextStyle(
-                                  fontSize: 10, color: Colors.black87),
+                                   fontFamily: 'Roboto Regular',
+                                            fontSize: 9, color: Colors.black87),
                               textAlign: TextAlign.start),
                         ]),
                       ),
@@ -328,7 +331,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                       checkbox = a;
                                     });
                                   }),
-                              Text('In phiếu'),
+                              Text('In phiếu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                             ],
                           )
                         ],
@@ -397,7 +400,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                                         children: [
                                                           GestureDetector(
                                                             child: Text(
-                                                                'Chụp ảnh mới'),
+                                                                'Chụp ảnh mới',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                             onTap: () async {
                                                               print(
                                                                   'chọn chụp ảnh');
@@ -427,7 +430,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                                           ),
                                                           GestureDetector(
                                                             child: Text(
-                                                                'Chọn ảnh'),
+                                                                'Chọn ảnh',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                             onTap: () async {
                                                               print('chọn ảnh');
                                                               Navigator.pop(
@@ -478,7 +481,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                 print(sendDatetime);
                                 print(sendDatetime.toUtc().toIso8601String());
                                 var resp = await ApiHelper.postMultipart(
-                                    'http://113.176.29.57:19666/api/HangHoa/thuc-hien-nhan-van-chuyen-hang-hoa',
+                                    ApiHelper.API_HangHoa+'HangHoa/thuc-hien-nhan-van-chuyen-hang-hoa',
                                     {
                                       'idChuyenDi': '${widget.idchuyendi}',
                                       'tongTien':
@@ -510,11 +513,11 @@ class _layhangInfoState extends State<layhangInfo> {
                                         false, // user must tap button!
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: const Text('Lỗi'),
-                                        content: Text('Lỗi kết nối'),
+                                        title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                        content: Text('Lỗi kết nối',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: const Text('Đã hiểu'),
+                                            child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
@@ -528,7 +531,7 @@ class _layhangInfoState extends State<layhangInfo> {
                             : null,
                         child: Text(
                           'XÁC NHẬN',
-                          style: TextStyle(fontSize: 12, color: Colors.white),
+                          style: TextStyle(fontSize: 14,fontFamily: 'Roboto Medium',letterSpacing: 1.25, color: Colors.white),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -540,7 +543,7 @@ class _layhangInfoState extends State<layhangInfo> {
                   ));
             }
             return Center(
-              child: Text('Không có dữ liệu'),
+              child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
             );
           }),
         ),

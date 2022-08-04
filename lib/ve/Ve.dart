@@ -807,7 +807,7 @@ class VeState extends State<Ve> {
                                                                 var resp =
                                                                     await ApiHelper
                                                                         .post(
-                                                                            'http://113.176.29.57:19666/api/doi-soat/thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
+                                                                           ApiHelper.API_DoiSoat+ 'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
                                                                             {
                                                                       'guidXe': chuyendiGanday
                                                                           .data
@@ -1255,7 +1255,7 @@ class VeState extends State<Ve> {
                                                                       onPressed:
                                                                           () async {
                                                                         var resp = await ApiHelper.post(
-                                                                            'http://113.176.29.57:19666/api/DonHang/thuc-hien-sua-thong-tin-hanh-khach',
+                                                                           ApiHelper.API_DonHang+ 'thuc-hien-sua-thong-tin-hanh-khach',
                                                                             {
                                                                               'guidChoNgoi': data.guidChoNgoi,
                                                                               'guidChuyenDi': changeSodocho,
@@ -1421,7 +1421,7 @@ class VeState extends State<Ve> {
                                                     onPressed: () async {
                                                       var resp =
                                                           await ApiHelper.post(
-                                                              'http://113.176.29.57:19666/api/doi-soat/thuc-hien-xac-nhan-khach-xuong-xe',
+                                                             ApiHelper.API_DoiSoat+ 'thuc-hien-xac-nhan-khach-xuong-xe',
                                                               {
                                                             'guidXe':
                                                                 chuyendiGanday

@@ -27,6 +27,7 @@ class HomeState extends State<Home> {
   String checklenh= 'has data';
   var datetime;
   String timeXuatBen;
+  Barcode result;
   @override
   void initState() {
     // TODO: implement initState
@@ -120,8 +121,9 @@ class HomeState extends State<Home> {
                             'asset/icons/scan.svg',
                             color: Colors.white,
                           ))),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> QRpage()));
+                  onTap: ()async {
+                  result= await  Navigator.push(context, MaterialPageRoute(builder: (context)=> QRpage()));
+                  print(result.code);
                   },
                 )
               ],

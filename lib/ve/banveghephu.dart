@@ -371,7 +371,7 @@ class _banveState extends State<banveghephu> {
                                   String money = lowPrice.text
                                       .replaceAll(RegExp('[^0-9]'), '');
                                   var resp = await ApiHelper.post(
-                                      'http://113.176.29.57:19666/api/DonHang/thuc-hien-ban-ve-cho-ghe-phu',
+                                      ApiHelper.API_DonHang+'thuc-hien-ban-ve-cho-ghe-phu',
                                       {
                                         'ToaDo': '',
                                         'giaVe': int.parse(money),

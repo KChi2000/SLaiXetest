@@ -37,35 +37,46 @@ class _QRpageState extends State<QRpage> {
           body: Container(
               width: screen.width,
               height: screen.height,
-              child: Stack(children: [
-                QRView(
-                        overlay: QrScannerOverlayShape(
-                            borderColor: Colors.white,
-                            borderRadius: 10,
-                            borderLength: 20,
-                            borderWidth: 10,
-                            cutOutSize: MediaQuery.of(context).size.width * 0.8),
-                        key: qrKey,
-                        onQRViewCreated: _onQRViewCreated),
-
-                        Positioned(
-                      
+              child: Stack(
+                children: [
+                  QRView(
+                      overlay: QrScannerOverlayShape(
+                          borderColor: Colors.white,
+                          borderRadius: 10,
+                          borderLength: 20,
+                          borderWidth: 10,
+                          cutOutSize: MediaQuery.of(context).size.width * 0.8),
+                      key: qrKey,
+                      //type 2
+                      onQRViewCreated: (QRViewController controller) {
+                        setState(() {
+                          this.controller = controller;
+                        });
+                        controller.scannedDataStream.listen((event) {
+                          if(mounted){
+                            controller.dispose();
+                            Navigator.pop(context,event);
+                          }
+                        });
+                      }),
+                  Positioned(
                       child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: SvgPicture.asset(
-                          'asset/icons/close.svg',
-                          color: Colors.white,
-                          width: appbarIconSize,
-                          height: appbarIconSize,
-                        ),
-                      )),
-
-              ],))),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: SvgPicture.asset(
+                      'asset/icons/close.svg',
+                      color: Colors.white,
+                      width: appbarIconSize,
+                      height: appbarIconSize,
+                    ),
+                  )),
+                ],
+              ))),
     );
   }
 
+// like this type 1
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
@@ -80,6 +91,7 @@ class _QRpageState extends State<QRpage> {
   @override
   void dispose() {
     controller?.dispose();
+
     super.dispose();
   }
 }
