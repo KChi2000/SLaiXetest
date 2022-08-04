@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ui_kit/Login.dart';
 import 'package:flutter_ui_kit/componentsFuture/thanhtoanbanve.dart';
 import 'package:flutter_ui_kit/home/Home.dart';
+import 'package:flutter_ui_kit/lenh/AnhLenh.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 
 import 'banvethanhcong.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: Locale('vi','vi'),
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(

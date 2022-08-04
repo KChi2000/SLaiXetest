@@ -74,7 +74,7 @@ const Color chuyendoilenhButtonColor = Colors.white;
 
 //hang
 const double itemListHeightHang =40;
-const double itemListwidthtHang =0.7;
+const double itemListwidthtHang =0.75;
 const Color searchBoxColor = Colors.grey;
 const IconData searchIcon = Icons.search;
 const double searchBoxRadius = 20;

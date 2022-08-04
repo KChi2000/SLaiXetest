@@ -48,9 +48,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
   DSLenh maplenh;
   var DSTuyenVanChuyenTheoNgayFuture;
   DSTuyenVanChuyenTheoNgay dstuyentheongay;
-  Map<String, dynamic> postdata = {
-    
-  };
+  Map<String, dynamic> postdata = {};
   var datetemp;
   var datetime = DateTime.now();
   @override
@@ -63,7 +61,6 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
         new DateTime(datetime.year, datetime.month, datetime.day, 0, 0, 0)
             .toUtc()
             .toIso8601String();
-   
 
     loadDSLenh();
   }
@@ -91,11 +88,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        'http://113.176.29.57:19666/api/Driver/lay-danh-sach-tat-ca-lenh-cua-lai-xe',
+        ApiHelper.API_LenhDienTu + 'lay-danh-sach-tat-ca-lenh-cua-lai-xe',
         postdata);
     maplenh = await DSLenhFuture;
     setState(() {});
-   
   }
 
   void checkdropdownTuyen() {
@@ -117,7 +113,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
       appBar: AppBar(
         title: Text(
           'DANH SÁCH LỆNH',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          // style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         actions: [
           IconButton(
@@ -235,7 +231,6 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                         timeController.text =
                                             '${value.day}-${value.month}-${value.year}';
                                       });
-                                   
                                     }
                                   });
                                 },
@@ -344,7 +339,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
             List<Lenh> listdata = datatemp.list;
             // print('tttttt: ${listdata[0].bienKiemSoat}');
             print(datatemp.list == null);
-            if (datatemp.list == null) {
+            if (datatemp.list.length ==0) {
               print('aheeeeeeee');
               return Center(
                 child: Text('Không có dữ liệu'),
@@ -506,7 +501,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               Text(
                 '${listdata[index].tenTrangThai}',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: listdata[index].idTrangThai == 6? Colors.red:Colors.orange),
+                    fontWeight: FontWeight.bold,
+                    color: listdata[index].idTrangThai == 6
+                        ? Colors.red
+                        : Colors.orange),
               )
             ],
           ),
@@ -669,7 +667,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 FlatButton(
                   onPressed: () {
                     showModalBottomSheet(
-                      isScrollControlled:true,
+                        isScrollControlled: true,
                         context: context,
                         builder: (context) {
                           return StatefulBuilder(builder: (context, setState) {
@@ -685,7 +683,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       height: 10,
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
@@ -741,19 +740,26 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       height: 5,
                                     ),
                                     RaisedButton(
-                                      onPressed: ()async {
-                                        if(formKey.currentState.validate()){
-                                        var resp=  await ApiHelper.post('http://l113.176.29.57:19666/api/Driver/lai-xe-huy-nhan-lenh', {
-                                            'guidLenh':'${listdata[index].guidLenh}',
-                                            'lyDo':'${lidoController.text}',
-                                            'toaDo':''
-                                          });
-                                          if(resp['status']){
+                                      onPressed: () async {
+                                        if (formKey.currentState.validate()) {
+                                          var resp = await ApiHelper.post(
+                                              ApiHelper.API_LenhDienTu +
+                                                  'lai-xe-huy-nhan-lenh',
+                                              {
+                                                'guidLenh':
+                                                    '${listdata[index].guidLenh}',
+                                                'lyDo':
+                                                    '${lidoController.text}',
+                                                'toaDo': ''
+                                              });
+                                          if (resp['status']) {
                                             Navigator.pop(context);
-                                              setState(() {
+                                            setState(
+                                              () {
                                                 loadDSLenh();
-                                              },);
-                                          }else{
+                                              },
+                                            );
+                                          } else {
                                             showDialog(
                                               context: context,
                                               barrierDismissible:
@@ -820,32 +826,40 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () async{
+                                  onPressed: () async {
                                     // print(listdata[index].guidLenh);
                                     Navigator.pop(context);
-                                    var resp = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/lai-xe-tiep-nhan-lenh', {
-                                      'guidLenh':'${listdata[index].guidLenh}',
-                                      'toaDo':''
-                                    });
-                                    if(resp['status']){
+                                    var resp = await ApiHelper.post(
+                                        ApiHelper.API_LenhDienTu +
+                                            'lai-xe-tiep-nhan-lenh',
+                                        {
+                                          'guidLenh':
+                                              '${listdata[index].guidLenh}',
+                                          'toaDo': ''
+                                        });
+                                    if (resp['status']) {
                                       loadDSLenh();
-                                    }
-                                    else{
-                                      showDialog(context: context, builder: (context){
-                                        return AlertDialog(
-                                          title: Text('Lái xe đang thực hiện lệnh khác'),
-                                          actions: [
-                                             TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, 'Đã hiểu'),
-                                  child: const Text(
-                                    'Đã hiểu',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ),
-                                          ],
-                                        );
-                                      });
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  'Lái xe đang thực hiện lệnh khác'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Đã hiểu'),
+                                                  child: const Text(
+                                                    'Đã hiểu',
+                                                    style: TextStyle(
+                                                        color: Colors.blue),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          });
                                     }
                                   },
                                   child: const Text('Xác nhận'),

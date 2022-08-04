@@ -12,7 +12,7 @@ class Thongbao extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Thông Báo',style: TextStyle(color: titleColor),),),
       body: Container(color: Colors.white,
-      child: Center(child: Text('Không có thông báo mới !')),),
+      child: Center(child: Text('Không có thông báo mới !',style: TextStyle(fontFamily: "Roboto Regular",fontSize: 14))),),
     );
   }
 }

@@ -28,8 +28,34 @@ import '../model/TrangThaiChoNgoi.dart';
 import '../model/chuyendiganday.dart';
 import '../model/sodocho.dart';
 
+final backend_url = 'https://api.qc03.vedientu.sonphat.dev/';
+
 // Theo quy ước, các backends hiện tại đều hỗ trợ định dạng dữ liệu json vả input và output.
 class ApiHelper {
+  
+  static final API_KiemSoatVeTaiBen = backend_url + 'be_api/kiemsoatvetaiben/';
+  static final API_Print = backend_url;
+  static final API_TuyenDuong = backend_url + 'be_api/tuyenduong/';
+  static final API_ThanhToan = backend_url + 'be_api/thanhtoan/';
+  static final API_PhongChongDich = backend_url + 'be_api/phongchongdich/';
+  static final API_DoiSoat = backend_url + 'be_api/doisoat/';
+  static final API_ThongTin = backend_url + 'api/';
+  static final API_PhienBan = backend_url + 'PhienBan/api/';
+  static final API_HangHoa = 'https://hanghoa.qc03.vedientu.sonphat.dev/api/';
+  static final API_LenhDienTu = 'https://api.qc03.lenh.sonphat.dev/api/Driver/';
+  static final API_File = 'https://file.qc03.vedientu.sonphat.dev/api/';
+  static final API_DoanhNghiepVanTai = backend_url + 'be_api/doanhnghiepvantai/';
+  static final API_CauHinhHeThong = backend_url + 'be_api/cauhinhhethong/';
+  static final API_BaoCao = backend_url + 'be_api/baocao/';
+  static final API_Ve = backend_url + 'be_api/ve/';
+  static final API_Xe = backend_url + 'e_api/xe/';
+  static final API_TaiKhoan = backend_url + 'be_api/taikhoan/';
+  static final API_ChuyenDi = backend_url + 'be_api/chuyendi/';
+  static final API_DiemXuongCuaKhachHang = backend_url;
+  static final API_Default_BaseUrl = backend_url + 'be_api/chuyendi/';
+  static final API_DonHang = backend_url + 'be_api/donhang/';
+  static final API_BaseUrl = backend_url + 'be_api/chuyendi/';
+  static final API_BenXe = backend_url + 'be_api/benxe/';
   // Sau khi đã đăng nhập và lấy được token thì khi truy vấn api ta đưa thêm header authorization như dưới đây để server hiểu và cho phép xác thực.
   static Future<Map<String, dynamic>> get(String url) async {
     return await http.get(Uri.parse(url), headers: {
@@ -94,12 +120,15 @@ class ApiHelper {
   static Future<chuyendiganday> getchuyendiganday() async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/doi-soat/tim-kiem-chuyen-di-gan-day'),
+            API_DoiSoat+'tim-kiem-chuyen-di-gan-day'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
-      if (resp.body.isNotEmpty) print('infoapi ${resp.body.toString()}');
-      return chuyendiganday.fromJson(jsonDecode(resp.body));
+      if (resp.body.isNotEmpty) {
+        print('infoapi ${resp.body.toString()}');
+        return chuyendiganday.fromJson(jsonDecode(resp.body));
+      } else
+        return chuyendiganday.fromJson(jsonDecode(resp.body));
     });
   }
 
@@ -117,7 +146,7 @@ class ApiHelper {
   static Future<ThongTinThem> getThongTinThem(String guidChuyendi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/ChuyenDi/lay-thong-tin-them-cua-chuyen-di?GuidChuyenDi=${guidChuyendi}'),
+           API_ChuyenDi+ 'lay-thong-tin-them-cua-chuyen-di?GuidChuyenDi=${guidChuyendi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -150,7 +179,7 @@ class ApiHelper {
   static Future<tang> gettang(String idChuyenDi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/dat-ve/danh-sach-tang-xe?IdChuyenDi=${idChuyenDi}'),
+            API_ThongTin+'dat-ve/danh-sach-tang-xe?IdChuyenDi=${idChuyenDi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -163,7 +192,7 @@ class ApiHelper {
   static Future<sodocho> getsodocho(String idchuyendi, String idtang) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/dat-ve/ma-tran-cho-ngoi?IdChuyenDi=${idchuyendi}&IdTang=${idtang}'),
+            API_ThongTin+'dat-ve/ma-tran-cho-ngoi?IdChuyenDi=${idchuyendi}&IdTang=${idtang}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -177,7 +206,7 @@ class ApiHelper {
       String guidchuyendi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/doi-soat/lay-trang-thai-cho-ngoi-soat-ve?GuidChuyenDi=${guidchuyendi}'),
+            API_DoiSoat+'lay-trang-thai-cho-ngoi-soat-ve?GuidChuyenDi=${guidchuyendi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -191,7 +220,7 @@ class ApiHelper {
   static Future<DSDiemXuong> getDSDiemXuong(String guidlotrinh) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
+            API_ThongTin+'DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -206,7 +235,7 @@ class ApiHelper {
       String ngay) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/Driver/lay-danh-sach-tuyen-van-chuyen-theo-ngay?Ngay=${ngay}'),
+            API_LenhDienTu+'lay-danh-sach-tuyen-van-chuyen-theo-ngay?Ngay=${ngay}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -221,7 +250,7 @@ class ApiHelper {
       String idnhatky) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/HangHoa/lay-chi-tiet-nhat-ky-van-chuyen?idNhatKy=${idnhatky}'),
+           API_HangHoa+ 'HangHoa/lay-chi-tiet-nhat-ky-van-chuyen?idNhatKy=${idnhatky}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -236,7 +265,7 @@ class ApiHelper {
       String idlenhdientu) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/QuanLyThongTin/lay-danh-sach-hanh-khach-mua-ve-tren-xe?idLenhDienTu=${idlenhdientu}'),
+           API_ThongTin+ 'QuanLyThongTin/lay-danh-sach-hanh-khach-mua-ve-tren-xe?idLenhDienTu=${idlenhdientu}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -251,7 +280,7 @@ class ApiHelper {
       String machuyendi, String guidchongoi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/doi-soat/lay-thong-tin-hanh-khach-qua-cho-ngoi?MaChuyenDi=${machuyendi}&GuidChoNgoi=${guidchongoi}'),
+            API_DoiSoat+'lay-thong-tin-hanh-khach-qua-cho-ngoi?MaChuyenDi=${machuyendi}&GuidChoNgoi=${guidchongoi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -266,7 +295,7 @@ class ApiHelper {
       String guidchuyendi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/DonHang/lay-danh-sach-hanh-khach-mua-ve-ghe-phu?guidChuyenDi=${guidchuyendi}'),
+            API_DonHang+'lay-danh-sach-hanh-khach-mua-ve-ghe-phu?guidChuyenDi=${guidchuyendi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -295,7 +324,7 @@ class ApiHelper {
   static Future<SLVe> getSLVe(String guidchuyendi) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/DonHang/lay-so-luong-ve-ban-theo-loai-diem-ban?GuidChuyenDi=${guidchuyendi}'),
+            API_DonHang+'lay-so-luong-ve-ban-theo-loai-diem-ban?GuidChuyenDi=${guidchuyendi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -304,7 +333,7 @@ class ApiHelper {
     });
   }
 
- //get don gia theo tuyen
+  //get don gia theo tuyen
   static Future<DonGiaTheoTuyen> getDonGiaTheoTuyen(String idlotrinh) async {
     return await http.get(
         Uri.parse(
@@ -316,6 +345,7 @@ class ApiHelper {
       return DonGiaTheoTuyen.fromJson(jsonDecode(resp.body));
     });
   }
+
   static Future<DSLenh> postDsLenh(String url, dynamic data) async {
     return await http
         .post(Uri.parse(url),
@@ -340,9 +370,8 @@ class ApiHelper {
 
   static Future<String> postMultipart(
       String url, Map<String, String> data) async {
-   
     var request = http.MultipartRequest('POST', Uri.parse(url))
-    ..fields.addAll(data);
+      ..fields.addAll(data);
     request.headers.addAll(
       {
         "authorization": "Bearer ${LoginHelper.Default.access_token}",
@@ -351,7 +380,7 @@ class ApiHelper {
     );
     var resp = await request.send();
     if (resp.statusCode == 200) {
-      print('Uploadd'); 
+      print('Uploadd');
       print(resp);
       return 'Uploadd';
     }
@@ -360,7 +389,7 @@ class ApiHelper {
 
   static Future<thongtincanhan> getTinh() async {
     await ApiHelper.get(
-            "https://api-dnvt.sbus.vn/api/Driver/lay-danh-sach-tinh")
+           API_LenhDienTu+ "lay-danh-sach-tinh")
         .then((data) => Tinh.fromJson(data));
     //
     // ApiHelper.post("https://api.kingdark.org/me", {

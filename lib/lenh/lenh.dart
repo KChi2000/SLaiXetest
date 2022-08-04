@@ -6,9 +6,11 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/lenh/AnhLenh.dart';
 import 'package:flutter_ui_kit/lenh/dunglenhthanhcong.dart';
 import 'package:flutter_ui_kit/model/KhachTrenXe.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../lenh/chuyendoilenh.dart';
 import '../lenh/lenhvanchuyenList.dart';
 import '../model/lenhModel.dart';
@@ -44,13 +46,13 @@ class LenhState extends State<Lenh> {
 
   void loadChiTietLenh() async {
     chitietlenhFuture = ApiHelper.getChiTietLenh(
-        'http://113.176.29.57:19666/api/Driver/lay-chi-tiet-lenh-dang-thuc-hien');
+       ApiHelper.API_LenhDienTu+ 'lay-chi-tiet-lenh-dang-thuc-hien');
     chitietlenh = await chitietlenhFuture;
     convertDateTime();
     print('object ${chitietlenh.data.guidLenh}');
     if (chitietlenh != null) {
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-          'http://113.176.29.57:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
+          ApiHelper.API_ThongTin+'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
     }
     setState(() {});
     print(' chi tiet lenh ${chitietlenh.data.maTuyen}');
@@ -109,26 +111,36 @@ class LenhState extends State<Lenh> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '${chitietlenh.data.maLenh}',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AnhLenh(chitietlenh.data.guidLenh)));
+                        },
+                        child: Text(
+                          '${chitietlenh.data.maLenh}',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontFamily: 'Roboto Medium',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline),
+                        ),
                       ),
-                      Image.asset(
-                        'asset/images/qrimage.png',
-                        width: 150,
-                        height: 150,
+                      QrImage(
+                        data: chitietlenh.data.qrCode.toString(),
+                        size: 185,
                       ),
                       Text('${chitietlenh.data.bienKiemSoat}',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold)),
+                            color: Colors.black,
+                            fontFamily: 'Roboto Medium',
+                            fontSize: 16,
+                          )),
                       Text('$timeHieuLuc',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 13)),
+                            color: Colors.black,
+                            fontFamily: 'Roboto Italic',
+                            fontSize: 14,
+                          )),
                       SizedBox(
                         height: 10,
                       ),
@@ -164,11 +176,11 @@ class LenhState extends State<Lenh> {
               );
             } else if (snapshot.hasError) {
               return Center(
-                child: Text('Lỗi !'),
+                child: Text('Lỗi !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
               );
             }
             return Center(
-              child: Text('Không có dữ liệu !'),
+              child: Text('Không có dữ liệu !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
             );
           },
         ),
@@ -237,19 +249,31 @@ class LenhState extends State<Lenh> {
                                             alignment: Alignment.topLeft,
                                             child: Text('Hủy',
                                                 style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 15)),
+                                                  color: Colors.red,
+                                                  fontFamily: 'Roboto Regular',
+                                                  fontSize: 14,
+                                                )),
                                           ),
                                         ),
                                         Text('Dừng hành trình',
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18)),
+                                              fontFamily: 'Roboto Bold',
+                                              fontSize: 20,
+                                            )),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
                                         Row(children: [
                                           Text('Mã số lệnh: ',
-                                              style: TextStyle(fontSize: 13)),
+                                              style: TextStyle(
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 12,
+                                              )),
                                           Text('${chitietlenh.data.maLenh}',
-                                              style: TextStyle(fontSize: 16)),
+                                              style: TextStyle(
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 16,
+                                              )),
                                         ]),
                                         Form(
                                           key: formkey,
@@ -275,18 +299,21 @@ class LenhState extends State<Lenh> {
                                               TextSpan(
                                                   text: 'Hình ảnh cho sự cố ',
                                                   style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black,
-                                                      fontSize: 15)),
+                                                    fontFamily: 'Roboto Bold',
+                                                    color: Colors.black,
+                                                    fontSize: 14,
+                                                  )),
                                               TextSpan(
                                                   text: '$count/3',
                                                   style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15)),
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    color: Colors.black,
+                                                    fontSize: 12,
+                                                  )),
                                             ]))),
                                         SizedBox(
-                                          height: 10,
+                                          height: 0,
                                         ),
                                         Expanded(
                                           child: Align(
@@ -307,114 +334,105 @@ class LenhState extends State<Lenh> {
                                                     });
                                                   },
                                                 ),
-                                              image.length < 3?  Column(
-                                                  children: [
-                                                    SizedBox(height: 10,),
-                                                    GestureDetector(
-                                                      child: Align(
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                        child: DottedBorder(
-                                                          child: Container(
-                                                            height: 55,
-                                                            width: 50,
-                                                            child: Center(
-                                                                child: SvgPicture
-                                                                    .asset(
-                                                              'asset/icons/camera-plus.svg',
-                                                              color: Colors.black54,
-                                                            )),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                image.length < 3
+                                                    ? Column(
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 10,
                                                           ),
-                                                          color: Colors.black54,
-                                                          strokeWidth: 1,
-                                                          radius:
-                                                              Radius.circular(10),
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        return showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return AlertDialog(
-                                                                content: Container(
-                                                                  width: 60,
-                                                                  child: Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        GestureDetector(
-                                                                          child: Text(
-                                                                              'Chụp ảnh mới'),
-                                                                          onTap:
-                                                                              () async {
-                                                                            print(
-                                                                                'chọn chụp ảnh');
-                                                                            Navigator.pop(
-                                                                                context);
-                                                                            imageitem =
-                                                                                await ImagePicker().pickImage(source: ImageSource.camera);
-                                                                            if (imageitem ==
-                                                                                null) {
-                                                                              return;
-                                                                            }
-
-                                                                            setState(
-                                                                                () {
-                                                                              image.add(
-                                                                                  imageitem);
-                                                                              count =
-                                                                                  image.length;
-                                                                            });
-                                                                            print(
-                                                                                'count: $count');
-                                                                          },
-                                                                        ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              20,
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          child: Text(
-                                                                              'Chọn ảnh'),
-                                                                          onTap:
-                                                                              () async {
-                                                                            print(
-                                                                                'chọn ảnh');
-                                                                            Navigator.pop(
-                                                                                context);
-                                                                            imageitem =
-                                                                                await ImagePicker().pickImage(source: ImageSource.gallery);
-                                                                            if (imageitem ==
-                                                                                null) {
-                                                                              return;
-                                                                            }
-                                                                            // image.add(imageitem);
-                                                                            setState(
-                                                                                () {
-                                                                              image.add(
-                                                                                  imageitem);
-                                                                              count =
-                                                                                  image.length;
-                                                                            });
-                                                                            print(
-                                                                                'count: $count');
-                                                                          },
-                                                                        ),
-                                                                      ]),
+                                                          GestureDetector(
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topLeft,
+                                                              child:
+                                                                  DottedBorder(
+                                                                child:
+                                                                    Container(
+                                                                  height: 55,
+                                                                  width: 50,
+                                                                  child: Center(
+                                                                      child: SvgPicture
+                                                                          .asset(
+                                                                    'asset/icons/camera-plus.svg',
+                                                                    color: Colors
+                                                                        .black54,
+                                                                  )),
                                                                 ),
-                                                              );
-                                                            });
-                                                      },
-                                                    ),
-                                                  ],
-                                                ): Text(''),
+                                                                color: Colors
+                                                                    .black54,
+                                                                strokeWidth: 1,
+                                                                radius: Radius
+                                                                    .circular(
+                                                                        10),
+                                                              ),
+                                                            ),
+                                                            onTap: () {
+                                                              return showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return AlertDialog(
+                                                                      content:
+                                                                          Container(
+                                                                        width:
+                                                                            60,
+                                                                        child: Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              GestureDetector(
+                                                                                child: Text('Chụp ảnh mới'),
+                                                                                onTap: () async {
+                                                                                  print('chọn chụp ảnh');
+                                                                                  Navigator.pop(context);
+                                                                                  imageitem = await ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                  if (imageitem == null) {
+                                                                                    return;
+                                                                                  }
+
+                                                                                  setState(() {
+                                                                                    image.add(imageitem);
+                                                                                    count = image.length;
+                                                                                  });
+                                                                                  print('count: $count');
+                                                                                },
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 20,
+                                                                              ),
+                                                                              GestureDetector(
+                                                                                child: Text('Chọn ảnh'),
+                                                                                onTap: () async {
+                                                                                  print('chọn ảnh');
+                                                                                  Navigator.pop(context);
+                                                                                  imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                                                                  if (imageitem == null) {
+                                                                                    return;
+                                                                                  }
+                                                                                  // image.add(imageitem);
+                                                                                  setState(() {
+                                                                                    image.add(imageitem);
+                                                                                    count = image.length;
+                                                                                  });
+                                                                                  print('count: $count');
+                                                                                },
+                                                                              ),
+                                                                            ]),
+                                                                      ),
+                                                                    );
+                                                                  });
+                                                            },
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(''),
                                               ],
                                             ),
                                           ),
@@ -424,7 +442,7 @@ class LenhState extends State<Lenh> {
                                             if (formkey.currentState
                                                 .validate()) {
                                               var resp = ApiHelper.postMultipart(
-                                                  'http://113.176.29.57:19666/api/Driver/lai-xe-dung-hanh-trinh',
+                                                 ApiHelper.API_LenhDienTu+ 'lai-xe-dung-hanh-trinh',
                                                   {
                                                     'guidLenh':
                                                         '${chitietlenh.data.guidLenh}',
@@ -470,6 +488,9 @@ class LenhState extends State<Lenh> {
                                           },
                                           child: Text('XÁC NHẬN',
                                               style: TextStyle(
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 14,
+                                                letterSpacing: 1.25,
                                                 color: Colors.white,
                                               )),
                                           color: Colors.blue,
@@ -506,7 +527,7 @@ class LenhState extends State<Lenh> {
           ),
         ),
         Positioned(
-          bottom: 84,
+          bottom: 80,
           left: 35,
           child: IconButton(
             icon: SvgPicture.asset(
@@ -528,9 +549,15 @@ class LenhState extends State<Lenh> {
         Text('$title',
             style: TextStyle(
               color: Colors.black,
+              fontFamily: 'Roboto Regular',
+              fontSize: 14,
             )),
         Text('$name',
-            style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+              color: color,
+              fontFamily: 'Roboto Medium',
+              fontSize: 14,
+            )),
       ],
     );
   }

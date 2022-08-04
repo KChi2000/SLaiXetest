@@ -60,12 +60,10 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        'http://113.176.29.57:19666/api/Driver/lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
+        ApiHelper.API_LenhDienTu + 'lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
         postdata);
 
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   void loadDSHanhKhachTrenXe() {
@@ -122,7 +120,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
               children: [
                 Text(
                   'Chọn ngày',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontFamily: 'Roboto Regular'),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -189,7 +187,10 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                       } else if (snapshot.hasError) {
                         return Expanded(
                           child: Center(
-                            child: Text('Lỗi'),
+                            child: Text('Lỗi',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Roboto Regular')),
                           ),
                         );
                       } else if (snapshot.hasData) {
@@ -200,7 +201,10 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                           print('aheeeeeeee');
                           return Expanded(
                             child: Center(
-                              child: Text('Không có dữ liệu'),
+                              child: Text('Không có dữ liệu',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Roboto Regular')),
                             ),
                           );
                         }
@@ -223,12 +227,18 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                         );
                       }
                       return Center(
-                        child: Text('Không có dữ liệu'),
+                        child: Text(
+                          'Không có dữ liệu',
+                          style: TextStyle(
+                              fontSize: 14, fontFamily: 'Roboto Regular'),
+                        ),
                       );
                     }),
                   )
                 : Center(
-                    child: Text('Không có dữ liệu lệnh'),
+                    child: Text('Không có dữ liệu lệnh',
+                        style: TextStyle(
+                            fontSize: 14, fontFamily: 'Roboto Regular')),
                   ),
           ],
         ),
@@ -261,16 +271,13 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
               Row(
                 children: [
                   SvgPicture.asset('asset/icons/clock.svg',
-                      width: 18, height: 18),
+                      width: 20, height: 20),
                   SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    '${timeHieuLuc}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text('${timeHieuLuc}',
+                      style:
+                          TextStyle(fontSize: 14, fontFamily: 'Roboto Medium')),
                 ],
               ),
             ],
@@ -280,7 +287,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           ),
           Row(
             children: [
-              SvgPicture.asset('asset/icons/sohieu.svg', width: 18, height: 18),
+              SvgPicture.asset('asset/icons/sohieu.svg', width: 20, height: 20),
               SizedBox(
                 width: 10,
               ),
@@ -289,7 +296,9 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                 TextSpan(
                     text: '${listdata[index].bienKiemSoat}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black)),
+                        fontSize: 14,
+                        fontFamily: 'Roboto Medium',
+                        color: Colors.black)),
                 TextSpan(
                     text: '(',
                     style: TextStyle(
@@ -298,7 +307,9 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                 TextSpan(
                     text: '${listdata[index].maLenh}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.blue)),
+                        fontSize: 14,
+                        fontFamily: 'Roboto Medium',
+                        color: Colors.blue)),
                 TextSpan(
                     text: ')',
                     style: TextStyle(
@@ -313,13 +324,16 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           Row(
             children: [
               SvgPicture.asset('asset/icons/buslocation.svg',
-                  width: 19, height: 19),
+                  width: 20, height: 20),
               SizedBox(
                 width: 10,
               ),
               Text(
                 '${listdata[index].tenTuyen}\n(${listdata[index].maTuyen})',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Roboto Medium',
+                    color: Colors.black),
               )
             ],
           ),
@@ -329,13 +343,16 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           Row(
             children: [
               SvgPicture.asset('asset/icons/bus-stop.svg',
-                  width: 18, height: 18),
+                  width: 20, height: 20),
               SizedBox(
                 width: 10,
               ),
               Text(
                 '${listdata[index].tenBenXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Roboto Medium',
+                    color: Colors.black),
               )
             ],
           ),
@@ -345,13 +362,16 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           Row(
             children: [
               SvgPicture.asset('asset/icons/card-account-details-outline.svg',
-                  width: 18, height: 18),
+                  width: 20, height: 20),
               SizedBox(
                 width: 10,
               ),
               Text(
                 '${listdata[index].tenLaiXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Roboto Medium',
+                    color: Colors.black),
               )
             ],
           ),
@@ -405,13 +425,22 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                               ),
                                               Text(
                                                 'Xác nhận chuyển đổi lệnh',
-                                                style: TextStyle(fontSize: 18),
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 16),
                                               ),
                                               Text(
-                                                  'Bạn có chắc chắn muốn chuyên sang lệnh'),
+                                                  'Bạn có chắc chắn muốn chuyên sang lệnh',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Regular',
+                                                      fontSize: 14)),
                                               Text('${listdata[0].maLenh}',
-                                                  style:
-                                                      TextStyle(fontSize: 16)),
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Regular',
+                                                      fontSize: 14)),
                                               SizedBox(
                                                 height: 10,
                                               )
@@ -419,59 +448,72 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                           ),
                                         );
                                       }
-                                      Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            'Danh sách vé chuyển đổi lệnh',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          Expanded(
-                                            child: ListView(
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Checkbox(
-                                                            value: AllChecked,
-                                                            onChanged:
-                                                                setAllChecked),
-                                                        Text(
-                                                            'Tất cả(${listCheck.length})')
-                                                      ],
-                                                    ),
-                                                    Container(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.7,
-                                                        child: Divider(
-                                                          color: Colors.black,
-                                                        ))
-                                                  ],
-                                                ),
-                                                ...listCheck
-                                                    .map(itemChuyenDoiLenh)
-                                                    .toList()
-                                              ],
+                                      return Container(
+                                        height: 350,
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
                                             ),
-                                          ),
-                                        ],
+                                            Text('Danh sách vé chuyển đổi lệnh',
+                                                style: TextStyle(
+                                                    fontFamily: 'Roboto Medium',
+                                                    fontSize: 20)),
+                                            Expanded(
+                                              child: ListView(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Checkbox(
+                                                              value: AllChecked,
+                                                              activeColor:
+                                                                  Colors.blue,
+                                                              onChanged:
+                                                                  setAllChecked),
+                                                          Text(
+                                                              'Tất cả(${listCheck.length})',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Roboto Regular',
+                                                                  fontSize: 14))
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.7,
+                                                          child: Divider(
+                                                            color: Colors.black,
+                                                          ))
+                                                    ],
+                                                  ),
+                                                  ...listCheck
+                                                      .map(itemChuyenDoiLenh)
+                                                      .toList()
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       );
                                     }
                                     if (snapshot.hasError) {
                                       return Center(
-                                        child: Text('Lỗi'),
+                                        child: Text('Lỗi',
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 14)),
                                       );
                                     }
                                     return Center(
-                                      child: Text('Không có dữ liệu'),
+                                      child: Text('Không có dữ liệu',
+                                          style: TextStyle(
+                                              fontFamily: 'Roboto Regular',
+                                              fontSize: 14)),
                                     );
                                   }),
                               Divider(
@@ -489,7 +531,11 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                         Navigator.pop(context);
                                       },
                                       child: Text('HỦY',
-                                          style: TextStyle(color: Colors.red)),
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontFamily: 'Roboto Medium',
+                                              fontSize: 14,
+                                              letterSpacing: 1.25)),
                                       height: 18,
                                       // color: Colors.black,
                                     ),
@@ -499,15 +545,27 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                     ),
                                     FlatButton(
                                         onPressed: () async {
+                                          List<String> iddonhang = [];
+                                          var temp = listCheck
+                                              .where((element) =>
+                                                  element.check == true)
+                                              .toList();
+
+                                          for (int i = 0;
+                                              i < temp.length;
+                                              i++) {
+                                            iddonhang.add(temp[i].idDonHang);
+                                            print(temp[i].thanhTien);
+                                          }
                                           print(
                                               'idlenh cu: ${widget.idLenhdientu}');
                                           print(
                                               'idlenh moi: ${listdata.first.guidLenh}');
                                           var resp = await ApiHelper.post(
-                                              'http://113.176.29.57:19666/api/Driver/lai-xe-chuyen-doi-chuyen-di',
+                                             ApiHelper.API_LenhDienTu+ 'lai-xe-chuyen-doi-chuyen-di',
                                               {
                                                 'ToaDo': '',
-                                                'idDonHangs': [],
+                                                'idDonHangs': iddonhang,
                                                 'idLenhCu':
                                                     '${widget.idLenhdientu}',
                                                 'idLenhMoi':
@@ -515,24 +573,40 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                               });
                                           if (resp['status']) {
                                             Navigator.pop(context);
-                                            setState(() {
-                                              loadDSLenh();
-                                            },);
+                                            setState(
+                                              () {
+                                                loadDSLenh();
+                                              },
+                                            );
                                           } else {
-                                             Navigator.pop(context);
+                                            Navigator.pop(context);
+
                                             showDialog(
                                               context: context,
                                               barrierDismissible:
                                                   false, // user must tap button!
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: const Text('Lỗi'),
-                                                  content:
-                                                      Text(resp['message']),
+                                                  title: const Text(
+                                                    'Lỗi',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14),
+                                                  ),
+                                                  content: Text(resp['message'],
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Roboto Regular',
+                                                          fontSize: 14)),
                                                   actions: <Widget>[
                                                     TextButton(
-                                                      child:
-                                                          const Text('Đã hiểu'),
+                                                      child: const Text(
+                                                          'Đã hiểu',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Roboto Regular',
+                                                              fontSize: 14)),
                                                       onPressed: () {
                                                         Navigator.of(context)
                                                             .pop();
@@ -545,8 +619,11 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                           }
                                         },
                                         child: Text('ĐỒNG Ý',
-                                            style:
-                                                TextStyle(color: Colors.blue)),
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 14,
+                                                letterSpacing: 1.25)),
                                         height: 18)
                                   ],
                                 ),
@@ -557,8 +634,12 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                       });
                     });
               },
-              child:
-                  Text('CHỌN LỆNH NÀY', style: TextStyle(color: Colors.blue)),
+              child: Text('CHỌN LỆNH NÀY',
+                  style: TextStyle(
+                      color: Colors.blue,
+                      letterSpacing: 1.25,
+                      fontFamily: 'Roboto Medium',
+                      fontSize: 14)),
               height: 15,
               // color: Colors.black,
             ),
@@ -576,6 +657,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
           children: [
             Checkbox(
                 value: vl.check,
+                activeColor: Colors.blue,
                 onChanged: (value) {
                   setstatecheck(() {
                     print(value);
@@ -589,15 +671,27 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
               // mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Số điện thoại: ', style: TextStyle(color: Colors.black)),
+                Text('Số điện thoại: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto Regular',
+                        fontSize: 14)),
                 SizedBox(
                   height: 5,
                 ),
-                Text('Giá vé: ', style: TextStyle(color: Colors.black)),
+                Text('Giá vé: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto Regular',
+                        fontSize: 14)),
                 SizedBox(
                   height: 5,
                 ),
-                Text('Điểm xuống: ', style: TextStyle(color: Colors.black)),
+                Text('Điểm xuống: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto Regular',
+                        fontSize: 14)),
               ],
             ),
             Column(
@@ -606,20 +700,26 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                 Text(
                   '${vl.soDienThoai}',
                   style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
+                      color: Colors.green,
+                      fontFamily: 'Roboto Medium',
+                      fontSize: 14),
                 ),
                 SizedBox(
                   height: 5,
                 ),
-                Text('${vl.thanhTien}đ',
+                Text('${NumberFormat('#,###').format(vl.thanhTien)}đ',
                     style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold)),
+                        color: Colors.red,
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14)),
                 SizedBox(
                   height: 5,
                 ),
                 Text('${vl.tenDiemXuong}',
                     style: TextStyle(
-                        color: Colors.orange, fontWeight: FontWeight.bold)),
+                        color: Colors.orange,
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14)),
               ],
             )
           ],

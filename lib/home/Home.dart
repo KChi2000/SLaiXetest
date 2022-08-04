@@ -36,14 +36,14 @@ class HomeState extends State<Home> {
 
   void loadLenhHienTai() async {
     lenhHienTaiFuture = ApiHelper.getLenhHienTai(
-        'http://113.176.29.57:19666/api/Driver/lay-lenh-hien-tai-cua-lai-xe');
+        ApiHelper.API_LenhDienTu+'lay-lenh-hien-tai-cua-lai-xe');
     lenhhientai = await lenhHienTaiFuture;
 
     if(lenhhientai.data.maLenh != null){
       convertDateTime();
     if (lenhhientai != null) {
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-          'http://113.176.29.57:19666/api/QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
+          ApiHelper.API_ThongTin+'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
     }
     }
     else{
@@ -139,7 +139,7 @@ class HomeState extends State<Home> {
                 } else if (snapshot.hasError) {
                   return Expanded(
                     child: Center(
-                      child: Text('Lỗi'),
+                      child: Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                     ),
                   );
                 } else if (snapshot.hasData) {
@@ -174,7 +174,7 @@ class HomeState extends State<Home> {
                                 Text(
                                   '$timeXuatBen',
                                   style: TextStyle(
-                                    fontFamily: 'Roboto Bold',
+                                    fontFamily: 'Roboto Medium',
                                     fontSize: 14,
                                     
                                   ),
@@ -184,7 +184,7 @@ class HomeState extends State<Home> {
                             Text(
                               '${lenhhientai.data.trangThai}',
                               style: TextStyle(
-                                  fontFamily: 'Roboto Bold',
+                                  fontFamily: 'Roboto Medium',
                                     fontSize: 14,
                                   color: statusText),
                             )
@@ -202,7 +202,7 @@ class HomeState extends State<Home> {
                             ),
                             Text(
                               '${lenhhientai.data.bienKiemSoat} (${lenhhientai.data.maLenh})',
-                              style: TextStyle(fontFamily: 'Roboto Bold',
+                              style: TextStyle(fontFamily: 'Roboto Medium',
                                     fontSize: 14,),
                             )
                           ],
@@ -220,7 +220,7 @@ class HomeState extends State<Home> {
                             Text(
                               '${lenhhientai.data.tenTuyen}\n(${lenhhientai.data.maTuyen})',
                               style: TextStyle(
-                                  fontFamily: 'Roboto Bold',
+                                  fontFamily: 'Roboto Medium',
                                     fontSize: 14,),
                             )
                           ],
@@ -237,7 +237,7 @@ class HomeState extends State<Home> {
                             ),
                             Text(
                               '${data.data.soKhachTrenXe} khách',
-                              style: TextStyle(fontFamily: 'Roboto Bold',
+                              style: TextStyle(fontFamily: 'Roboto Medium',
                                     fontSize: 14,),
                             )
                           ],
@@ -263,10 +263,10 @@ class HomeState extends State<Home> {
                 }
                 return Expanded(
                   child: Center(
-                    child: Text('Không có dữ liệu'),
+                    child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                   ),
                 );
-              }): Expanded(child: Center(child: Text('Không có dữ liệu'),))
+              }): Expanded(child: Center(child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),))
         ],
       ),
     )

@@ -86,14 +86,15 @@ class VeState extends State<Ve> {
   }
 
   void loadLichSuChuyenDi() async {
-    chuyendigandayFuture = ApiHelper.getchuyendiganday();
+    try{
+      chuyendigandayFuture = ApiHelper.getchuyendiganday();
     chuyendiGanday = await chuyendigandayFuture;
     if (chuyendiGanday.status) {
       value = chuyendiGanday.data.maChuyenDi;
       changeSodocho = chuyendiGanday.data.guidChuyenDi;
       print('changesodocho $changeSodocho');
       LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
-          'http://113.176.29.57:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+          ApiHelper.API_ChuyenDi+'lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
       lichsuChuyenDi = await LichSuChuyenDiFuture;
       loadTrangThaiChoNgoi(changeSodocho);
       loadchongoi();
@@ -102,6 +103,12 @@ class VeState extends State<Ve> {
         setState(() {});
       }
     } else {
+      setState(() {
+        checkHaschuyendiganday = 'no data';
+        hasTangdata = 'no data';
+      });
+    }
+    }catch(ex){
       setState(() {
         checkHaschuyendiganday = 'no data';
         hasTangdata = 'no data';
@@ -419,7 +426,12 @@ class VeState extends State<Ve> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        if (hasTangdata == 'Thành công') {
+                        else if(hasTangdata == 'no data'){
+                          return  Center(
+                            child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                          );
+                        }
+                       else if (hasTangdata == 'Thành công') {
                           if (snapshot.hasData) {
                             sodocho datatemp = snapshot.data;
 
@@ -600,9 +612,9 @@ class VeState extends State<Ve> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Xe của bạn hiện chưa có sơ đồ chỗ'),
+                                Text('Xe của bạn hiện chưa có sơ đồ chỗ',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                 Text(
-                                    'Vui lòng liên hệ Công ty của bạn để được cập nhật'),
+                                    'Vui lòng liên hệ Công ty của bạn để được cập nhật',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                               ]),
                         );
                       },
@@ -611,7 +623,7 @@ class VeState extends State<Ve> {
                 ),
               )
             : Center(
-                child: Text('Không tìm thấy chuyến đi'),
+                child: Text('Không tìm thấy chuyến đi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
               ),
         floatingActionButton: checkHaschuyendiganday != 'no data'
             ? SpeedDial(
@@ -695,7 +707,7 @@ class VeState extends State<Ve> {
                                             );
                                           } else if (snapshot.hasError) {
                                             return Center(
-                                              child: Text('Lỗi'),
+                                              child: Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                             );
                                           } else if (snapshot.hasData) {
                                             DSHanhKhachGhePhu

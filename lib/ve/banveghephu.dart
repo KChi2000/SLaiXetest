@@ -387,6 +387,7 @@ class _banveState extends State<banveghephu> {
                                             '${diemxuongObject.tenDiemXuong}'
                                       });
                                   if (resp['status']) {
+                                     Navigator.of(context).popUntil((route) => route.isFirst);
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(

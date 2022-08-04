@@ -70,14 +70,14 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadInfo() async {
     datafuture = ApiHelper.get(
-        'http://113.176.29.57:19666/api/Driver/lay-thong-tin-ca-nhan');
+       ApiHelper.API_LenhDienTu+ 'lay-thong-tin-ca-nhan');
     data = await datafuture;
     if(data!=null){
       tinh = '';
     idTinh = data['data']['idTinh'];
     print('ttttt ${data['data']['idTinh']}');
     tinhfuture = ApiHelper.getProvince(
-        "http://113.176.29.57:19666/api/Driver/lay-danh-sach-tinh");
+       ApiHelper.API_LenhDienTu+ "lay-danh-sach-tinh");
     dataTinh = await tinhfuture;
     province = dataTinh.data;
     if (idTinh != null) {
@@ -89,7 +89,7 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadHuyen(bool checksetState) async {
     huyenfuture = ApiHelper.getDistrict(
-        "http://113.176.29.57:19666/api/Driver/lay-danh-sach-huyen?IdTinh=$idTinh");
+        ApiHelper.API_LenhDienTu+"lay-danh-sach-huyen?IdTinh=$idTinh");
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
@@ -109,13 +109,13 @@ class TaikhoanState extends State<Taikhoan> {
       appBar: AppBar(
         title: Text(
           "Profile",
-          style: TextStyle(
-            color: titleColor,
-            fontFamily: 'Roboto Medium',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.15
-          ),
+          // style: TextStyle(
+          //   color: titleColor,
+          //   fontFamily: 'Roboto Medium',
+          //   fontSize: 20,
+          //   fontWeight: FontWeight.bold,
+          //   letterSpacing: 0.15
+          // ),
         ),
         centerTitle: true,
         backgroundColor: Colors.blue,
@@ -169,18 +169,19 @@ class TaikhoanState extends State<Taikhoan> {
                       child: Text(
                         '${LoginHelper.Default.userToken.given_name} ',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto Medium',
+                          fontSize: 16
                         ),
                         maxLines: 2,
                       ),
                     ),
                   ),
                   Text(
-                    'Lai xe',
+                    'Lái xe',
                     maxLines: 1,
                     style: TextStyle(
-                      color: Colors.grey,
+                      fontFamily: 'Roboto Regular',
+                      color: Colors.grey[700],
                       fontSize: 12,
                     ),
                   ),
@@ -231,8 +232,8 @@ class TaikhoanState extends State<Taikhoan> {
                               'Thông tin cá nhân',
                               style: TextStyle(
                                   color: fontColor,
-                                  fontSize: sizeLetter,
-                                  fontWeight: FontWeight.bold),
+                                  fontFamily: 'Roboto Medium',
+                          fontSize: 16),
                             ),
                             SizedBox(
                               height: 15,
@@ -253,7 +254,7 @@ class TaikhoanState extends State<Taikhoan> {
                                  
                                   formattedDate = DateFormat('dd/MM/yyyy').format(datetemp);
                                   print(formattedDate);
-                                   var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                   var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${formattedDate}',
                                                 'tenTruong':'ngaySinh'
                                               });
@@ -288,7 +289,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               BorderRadius.circular(15)),
                                       title: Text(
                                         'Sửa SĐT',
-                                        style: TextStyle(fontSize: sizeLetter),
+                                        style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
                                       ),
                                       content: Container(
                                           height: 30,
@@ -317,13 +318,13 @@ class TaikhoanState extends State<Taikhoan> {
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
+                                          child: const Text('Cancel',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                         ),
                                         TextButton(
                                           onPressed: () async{
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                              var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${phoneController.text}',
                                                 'tenTruong':'soDienThoai'
                                               });
@@ -336,7 +337,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               
                                             }
                                           },
-                                          child: const Text('OK'),
+                                          child: const Text('OK',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                         ),
                                       ],
                                     );
@@ -358,7 +359,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               BorderRadius.circular(15)),
                                       title: Text(
                                         'Sửa Email',
-                                        style: TextStyle(fontSize: sizeLetter),
+                                        style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
                                       ),
                                       content: Form(
                                           key: formkey,
@@ -378,13 +379,13 @@ class TaikhoanState extends State<Taikhoan> {
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Huỷ'),
+                                          child: const Text('Huỷ',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                         ),
                                         TextButton(
                                           onPressed: ()async {
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var res = await ApiHelper.post('http://113.176.29.57:19666/api/Driver/chinh-sua-thong-tin-ca-nhan',{
+                                              var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
                                                 'noiDung': '${emailController.text}',
                                                 'tenTruong':'email'
                                               });
@@ -398,7 +399,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               
                                             }
                                           },
-                                          child: const Text('Xác nhận'),
+                                          child: const Text('Xác nhận',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                         ),
                                       ],
                                     );
@@ -436,7 +437,7 @@ class TaikhoanState extends State<Taikhoan> {
                                         title: Text(
                                           'Sửa địa chỉ',
                                           style:
-                                              TextStyle(fontSize: sizeLetter),
+                                              TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
                                         ),
                                         content: Form(
                                             key: formkey,
@@ -454,8 +455,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                             child: Text(
                                                                 text.tenTinh,
                                                                 style: TextStyle(
-                                                                    fontSize:
-                                                                        15))),
+                                                                    fontFamily: 'Roboto Regular',fontSize: 14))),
                                                         value: text.tenTinh,
                                                         onTap: () {
                                                           print(
@@ -476,7 +476,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                         tinh = t1;
                                                       });
                                                     },
-                                                    hint: Text('chọn tỉnh'),
+                                                    hint: Text('chọn tỉnh',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
                                                     menuMaxHeight: 200,
                                                     validator: (vl1) {
                                                       if (vl1 == null ||
@@ -519,7 +519,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                         huyen = t2;
                                                       });
                                                     },
-                                                    hint: Text('chọn huyện'),
+                                                    hint: Text('chọn huyện',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
                                                     menuMaxHeight: 200,
                                                     validator: (vl2) {
                                                       if (vl2 == null ||
@@ -554,7 +554,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               loadInfo();
                                               Navigator.pop(context, 'Cancel');
                                             },
-                                            child: const Text('Cancel'),
+                                            child: const Text('Cancel',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
                                           ),
                                           TextButton(
                                             onPressed: () async {
@@ -568,7 +568,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               if (formkey.currentState
                                                   .validate()) {
                                                 var res = await ApiHelper.post(
-                                                    'http://113.176.29.57:19666/api/Driver/chinh-sua-dia-chi-ca-nhan',
+                                                    ApiHelper.API_LenhDienTu+'chinh-sua-dia-chi-ca-nhan',
                                                     Mappostdata);
 
                                                 loadInfo();
@@ -576,7 +576,7 @@ class TaikhoanState extends State<Taikhoan> {
                                               }
                                               ;
                                             },
-                                            child: const Text('OK'),
+                                            child: const Text('OK',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
                                           ),
                                         ],
                                       );
@@ -657,15 +657,15 @@ class TaikhoanState extends State<Taikhoan> {
                           Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (context) => Login()));
                         },
-                        child: Text('Đăng Xuất',
-                            style: TextStyle(color: Colors.white)),
+                        child: Text('ĐĂNG XUẤT',
+                            style: TextStyle(color: Colors.white,fontFamily: 'Roboto Medium',fontSize: 14,letterSpacing: 1.25)),
                         color: Colors.blue,
                       )
                     ],
                   );
                 }
-                return Center(child: Text('No data'));
-              }): Center(child: Text('Lỗi 401 nhé !'),),
+                return Center(child: Text('No data',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')));
+              }): Center(child: Text('Lỗi 401 nhé !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular'),),),
         ],
       )),
     );
@@ -679,7 +679,8 @@ class TaikhoanState extends State<Taikhoan> {
           t1,
           style: TextStyle(
             color: Colors.black,
-            fontSize: sizeInfo,
+            fontFamily: 'Roboto Regular',
+                          fontSize: 14
           ),
         ),
         SizedBox(
@@ -692,8 +693,8 @@ class TaikhoanState extends State<Taikhoan> {
                 t2,
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: sizeInfo,
-                    fontWeight: FontWeight.bold),
+                    fontFamily: 'Roboto Medium',
+                          fontSize: 14),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -724,7 +725,8 @@ class TaikhoanState extends State<Taikhoan> {
           t1,
           style: TextStyle(
             color: Colors.black,
-            fontSize: sizeInfo,
+            fontFamily: 'Roboto Regular',
+                          fontSize: 14
           ),
         ),
         // SizedBox(
@@ -738,8 +740,8 @@ class TaikhoanState extends State<Taikhoan> {
                 t2,
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: sizeInfo,
-                    fontWeight: FontWeight.bold),
+                    fontFamily: 'Roboto Medium',
+                          fontSize: 14),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -768,8 +770,7 @@ class TaikhoanState extends State<Taikhoan> {
           Text(
             value,
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+               fontSize: 16,fontFamily: 'Roboto Medium'
             ),
           ),
           Divider(
@@ -778,7 +779,7 @@ class TaikhoanState extends State<Taikhoan> {
           ),
           Text(
             key,
-            style: TextStyle(color: Colors.grey, fontSize: 12),
+            style: TextStyle(color: Colors.grey, fontSize: 12,fontFamily: 'Roboto Regular'),
           )
         ],
       ),
