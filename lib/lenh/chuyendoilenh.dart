@@ -103,7 +103,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
               child: Center(
                   child: Text(
                 'LỌC',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18,fontFamily: 'Roboto Regular'),
               )),
             ),
           )

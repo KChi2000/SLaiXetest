@@ -5,7 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 
 class dunglenhthanhcong extends StatelessWidget {
-  const dunglenhthanhcong({Key key}) : super(key: key);
+  String tendoanhnghiep;
+   dunglenhthanhcong(this.tendoanhnghiep);
 
   @override
   Widget build(BuildContext context) {
@@ -43,29 +44,30 @@ class dunglenhthanhcong extends StatelessWidget {
                         'ĐÃ DỪNG HÀNH TRÌNH',
                         style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto Medium',
                             fontSize: 20),
                       ),
                       SizedBox(
                         height: 70,
                       ),
-                      Text('Thông báo sẽ được gửi đến đơn vị Công ',
+                      Text('Thông báo sẽ được gửi đến đơn vị',
                           style: TextStyle(
                               color: Colors.black,
                              
-                            fontFamily: 'Roboto Regular',
+                            fontFamily: 'Roboto Medium',
                               
                               fontSize: 14)),
-                      Text('ty cổ phần vận tải Thái Nguyên ...',
+                      Text('${tendoanhnghiep}',
                           style: TextStyle(
                               color: Colors.black,
-                              fontFamily: 'Roboto Regular',
+                              fontFamily: 'Roboto Medium',
                               
                               fontSize: 14)),
                               Spacer(),
                               
                       FlatButton(
                           onPressed: () {
+                             Navigator.of(context).popUntil((route) => route.isFirst);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(2)));
                           },
                           color: Colors.blue,
@@ -78,6 +80,7 @@ class dunglenhthanhcong extends StatelessWidget {
                                       ))))),
                       FlatButton(
                           onPressed: () {
+                             Navigator.of(context).popUntil((route) => route.isFirst);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(0)));
                           },
                           color: Colors.white,

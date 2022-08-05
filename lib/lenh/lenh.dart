@@ -46,13 +46,13 @@ class LenhState extends State<Lenh> {
 
   void loadChiTietLenh() async {
     chitietlenhFuture = ApiHelper.getChiTietLenh(
-       ApiHelper.API_LenhDienTu+ 'lay-chi-tiet-lenh-dang-thuc-hien');
+        ApiHelper.API_LenhDienTu + 'lay-chi-tiet-lenh-dang-thuc-hien');
     chitietlenh = await chitietlenhFuture;
     convertDateTime();
     print('object ${chitietlenh.data.guidLenh}');
     if (chitietlenh != null) {
-      khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-          ApiHelper.API_ThongTin+'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
+      khachTrenXeFuture = ApiHelper.getKhachTrenXe(ApiHelper.API_ThongTin +
+          'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
     }
     setState(() {});
     print(' chi tiet lenh ${chitietlenh.data.maTuyen}');
@@ -113,7 +113,11 @@ class LenhState extends State<Lenh> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AnhLenh(chitietlenh.data.guidLenh)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AnhLenh(chitietlenh.data.guidLenh)));
                         },
                         child: Text(
                           '${chitietlenh.data.maLenh}',
@@ -176,11 +180,14 @@ class LenhState extends State<Lenh> {
               );
             } else if (snapshot.hasError) {
               return Center(
-                child: Text('Lỗi !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
+                child: Text('Lỗi !',
+                    style:
+                        TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
               );
             }
             return Center(
-              child: Text('Không có dữ liệu !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
+              child: Text('Không có dữ liệu !',
+                  style: TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
             );
           },
         ),
@@ -388,7 +395,7 @@ class LenhState extends State<Lenh> {
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
                                                                               GestureDetector(
-                                                                                child: Text('Chụp ảnh mới'),
+                                                                                child: Text('Chụp ảnh mới', style: TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
                                                                                 onTap: () async {
                                                                                   print('chọn chụp ảnh');
                                                                                   Navigator.pop(context);
@@ -408,7 +415,7 @@ class LenhState extends State<Lenh> {
                                                                                 height: 20,
                                                                               ),
                                                                               GestureDetector(
-                                                                                child: Text('Chọn ảnh'),
+                                                                                child: Text('Chọn ảnh', style: TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
                                                                                 onTap: () async {
                                                                                   print('chọn ảnh');
                                                                                   Navigator.pop(context);
@@ -442,7 +449,8 @@ class LenhState extends State<Lenh> {
                                             if (formkey.currentState
                                                 .validate()) {
                                               var resp = ApiHelper.postMultipart(
-                                                 ApiHelper.API_LenhDienTu+ 'lai-xe-dung-hanh-trinh',
+                                                  ApiHelper.API_LenhDienTu +
+                                                      'lai-xe-dung-hanh-trinh',
                                                   {
                                                     'guidLenh':
                                                         '${chitietlenh.data.guidLenh}',
@@ -456,7 +464,7 @@ class LenhState extends State<Lenh> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            dunglenhthanhcong()));
+                                                            dunglenhthanhcong(chitietlenh.data.tenDoanhNghiep)));
                                               } else {
                                                 Navigator.pop(context);
                                                 showDialog(
@@ -466,13 +474,25 @@ class LenhState extends State<Lenh> {
                                                   builder:
                                                       (BuildContext context) {
                                                     return AlertDialog(
-                                                      title: const Text('Lỗi'),
+                                                      title: const Text('Lỗi',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontFamily:
+                                                                  'Roboto Regular')),
                                                       content: Text(
-                                                          'Lỗi dừng hành trình'),
+                                                          'Lỗi dừng hành trình',
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontFamily:
+                                                                  'Roboto Regular')),
                                                       actions: <Widget>[
                                                         TextButton(
                                                           child: const Text(
-                                                              'Đã hiểu'),
+                                                              'Đã hiểu',
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto Regular')),
                                                           onPressed: () {
                                                             Navigator.of(
                                                                     context)
