@@ -310,7 +310,7 @@ class ApiHelper {
       String guidlotrinh) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
+            API_ThongTin+'DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -337,7 +337,7 @@ class ApiHelper {
   static Future<DonGiaTheoTuyen> getDonGiaTheoTuyen(String idlotrinh) async {
     return await http.get(
         Uri.parse(
-            'http://113.176.29.57:19666/api/QuanLyThongTin/lay-don-gia-theo-tuyen?idLoTrinh=${idlotrinh}'),
+            API_ThongTin+'QuanLyThongTin/lay-don-gia-theo-tuyen?idLoTrinh=${idlotrinh}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {

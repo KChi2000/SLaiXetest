@@ -39,7 +39,34 @@ class _AnhLenhState extends State<AnhLenh> {
         body: FutureBuilder(
           future: picLenhFuture,
           builder: (context,snapshot){
-          if(snapshot.hasError){
+           if(snapshot.connectionState == ConnectionState.waiting){
+              return 
+            Container(
+          color: Colors.black,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(onPressed: (){
+                    Navigator.pop(context);
+                  }, icon: SvgPicture.asset(
+                  'asset/icons/close.svg',
+                  color: appbarIconColor,
+                  width: appbarIconSize,
+                  height: appbarIconSize,
+                              ),),
+                ),
+               Container(
+               width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height*0.3,
+                child: Image.asset('asset/images/pagernotFound.png',fit: BoxFit.contain))
+          ]),
+        );
+           } 
+         else if(snapshot.hasError){
             return 
             Container(
           color: Colors.black,
@@ -60,20 +87,22 @@ class _AnhLenhState extends State<AnhLenh> {
                               ),),
                 ),
                Container(
-                height: 100,
-                width: 100,
+                width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height*0.3,
                 child: Image.asset('asset/images/pagernotFound.png',fit: BoxFit.contain))
           ]),
         );
           }
           else if(snapshot.hasData){
             Map<String,dynamic> picLenh = snapshot.data;
-            final imageUrl = picLenh['data'];
+            final  String imageUrl = picLenh['data'];
+            print(imageUrl);
             return  Container(
           color: Colors.black,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
+            
             children: [
                 Align(
                   alignment: Alignment.topLeft,

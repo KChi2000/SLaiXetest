@@ -27,7 +27,7 @@ import '../model/sodocho.dart';
 import '../model/sodochoJson.dart';
 import 'package:intl/intl.dart';
 
-List<String> trangthai = ['Còn trống', 'Có khách'];
+
 
 class Ve extends StatefulWidget {
   @override
@@ -1041,7 +1041,7 @@ class VeState extends State<Ve> {
                                                   child: Text('Hủy',
                                                       style: TextStyle(
                                                           color: Colors.red,
-                                                          fontSize: 15)),
+                                                          fontFamily: 'Roboto Regular',fontSize: 14)),
                                                 ),
                                               ),
                                               Text('Thông tin hành khách',
@@ -1103,7 +1103,7 @@ class VeState extends State<Ve> {
                                                                         child: Text(
                                                                             'Hủy',
                                                                             style:
-                                                                                TextStyle(color: Colors.red, fontSize: 15)),
+                                                                                TextStyle(color: Colors.red, fontFamily: 'Roboto Regular',fontSize: 14)),
                                                                       ),
                                                                     ),
                                                                     Text(
@@ -1204,7 +1204,7 @@ class VeState extends State<Ve> {
                                                                             Text(
                                                                               'Thanh toán',
                                                                               style: TextStyle(
-                                                                                  // fontWeight: fontStyleListItem,
+                                                                                  fontFamily: 'Roboto Regular',fontSize: 14,
                                                                                   ),
                                                                             ),
                                                                           ],
@@ -1212,7 +1212,7 @@ class VeState extends State<Ve> {
                                                                         Text(
                                                                           '${data.trangThaiThanhToan.tenTrangThai}',
                                                                           style: TextStyle(
-                                                                              // fontWeight: fontStyleListStatus,
+                                                                              fontFamily: 'Roboto Medium',fontSize: 14,
                                                                               color: Colors.black),
                                                                         )
                                                                       ],
@@ -1234,7 +1234,7 @@ class VeState extends State<Ve> {
                                                                             Text(
                                                                               'Điểm xuống',
                                                                               style: TextStyle(
-                                                                                  // fontWeight: fontStyleListItem,
+                                                                                  fontFamily: 'Roboto Regular',fontSize: 14
                                                                                   ),
                                                                             ),
                                                                           ],
@@ -1242,7 +1242,7 @@ class VeState extends State<Ve> {
                                                                         Text(
                                                                           '${data.tenDiemXuong}',
                                                                           style: TextStyle(
-                                                                              // fontWeight: fontStyleListStatus,
+                                                                              fontFamily: 'Roboto Medium',fontSize: 14,
                                                                               color: Colors.black),
                                                                         )
                                                                       ],
@@ -1279,11 +1279,11 @@ class VeState extends State<Ve> {
                                                                             builder:
                                                                                 (BuildContext context) {
                                                                               return AlertDialog(
-                                                                                title: const Text('Lỗi'),
+                                                                                title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                                                                 content: Text('${resp['message']}'),
                                                                                 actions: <Widget>[
                                                                                   TextButton(
-                                                                                    child: const Text('Đã hiểu'),
+                                                                                    child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                                                     onPressed: () {
                                                                                       Navigator.of(context).pop();
                                                                                     },
@@ -1298,6 +1298,8 @@ class VeState extends State<Ve> {
                                                                           Text(
                                                                         'XÁC NHẬN',
                                                                         style: TextStyle(
+                                                                          fontFamily: 'Roboto Medium',fontSize: 14,
+                                                                          letterSpacing: 1.25,
                                                                             color:
                                                                                 Colors.white),
                                                                       ),
@@ -1449,13 +1451,13 @@ class VeState extends State<Ve> {
                                                               context) {
                                                             return AlertDialog(
                                                               title: const Text(
-                                                                  'Lỗi'),
+                                                                  'Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                               content: Text(
                                                                   '${resp['message']}'),
                                                               actions: <Widget>[
                                                                 TextButton(
                                                                   child: const Text(
-                                                                      'Đã hiểu'),
+                                                                      'Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                                   onPressed:
                                                                       () {
                                                                     Navigator.of(
@@ -1484,11 +1486,11 @@ class VeState extends State<Ve> {
                                         );
                                       } else if (snapshot.hasError) {
                                         return Center(
-                                          child: Text('Lỗi'),
+                                          child: Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                         );
                                       }
                                       return Center(
-                                        child: Text('Không có dữ liệu'),
+                                        child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                       );
                                     });
                               });

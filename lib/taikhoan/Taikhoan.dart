@@ -32,6 +32,8 @@ class TaikhoanState extends State<Taikhoan> {
   String sdt;
   String email;
   String address;
+  XFile imageitem;
+  List<XFile> image = [];
   final phoneController = TextEditingController(text: '');
   final emailController = TextEditingController(text: '');
   final addressController = TextEditingController(text: '');
@@ -51,13 +53,12 @@ class TaikhoanState extends State<Taikhoan> {
   void Function(void Function()) setstatedialog;
   Huyen dataHuyen;
   final imagePicker = ImagePicker();
-  File _image;
-  Future getImage() async {
-    final image = await imagePicker.getImage(source: ImageSource.camera);
-    setState(() {
-      _image = File(image.path);
-    });
-  }
+  // Future getImage() async {
+  //   final image = await imagePicker.getImage(source: ImageSource.camera);
+  //   setState(() {
+  //     _image = File(image.path);
+  //   });
+  // }
 
   @override
   void initState() {
@@ -69,27 +70,27 @@ class TaikhoanState extends State<Taikhoan> {
   }
 
   void loadInfo() async {
-    datafuture = ApiHelper.get(
-       ApiHelper.API_LenhDienTu+ 'lay-thong-tin-ca-nhan');
+    datafuture =
+        ApiHelper.get(ApiHelper.API_LenhDienTu + 'lay-thong-tin-ca-nhan');
     data = await datafuture;
-    if(data!=null){
+    if (data != null) {
       tinh = '';
-    idTinh = data['data']['idTinh'];
-    print('ttttt ${data['data']['idTinh']}');
-    tinhfuture = ApiHelper.getProvince(
-       ApiHelper.API_LenhDienTu+ "lay-danh-sach-tinh");
-    dataTinh = await tinhfuture;
-    province = dataTinh.data;
-    if (idTinh != null) {
-      loadHuyen(false);
-    }
+      idTinh = data['data']['idTinh'];
+      print('ttttt ${data['data']['idTinh']}');
+      tinhfuture = ApiHelper.getProvince(
+          ApiHelper.API_LenhDienTu + "lay-danh-sach-tinh");
+      dataTinh = await tinhfuture;
+      province = dataTinh.data;
+      if (idTinh != null) {
+        loadHuyen(false);
+      }
     }
     setState(() {});
   }
 
   void loadHuyen(bool checksetState) async {
     huyenfuture = ApiHelper.getDistrict(
-        ApiHelper.API_LenhDienTu+"lay-danh-sach-huyen?IdTinh=$idTinh");
+        ApiHelper.API_LenhDienTu + "lay-danh-sach-huyen?IdTinh=$idTinh");
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
@@ -132,9 +133,9 @@ class TaikhoanState extends State<Taikhoan> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: _image == null
-                          ? AssetImage(IMG_HEAD)
-                          : Image.file(_image),
+                      backgroundImage: imageitem != null  
+                          ? FileImage(File(imageitem.path))
+                          : AssetImage(IMG_HEAD) ,
                     ), //Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('edit avatar')));
                     Positioned(
                       bottom: 25 - sin(45) * 25,
@@ -152,7 +153,77 @@ class TaikhoanState extends State<Taikhoan> {
                                 size: 10,
                                 color: Colors.white,
                               ),
-                              onTap: getImage),
+                              onTap: () {
+                                return showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Container(
+                                          width: 60,
+                                          child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                GestureDetector(
+                                                  child: Text('Chụp ảnh mới',
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily:
+                                                              'Roboto Regular')),
+                                                  onTap: () async {
+                                                    print('chọn chụp ảnh');
+                                                    Navigator.pop(context);
+                                                    imageitem =
+                                                        await ImagePicker()
+                                                            .pickImage(
+                                                                source:
+                                                                    ImageSource
+                                                                        .camera);
+                                                    if (imageitem == null) {
+                                                      return;
+                                                    }
+
+                                                    setState(() {
+                                                      image.add(imageitem);
+                                                    });
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                GestureDetector(
+                                                  child: Text('Chọn ảnh',
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily:
+                                                              'Roboto Regular')),
+                                                  onTap: () async {
+                                                    print('chọn ảnh');
+                                                    Navigator.pop(context);
+                                                    imageitem =
+                                                        await ImagePicker()
+                                                            .pickImage(
+                                                                source:
+                                                                    ImageSource
+                                                                        .gallery);
+                                                    if (imageitem == null) {
+                                                      return;
+                                                    }
+                                                    // image.add(imageitem);
+                                                    setState(() {
+                                                      image.add(imageitem);
+                                                    });
+                                                  },
+                                                ),
+                                              ]),
+                                        ),
+                                      );
+                                    });
+                              }),
                         ),
                       ),
                     )
@@ -169,9 +240,7 @@ class TaikhoanState extends State<Taikhoan> {
                       child: Text(
                         '${LoginHelper.Default.userToken.given_name} ',
                         style: TextStyle(
-                          fontFamily: 'Roboto Medium',
-                          fontSize: 16
-                        ),
+                            fontFamily: 'Roboto Medium', fontSize: 16),
                         maxLines: 2,
                       ),
                     ),
@@ -189,483 +258,590 @@ class TaikhoanState extends State<Taikhoan> {
               )
             ],
           ),
-         data!=null? FutureBuilder<Map<String, dynamic>>(
-              future: datafuture,
-              builder: (context, snapshot) {
-                // By default, show a loading spinner.
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: const CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('${snapshot.error} loiiiii'));
-                } else if (snapshot.hasData) {
-                  var fetchdata = snapshot.data;
-                  formattedDate = fetchdata['data']['ngaySinh'];
-                  sdt = fetchdata['data']['soDienThoai'];
-                  email = fetchdata['data']['email'];
-                  address = fetchdata['data']['diaChiThuongTru'];
-                  if(formattedDate != null){
-                    formattedDate =DateFormat('dd/MM/yyyy').format(DateTime.parse(formattedDate).toLocal());
-                  }
-                  print('date:  $formattedDate');
-                  
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        // height: MediaQuery.of(context).size.height * 0.5,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(offset: Offset(0, 0), blurRadius: 0.5)
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Thông tin cá nhân',
-                              style: TextStyle(
-                                  color: fontColor,
-                                  fontFamily: 'Roboto Medium',
-                          fontSize: 16),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            rowItemInfor(
-                                'Ngày sinh',
-                                formattedDate!=null
-                                    ?  formattedDate
-                                    : unselect,
-                                true, ()async {
-                             var datetemp= await showDatePicker(
+          data != null
+              ? FutureBuilder<Map<String, dynamic>>(
+                  future: datafuture,
+                  builder: (context, snapshot) {
+                    // By default, show a loading spinner.
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: const CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('${snapshot.error} loiiiii'));
+                    } else if (snapshot.hasData) {
+                      var fetchdata = snapshot.data;
+                      formattedDate = fetchdata['data']['ngaySinh'];
+                      sdt = fetchdata['data']['soDienThoai'];
+                      email = fetchdata['data']['email'];
+                      address = fetchdata['data']['diaChiThuongTru'];
+                      if (formattedDate != null) {
+                        formattedDate = DateFormat('dd/MM/yyyy')
+                            .format(DateTime.parse(formattedDate).toLocal());
+                      }
+                      print('date:  $formattedDate');
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            // height: MediaQuery.of(context).size.height * 0.5,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: Offset(0, 0), blurRadius: 0.5)
+                                ],
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Thông tin cá nhân',
+                                  style: TextStyle(
+                                      color: fontColor,
+                                      fontFamily: 'Roboto Medium',
+                                      fontSize: 16),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                rowItemInfor(
+                                    'Ngày sinh',
+                                    formattedDate != null
+                                        ? formattedDate
+                                        : unselect,
+                                    true, () async {
+                                  var datetemp = await showDatePicker(
                                       context: context,
-                                      initialDate:fetchdata['data']['ngaySinh'] != null? DateTime.parse(fetchdata['data']['ngaySinh']).toLocal(): DateTime.now(),
+                                      initialDate: fetchdata['data']
+                                                  ['ngaySinh'] !=
+                                              null
+                                          ? DateTime.parse(
+                                                  fetchdata['data']['ngaySinh'])
+                                              .toLocal()
+                                          : DateTime.now(),
                                       firstDate: DateTime(1900),
                                       lastDate: DateTime(2222));
-                              //     .then((value) {
-                              //   setState(() {
-                                 
-                                  formattedDate = DateFormat('dd/MM/yyyy').format(datetemp);
-                                  print(formattedDate);
-                                   var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
-                                                'noiDung': '${formattedDate}',
-                                                'tenTruong':'ngaySinh'
-                                              });
-                                              print('formatttt $formattedDate');
-                                              if(res['status']){
-                                                  // 
-                                                  setState(() {
-                                                    loadInfo();
-                                                  });
-                                                  // Navigator.pop(context, 'OK');
-                                              }else{
-                                                print('failed');
-                                                //  Navigator.pop(context, 'OK');
-                                              }
-                                  
-                                  
-                              //   });
-                              // });
-                            }),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor('Số điện thoại',
-                                sdt != null ?  sdt:unselect , true, () {
-                              phoneController.text = fetchdata['data']['soDienThoai'];
-                              return showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      title: Text(
-                                        'Sửa SĐT',
-                                        style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
-                                      ),
-                                      content: Container(
-                                          height: 30,
-                                          width: 100,
-                                          child: Form(
-                                            key: formkey,
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                  hintText:
-                                                      'nhập số điện thoại'),
-                                              controller: phoneController,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .allow(RegExp(r'[0-9]'))
-                                              ],
-                                              validator: (sodt) {
-                                                if (sodt == null ||
-                                                    sodt.isEmpty) {
-                                                  return 'Số điện thoại không được để trống';
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          )),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async{
-                                            if (formkey.currentState
-                                                .validate()) {
-                                              var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
-                                                'noiDung': '${phoneController.text}',
-                                                'tenTruong':'soDienThoai'
-                                              });
-                                              if(res['status']){
-                                                  loadInfo();
-                                                  Navigator.pop(context, 'OK');
-                                              }else{
-                                                print('failed');
-                                              }
-                                              
-                                            }
-                                          },
-                                          child: const Text('OK',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            }),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Email', email == null ? unselect : email, true,
-                                () {
-                                  emailController.text = fetchdata['data']['email'];
-                              return showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      title: Text(
-                                        'Sửa Email',
-                                        style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
-                                      ),
-                                      content: Form(
-                                          key: formkey,
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                                hintText: 'nhập email'),
-                                            controller: emailController,
-                                            inputFormatters: [],
-                                            validator: (em) {
-                                              if (em == null || em.isEmpty) {
-                                                return 'Email không được để trống';
-                                              }
-                                              return null;
-                                            },
-                                          )),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Huỷ',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
-                                        ),
-                                        TextButton(
-                                          onPressed: ()async {
-                                            if (formkey.currentState
-                                                .validate()) {
-                                              var res = await ApiHelper.post(ApiHelper.API_LenhDienTu+'chinh-sua-thong-tin-ca-nhan',{
-                                                'noiDung': '${emailController.text}',
-                                                'tenTruong':'email'
-                                              });
-                                              if(res['status']){
-                                                  loadInfo();
-                                                  Navigator.pop(context, 'OK');
-                                              }else{
-                                                print('failed');
-                                                 Navigator.pop(context, 'OK');
-                                              }
-                                              
-                                            }
-                                          },
-                                          child: const Text('Xác nhận',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            }),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInforAddress('Địa chỉ',
-                                address != null ?address  :unselect , true, () {
-                              addressController.text =
-                                  fetchdata['data']['diaChi'];
-                              var tinhtemp = province.where((value) =>
-                                  fetchdata['data']['idTinh'] == value.idTinh);
-                              if (!tinhtemp.isEmpty || tinhtemp != null) {
-                                tinh = tinhtemp.first.tenTinh;
-                              }
-                              var huyentemp = district.firstWhereOrNull(
-                                  (value) =>
-                                      fetchdata['data']['idHuyen'] ==
-                                      value.idHuyen);
-                              if (huyentemp != null) {
-                                huyen = huyentemp.tenHuyen;
-                              }
-                              return showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return StatefulBuilder(
-                                        builder: (context, setStateDialog) {
-                                      setstatedialog = setStateDialog;
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        title: Text(
-                                          'Sửa địa chỉ',
-                                          style:
-                                              TextStyle(fontFamily: 'Roboto Medium',fontSize: 18),
-                                        ),
-                                        content: Form(
-                                            key: formkey,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  child:
-                                                      DropdownButtonFormField(
-                                                    decoration: InputDecoration(
-                                                        labelText: 'tỉnh(*)'),
-                                                    items: province.map((text) {
-                                                      return new DropdownMenuItem(
-                                                        child: Container(
-                                                            child: Text(
-                                                                text.tenTinh,
-                                                                style: TextStyle(
-                                                                    fontFamily: 'Roboto Regular',fontSize: 14))),
-                                                        value: text.tenTinh,
-                                                        onTap: () {
-                                                          print(
-                                                              'tinh moi : ${text.idTinh}  ${text.tenTinh}');
-                                                          setStateDialog(() {
-                                                            idTinh =
-                                                                text.idTinh;
+                                  //     .then((value) {
+                                  //   setState(() {
 
-                                                            huyen = null;
-                                                            loadHuyen(true);
-                                                          });
-                                                        },
-                                                      );
-                                                    }).toList(),
-                                                    value: tinh,
-                                                    onChanged: (t1) {
-                                                      setStateDialog(() {
-                                                        tinh = t1;
-                                                      });
-                                                    },
-                                                    hint: Text('chọn tỉnh',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
-                                                    menuMaxHeight: 200,
-                                                    validator: (vl1) {
-                                                      if (vl1 == null ||
-                                                          vl1.isEmpty) {
-                                                        return 'Chưa chọn tỉnh';
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                                Container(
-                                                  // height: 45,
-                                                  child:
-                                                      DropdownButtonFormField(
-                                                    decoration: InputDecoration(
-                                                        labelText:
-                                                            'Quận/huyện(*)'),
-                                                    items: district.map((text) {
-                                                      return new DropdownMenuItem(
-                                                        child: Container(
-                                                            child: Text(
-                                                                text.tenHuyen,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        15))),
-                                                        value: text.tenHuyen,
-                                                      );
-                                                    }).toList(),
-                                                    value: huyen,
-                                                    onChanged: (t2) {
-                                                      huyentemp = district
-                                                          .firstWhereOrNull(
-                                                              (value) =>
-                                                                  t2 ==
-                                                                  value
-                                                                      .tenHuyen);
-                                                      print(
-                                                          'huyen chonj ${huyentemp.idHuyen}');
-                                                      setStateDialog(() {
-                                                        huyen = t2;
-                                                      });
-                                                    },
-                                                    hint: Text('chọn huyện',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
-                                                    menuMaxHeight: 200,
-                                                    validator: (vl2) {
-                                                      if (vl2 == null ||
-                                                          vl2.isEmpty) {
-                                                        return 'Chưa chọn huyện';
-                                                      }
-                                                      return null;
-                                                    },
-                                                    onTap: () {},
-                                                  ),
-                                                ),
-                                                TextFormField(
-                                                  controller: addressController,
-                                                  inputFormatters: [],
-                                                  maxLines: null,
+                                  formattedDate =
+                                      DateFormat('dd/MM/yyyy').format(datetemp);
+                                  print(formattedDate);
+                                  var res = await ApiHelper.post(
+                                      ApiHelper.API_LenhDienTu +
+                                          'chinh-sua-thong-tin-ca-nhan',
+                                      {
+                                        'noiDung': '${formattedDate}',
+                                        'tenTruong': 'ngaySinh'
+                                      });
+                                  print('formatttt $formattedDate');
+                                  if (res['status']) {
+                                    //
+                                    setState(() {
+                                      loadInfo();
+                                    });
+                                    // Navigator.pop(context, 'OK');
+                                  } else {
+                                    print('failed');
+                                    //  Navigator.pop(context, 'OK');
+                                  }
+
+                                  //   });
+                                  // });
+                                }),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor('Số điện thoại',
+                                    sdt != null ? sdt : unselect, true, () {
+                                  phoneController.text =
+                                      fetchdata['data']['soDienThoai'];
+                                  return showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          title: Text(
+                                            'Sửa SĐT',
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 18),
+                                          ),
+                                          content: Container(
+                                              height: 30,
+                                              width: 100,
+                                              child: Form(
+                                                key: formkey,
+                                                child: TextFormField(
                                                   decoration: InputDecoration(
-                                                      labelText:
-                                                          'Địa chỉ cụ thể(*)'),
-                                                  validator: (vl4) {
-                                                    if (vl4 == null ||
-                                                        vl4.isEmpty) {
-                                                      return 'Chưa điền địa chỉ cụ thể';
+                                                      hintText:
+                                                          'nhập số điện thoại'),
+                                                  controller: phoneController,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .allow(RegExp(r'[0-9]'))
+                                                  ],
+                                                  validator: (sodt) {
+                                                    if (sodt == null ||
+                                                        sodt.isEmpty) {
+                                                      return 'Số điện thoại không được để trống';
                                                     }
                                                     return null;
                                                   },
-                                                )
-                                              ],
-                                            )),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              loadInfo();
-                                              Navigator.pop(context, 'Cancel');
-                                            },
-                                            child: const Text('Cancel',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
+                                                ),
+                                              )),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text(
+                                                'Cancel',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                if (formkey.currentState
+                                                    .validate()) {
+                                                  var res = await ApiHelper.post(
+                                                      ApiHelper.API_LenhDienTu +
+                                                          'chinh-sua-thong-tin-ca-nhan',
+                                                      {
+                                                        'noiDung':
+                                                            '${phoneController.text}',
+                                                        'tenTruong':
+                                                            'soDienThoai'
+                                                      });
+                                                  if (res['status']) {
+                                                    loadInfo();
+                                                    Navigator.pop(
+                                                        context, 'OK');
+                                                  } else {
+                                                    print('failed');
+                                                  }
+                                                }
+                                              },
+                                              child: const Text(
+                                                'OK',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor('Email',
+                                    email == null ? unselect : email, true, () {
+                                  emailController.text =
+                                      fetchdata['data']['email'];
+                                  return showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          title: Text(
+                                            'Sửa Email',
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 18),
                                           ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              Map<String, dynamic> Mappostdata =
-                                                  {
-                                                'diaChi':
-                                                    '${addressController.text}',
-                                                'idHuyen':
-                                                    '${huyentemp.idHuyen}',
-                                              };
-                                              if (formkey.currentState
-                                                  .validate()) {
-                                                var res = await ApiHelper.post(
-                                                    ApiHelper.API_LenhDienTu+'chinh-sua-dia-chi-ca-nhan',
-                                                    Mappostdata);
+                                          content: Form(
+                                              key: formkey,
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                    hintText: 'nhập email'),
+                                                controller: emailController,
+                                                inputFormatters: [],
+                                                validator: (em) {
+                                                  if (em == null ||
+                                                      em.isEmpty) {
+                                                    return 'Email không được để trống';
+                                                  }
+                                                  return null;
+                                                },
+                                              )),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text(
+                                                'Huỷ',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                if (formkey.currentState
+                                                    .validate()) {
+                                                  var res = await ApiHelper.post(
+                                                      ApiHelper.API_LenhDienTu +
+                                                          'chinh-sua-thong-tin-ca-nhan',
+                                                      {
+                                                        'noiDung':
+                                                            '${emailController.text}',
+                                                        'tenTruong': 'email'
+                                                      });
+                                                  if (res['status']) {
+                                                    loadInfo();
+                                                    Navigator.pop(
+                                                        context, 'OK');
+                                                  } else {
+                                                    print('failed');
+                                                    Navigator.pop(
+                                                        context, 'OK');
+                                                  }
+                                                }
+                                              },
+                                              child: const Text(
+                                                'Xác nhận',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInforAddress(
+                                    'Địa chỉ',
+                                    address != null ? address : unselect,
+                                    true, () {
+                                  addressController.text =
+                                      fetchdata['data']['diaChi'];
+                                  var tinhtemp = province.where((value) =>
+                                      fetchdata['data']['idTinh'] ==
+                                      value.idTinh);
+                                  if (!tinhtemp.isEmpty || tinhtemp != null) {
+                                    tinh = tinhtemp.first.tenTinh;
+                                  }
+                                  var huyentemp = district.firstWhereOrNull(
+                                      (value) =>
+                                          fetchdata['data']['idHuyen'] ==
+                                          value.idHuyen);
+                                  if (huyentemp != null) {
+                                    huyen = huyentemp.tenHuyen;
+                                  }
+                                  return showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return StatefulBuilder(
+                                            builder: (context, setStateDialog) {
+                                          setstatedialog = setStateDialog;
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            title: Text(
+                                              'Sửa địa chỉ',
+                                              style: TextStyle(
+                                                  fontFamily: 'Roboto Medium',
+                                                  fontSize: 18),
+                                            ),
+                                            content: Form(
+                                                key: formkey,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      child:
+                                                          DropdownButtonFormField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                                labelText:
+                                                                    'tỉnh(*)'),
+                                                        items: province
+                                                            .map((text) {
+                                                          return new DropdownMenuItem(
+                                                            child: Container(
+                                                                child: Text(
+                                                                    text
+                                                                        .tenTinh,
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Roboto Regular',
+                                                                        fontSize:
+                                                                            14))),
+                                                            value: text.tenTinh,
+                                                            onTap: () {
+                                                              print(
+                                                                  'tinh moi : ${text.idTinh}  ${text.tenTinh}');
+                                                              setStateDialog(
+                                                                  () {
+                                                                idTinh =
+                                                                    text.idTinh;
 
-                                                loadInfo();
-                                                Navigator.pop(context, 'OK');
-                                              }
-                                              ;
-                                            },
-                                            child: const Text('OK',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                                  });
-                            },fetchdata['data']['diaChiThuongTru'] ),
-                            SizedBox(
-                              height: spaceInfo,
+                                                                huyen = null;
+                                                                loadHuyen(true);
+                                                              });
+                                                            },
+                                                          );
+                                                        }).toList(),
+                                                        value: tinh,
+                                                        onChanged: (t1) {
+                                                          setStateDialog(() {
+                                                            tinh = t1;
+                                                          });
+                                                        },
+                                                        hint: Text('chọn tỉnh',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontFamily:
+                                                                    'Roboto Regular')),
+                                                        menuMaxHeight: 200,
+                                                        validator: (vl1) {
+                                                          if (vl1 == null ||
+                                                              vl1.isEmpty) {
+                                                            return 'Chưa chọn tỉnh';
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      // height: 45,
+                                                      child:
+                                                          DropdownButtonFormField(
+                                                        decoration: InputDecoration(
+                                                            labelText:
+                                                                'Quận/huyện(*)'),
+                                                        items: district
+                                                            .map((text) {
+                                                          return new DropdownMenuItem(
+                                                            child: Container(
+                                                                child: Text(
+                                                                    text
+                                                                        .tenHuyen,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            15))),
+                                                            value:
+                                                                text.tenHuyen,
+                                                          );
+                                                        }).toList(),
+                                                        value: huyen,
+                                                        onChanged: (t2) {
+                                                          huyentemp = district
+                                                              .firstWhereOrNull(
+                                                                  (value) =>
+                                                                      t2 ==
+                                                                      value
+                                                                          .tenHuyen);
+                                                          print(
+                                                              'huyen chonj ${huyentemp.idHuyen}');
+                                                          setStateDialog(() {
+                                                            huyen = t2;
+                                                          });
+                                                        },
+                                                        hint: Text('chọn huyện',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontFamily:
+                                                                    'Roboto Regular')),
+                                                        menuMaxHeight: 200,
+                                                        validator: (vl2) {
+                                                          if (vl2 == null ||
+                                                              vl2.isEmpty) {
+                                                            return 'Chưa chọn huyện';
+                                                          }
+                                                          return null;
+                                                        },
+                                                        onTap: () {},
+                                                      ),
+                                                    ),
+                                                    TextFormField(
+                                                      controller:
+                                                          addressController,
+                                                      inputFormatters: [],
+                                                      maxLines: null,
+                                                      decoration: InputDecoration(
+                                                          labelText:
+                                                              'Địa chỉ cụ thể(*)'),
+                                                      validator: (vl4) {
+                                                        if (vl4 == null ||
+                                                            vl4.isEmpty) {
+                                                          return 'Chưa điền địa chỉ cụ thể';
+                                                        }
+                                                        return null;
+                                                      },
+                                                    )
+                                                  ],
+                                                )),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  loadInfo();
+                                                  Navigator.pop(
+                                                      context, 'Cancel');
+                                                },
+                                                child: const Text('Cancel',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontFamily:
+                                                            'Roboto Regular')),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  Map<String, dynamic>
+                                                      Mappostdata = {
+                                                    'diaChi':
+                                                        '${addressController.text}',
+                                                    'idHuyen':
+                                                        '${huyentemp.idHuyen}',
+                                                  };
+                                                  if (formkey.currentState
+                                                      .validate()) {
+                                                    var res = await ApiHelper.post(
+                                                        ApiHelper
+                                                                .API_LenhDienTu +
+                                                            'chinh-sua-dia-chi-ca-nhan',
+                                                        Mappostdata);
+
+                                                    loadInfo();
+                                                    Navigator.pop(
+                                                        context, 'OK');
+                                                  }
+                                                  ;
+                                                },
+                                                child: const Text('OK',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontFamily:
+                                                            'Roboto Regular')),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                      });
+                                }, fetchdata['data']['diaChiThuongTru']),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor('Năm bắt đầu hành nghề', '2022',
+                                    false, () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor(
+                                    'Số GPLX',
+                                    fetchdata['data']['soGPLX'] == null
+                                        ? unselect
+                                        : fetchdata['data']['soGPLX'],
+                                    false,
+                                    () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor(
+                                    'Hạng bằng',
+                                    fetchdata['data']['hangBang'] == null
+                                        ? unselect
+                                        : fetchdata['data']['hangBang'],
+                                    false,
+                                    () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor(
+                                    'Ngày bắt đầu hiệu lực',
+                                    fetchdata['data']['ngayBatDauHieuLuc'] ==
+                                            null
+                                        ? unselect
+                                        : fetchdata['data']
+                                            ['ngayBatDauHieuLuc'],
+                                    false,
+                                    () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor('Thời hạn hiệu lực', '21/03/2022',
+                                    false, () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor(
+                                    'Cơ quan cấp',
+                                    fetchdata['data']['coQuanCap'] == null
+                                        ? unselect
+                                        : fetchdata['data']['coQuanCap'],
+                                    false,
+                                    () {}),
+                                SizedBox(
+                                  height: spaceInfo,
+                                ),
+                                rowItemInfor(
+                                    'Ngày cấp',
+                                    fetchdata['data']['ngayCap'] == null
+                                        ? unselect
+                                        : fetchdata['data']['ngayCap'],
+                                    false,
+                                    () {}),
+                              ],
                             ),
-                            rowItemInfor(
-                                'Năm bắt đầu hành nghề', '2022', false, () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Số GPLX',
-                                fetchdata['data']['soGPLX'] == null
-                                    ? unselect
-                                    : fetchdata['data']['soGPLX'],
-                                false,
-                                () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Hạng bằng',
-                                fetchdata['data']['hangBang'] == null
-                                    ? unselect
-                                    : fetchdata['data']['hangBang'],
-                                false,
-                                () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Ngày bắt đầu hiệu lực',
-                                fetchdata['data']['ngayBatDauHieuLuc'] == null
-                                    ? unselect
-                                    : fetchdata['data']['ngayBatDauHieuLuc'],
-                                false,
-                                () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor('Thời hạn hiệu lực', '21/03/2022',
-                                false, () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Cơ quan cấp',
-                                fetchdata['data']['coQuanCap'] == null
-                                    ? unselect
-                                    : fetchdata['data']['coQuanCap'],
-                                false,
-                                () {}),
-                            SizedBox(
-                              height: spaceInfo,
-                            ),
-                            rowItemInfor(
-                                'Ngày cấp',
-                                fetchdata['data']['ngayCap'] == null
-                                    ? unselect
-                                    : fetchdata['data']['ngayCap'],
-                                false,
-                                () {}),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      FlatButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        onPressed: () {
-                          print('Đăng xuất');
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => Login()));
-                        },
-                        child: Text('ĐĂNG XUẤT',
-                            style: TextStyle(color: Colors.white,fontFamily: 'Roboto Medium',fontSize: 14,letterSpacing: 1.25)),
-                        color: Colors.blue,
-                      )
-                    ],
-                  );
-                }
-                return Center(child: Text('No data',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular')));
-              }): Center(child: Text('Lỗi 401 nhé !',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular'),),),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          FlatButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            onPressed: () {
+                              print('Đăng xuất');
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Login()));
+                            },
+                            child: Text('ĐĂNG XUẤT',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Roboto Medium',
+                                    fontSize: 14,
+                                    letterSpacing: 1.25)),
+                            color: Colors.blue,
+                          )
+                        ],
+                      );
+                    }
+                    return Center(
+                        child: Text('No data',
+                            style: TextStyle(
+                                fontSize: 14, fontFamily: 'Roboto Regular')));
+                  })
+              : Center(
+                  child: Text(
+                    'Lỗi 401 nhé !',
+                    style:
+                        TextStyle(fontSize: 14, fontFamily: 'Roboto Regular'),
+                  ),
+                ),
         ],
       )),
     );
@@ -678,10 +854,7 @@ class TaikhoanState extends State<Taikhoan> {
         Text(
           t1,
           style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Roboto Regular',
-                          fontSize: 14
-          ),
+              color: Colors.black, fontFamily: 'Roboto Regular', fontSize: 14),
         ),
         SizedBox(
           width: 100,
@@ -694,7 +867,7 @@ class TaikhoanState extends State<Taikhoan> {
                 style: TextStyle(
                     color: Colors.black,
                     fontFamily: 'Roboto Medium',
-                          fontSize: 14),
+                    fontSize: 14),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -716,18 +889,15 @@ class TaikhoanState extends State<Taikhoan> {
     );
   }
 
-  Row rowItemInforAddress(
-      String t1, String t2, bool active, VoidCallback click,String checkspace) {
+  Row rowItemInforAddress(String t1, String t2, bool active, VoidCallback click,
+      String checkspace) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           t1,
           style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Roboto Regular',
-                          fontSize: 14
-          ),
+              color: Colors.black, fontFamily: 'Roboto Regular', fontSize: 14),
         ),
         // SizedBox(
         //   width: 100,
@@ -735,13 +905,13 @@ class TaikhoanState extends State<Taikhoan> {
         Row(
           children: [
             SizedBox(
-              width: checkspace==null? 70:200,
+              width: checkspace == null ? 70 : 200,
               child: Text(
                 t2,
                 style: TextStyle(
                     color: Colors.black,
                     fontFamily: 'Roboto Medium',
-                          fontSize: 14),
+                    fontSize: 14),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -769,9 +939,7 @@ class TaikhoanState extends State<Taikhoan> {
         children: <Widget>[
           Text(
             value,
-            style: TextStyle(
-               fontSize: 16,fontFamily: 'Roboto Medium'
-            ),
+            style: TextStyle(fontSize: 16, fontFamily: 'Roboto Medium'),
           ),
           Divider(
             height: 5,
@@ -779,7 +947,8 @@ class TaikhoanState extends State<Taikhoan> {
           ),
           Text(
             key,
-            style: TextStyle(color: Colors.grey, fontSize: 12,fontFamily: 'Roboto Regular'),
+            style: TextStyle(
+                color: Colors.grey, fontSize: 12, fontFamily: 'Roboto Regular'),
           )
         ],
       ),

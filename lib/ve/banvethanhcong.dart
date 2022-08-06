@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
+import 'package:flutter_ui_kit/uikit.dart';
+import 'package:flutter_ui_kit/ve/Ve.dart';
+import 'package:flutter_ui_kit/ve/banveghephu.dart';
+import 'package:intl/intl.dart';
 class banvethanhcong extends StatelessWidget {
-  const banvethanhcong({Key key}) : super(key: key);
+  String tongtien,sdt,hinhthucthanhtoan;
+  banvethanhcong(this.tongtien,this.sdt,this.hinhthucthanhtoan);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,7 @@ class banvethanhcong extends StatelessWidget {
                   ),
             Text(
               'Bán vé thành công !',
-              style: TextStyle(fontFamily: 'Roboto Medium'),
+              style: TextStyle(fontFamily: 'Roboto Medium',fontSize: 16),
             ),
             Container(
               width: 250,
@@ -34,16 +38,17 @@ class banvethanhcong extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  iteminfoBVTC('Tổng tiền:', '50,000đ'),
+                  iteminfoBVTC('Tổng tiền:',tongtien != null? '${NumberFormat('#,###')
+                                                .format(int.parse(tongtien))+'đ'}':'0đ'),
                   SizedBox(
                     height: 8,
                   ),
-                  iteminfoBVTC('Số điện thoại:', '06456543445'),
+                  iteminfoBVTC('Số điện thoại:',sdt !=null? '$sdt':'null'),
                   SizedBox(
                     height: 8,
                   ),
                   iteminfoBVTC(
-                      'Hình thức thanh\ntoán', 'Tiền mặt/Cash\nchange'),
+                      'Hình thức thanh\ntoán',hinhthucthanhtoan != null? '$hinhthucthanhtoan':'null' ),
                 ],
               ),
             ),
@@ -63,15 +68,17 @@ class banvethanhcong extends StatelessWidget {
                   children: [
                     FlatButton(
                         onPressed: () {
-                          // formTTHK.currentState.validate();
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UIKitPage(0)));
                         },
                         child: Text(
                           'TRANG CHỦ',
-                          style: TextStyle(color: Colors.blue),
+                          style: TextStyle(color: Colors.blue,fontFamily: 'Roboto Medium',fontSize: 14,letterSpacing: 1.25),
                         )),
                     FlatButton(
                       onPressed: () {
-                        // formTTHK.currentState.validate();
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(1)));
                       },
                       child: Text(
                         'TIẾP TỤC',
@@ -95,11 +102,11 @@ class banvethanhcong extends StatelessWidget {
       children: [
         Text(
           '$title',
-          style: TextStyle(),
+          style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),
         ),
         Text(
           '$value',
-          style: TextStyle(),
+          style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),
         ),
       ],
     );

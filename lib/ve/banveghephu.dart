@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/uikit.dart';
+import 'package:flutter_ui_kit/ve/banvethanhcong.dart';
 import 'package:intl/intl.dart';
 import '../componentsFuture/bottomshetHK.dart';
 import '../model/DSDiemxuongLotrinh.dart';
@@ -392,7 +393,7 @@ class _banveState extends State<banveghephu> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                UIKitPage(1)));
+                                                banvethanhcong(money, sdtController.text, cash?'TIỀN MẶT/CASH\nCHANGE':'BANKING...')));
                                   } else {
                                     showDialog(
                                       context: context,

@@ -49,9 +49,9 @@ class _QRpageState extends State<QRpage> {
                       key: qrKey,
                       //type 2
                       onQRViewCreated: (QRViewController controller) {
-                        setState(() {
+                       
                           this.controller = controller;
-                        });
+                        
                         controller.scannedDataStream.listen((event) {
                           if(mounted){
                             controller.dispose();
