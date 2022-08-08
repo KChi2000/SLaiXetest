@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_ui_kit/Login.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/Huyen.dart';
@@ -25,6 +26,7 @@ class Taikhoan extends StatefulWidget {
 }
 
 class TaikhoanState extends State<Taikhoan> {
+  final storage = new FlutterSecureStorage();
   final formkey = GlobalKey<FormState>();
   DateTime datetime = DateTime.now();
   String formattedDate;
@@ -812,8 +814,9 @@ class TaikhoanState extends State<Taikhoan> {
                           FlatButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            onPressed: () {
+                            onPressed: () async{
                               print('Đăng xuất');
+                              await storage.delete(key: 'token');
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -904,6 +907,7 @@ class TaikhoanState extends State<Taikhoan> {
         // ),
         Row(
           children: [
+            // Spacer(),
             SizedBox(
               width: checkspace == null ? 70 : 200,
               child: Text(

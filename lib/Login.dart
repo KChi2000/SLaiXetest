@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:flutter_ui_kit/SignUp.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
@@ -20,7 +23,7 @@ class _MyWidgetState extends State<Login> {
   bool showPass = true;
   String username = '';
   String password = '';
-
+  
   @override
   void initState() {
     // TODO: implement initState
@@ -159,9 +162,11 @@ class _MyWidgetState extends State<Login> {
                       try {
                         await LoginHelper.Default.login(username, password);
                         String token = LoginHelper.Default.access_token;
-          
+                        UserTokenModel userStorage = LoginHelper.Default.userToken;
                         print('Login done, token is: $token');
-                      
+                        final storage = new FlutterSecureStorage();
+                        await storage.write(key: 'token', value: token);
+                        await storage.write(key: 'userModel', value: jsonEncode(userStorage.toJson()));
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

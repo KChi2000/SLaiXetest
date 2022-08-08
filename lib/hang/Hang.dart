@@ -249,102 +249,112 @@ class HangState extends State<Hang> {
                     height: 10,
                   ),
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            loadLichSuChuyenDi();
-                            // print('you tapped me');
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return StatefulBuilder(
-                                      builder: (context, setstate) {
-                                    return FutureBuilder(
-                                        future: LichSuChuyenDiFuture,
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                                child: Text(
-                                              'Không có dữ liệu',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: "Roboto Regular",
-                                                  fontSize: 14),
-                                            ));
-                                          } else if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text('Lỗi',
-                                                  style: TextStyle(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          loadLichSuChuyenDi();
+                          // print('you tapped me');
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                    builder: (context, setstate) {
+                                  return FutureBuilder(
+                                      future: LichSuChuyenDiFuture,
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                              child: Text(
+                                            'Không có dữ liệu',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Roboto Regular",
+                                                fontSize: 14),
+                                          ));
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                            child: Text('Lỗi',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                        "Roboto Regular",
+                                                    fontSize: 14)),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          LichSuChuyenDi data = snapshot.data;
+                                          List<DataLichSuChuyenDi> lichsulist =
+                                              data.data;
+                                          return Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 30),
+                                            height: 350,
+                                            child: Column(
+                                              children: [
+                                                Text('Lịch sử chuyến đi',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
                                                       fontFamily:
-                                                          "Roboto Regular",
-                                                      fontSize: 14)),
-                                            );
-                                          } else if (snapshot.hasData) {
-                                            LichSuChuyenDi data = snapshot.data;
-                                            List<DataLichSuChuyenDi>
-                                                lichsulist = data.data;
-                                            return Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 30),
-                                              height: 350,
-                                              child: Column(
-                                                children: [
-                                                  Text('Lịch sử chuyến đi',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontFamily:
-                                                            "Roboto Medium",
-                                                        fontSize: 20,
-                                                      )),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: ListView.builder(
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        var time;
+                                                          "Roboto Medium",
+                                                      fontSize: 20,
+                                                    )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var time;
 
-                                                        time = DateTime.parse(
-                                                                lichsulist[
-                                                                        index]
-                                                                    .gioXuatBen)
-                                                            .toLocal();
+                                                      time = DateTime.parse(
+                                                              lichsulist[index]
+                                                                  .gioXuatBen)
+                                                          .toLocal();
 
-                                                        String timeHieuLuc =
-                                                            DateFormat('kk:mm')
-                                                                .format(time);
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              choose = index;
-                                                              title = lichsulist[
-                                                                      index]
-                                                                  .maChuyenDi;
-                                                              print(title);
-                                                            });
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Container(
-                                                              height: 45,
-                                                              child: Row(
-                                                                children: [
-                                                                  SvgPicture
-                                                                      .asset(
-                                                                    iconBottomSheet,
-                                                                    color: choose ==
-                                                                            index
-                                                                        ? Colors
-                                                                            .blue
-                                                                        : Colors
-                                                                            .black,
-                                                                    width: 17,
-                                                                    height: 17,
-                                                                  ),
-                                                                  Text(
-                                                                    ' ${lichsulist[index].maChuyenDi}',
+                                                      String timeHieuLuc =
+                                                          DateFormat('kk:mm')
+                                                              .format(time);
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            choose = index;
+                                                            title = lichsulist[
+                                                                    index]
+                                                                .maChuyenDi;
+                                                            print(title);
+                                                          });
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Container(
+                                                            height: 45,
+                                                            child: Row(
+                                                              children: [
+                                                                SvgPicture
+                                                                    .asset(
+                                                                  iconBottomSheet,
+                                                                  color: choose ==
+                                                                          index
+                                                                      ? Colors
+                                                                          .blue
+                                                                      : Colors
+                                                                          .black,
+                                                                  width: 17,
+                                                                  height: 17,
+                                                                ),
+                                                                Text(
+                                                                  ' ${lichsulist[index].maChuyenDi}',
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          "Roboto Medium",
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: choose ==
+                                                                              index
+                                                                          ? selectedColor
+                                                                          : unselectedColor),
+                                                                ),
+                                                                Text(' | ',
                                                                     style: TextStyle(
                                                                         fontFamily:
                                                                             "Roboto Medium",
@@ -353,291 +363,548 @@ class HangState extends State<Hang> {
                                                                         color: choose ==
                                                                                 index
                                                                             ? selectedColor
-                                                                            : unselectedColor),
-                                                                  ),
-                                                                  Text(' | ',
-                                                                      style: TextStyle(
-                                                                          fontFamily:
-                                                                              "Roboto Medium",
-                                                                          fontSize:
-                                                                              14,
-                                                                          color: choose == index
-                                                                              ? selectedColor
-                                                                              : unselectedColor)),
-                                                                  Text(
-                                                                      '$timeHieuLuc',
-                                                                      style: TextStyle(
-                                                                          fontFamily:
-                                                                              "Roboto Medium",
-                                                                          fontSize:
-                                                                              14,
-                                                                          color: choose == index
-                                                                              ? selectedColor
-                                                                              : unselectedColor))
-                                                                ],
-                                                              )),
-                                                        );
-                                                      },
-                                                      itemCount:
-                                                          lichsulist.length,
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      shrinkWrap: true,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        });
-                                  });
-                                }).whenComplete(() {
-                              if (title == null || title.isEmpty) {
-                                setState(() {
-                                  title = chuyendiGanday.data.maChuyenDi;
-                                });
-                              }
-                              setState(() {
-                                value = title;
-                                tongtien = 0;
-                                trangthaiCount = 0;
-                              });
-                              showDSHangTheoChuyenDi();
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(),
-                            child:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                              Text(value != null ? '$value' : '',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Roboto Regular",
-                                      fontSize: 14)),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(bottom: 5),
-                                child: RotatedBox(
-                                    quarterTurns: 3,
-                                    child: Icon(
-                                      arrowDown,
-                                      size: arrowDownSizehang,
-                                    )),
-                              )
-                            ]),
-                          ),
-                        ),
-                        RichText(
-                            text: TextSpan(children: [
-                          TextSpan(
-                              text: 'Tổng: ',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Roboto Regular",
-                                  fontSize: 14)),
-                          TextSpan(
-                              text: '$tongtienđ',
-                              style: TextStyle(
-                                  color: tongtienColor,
-                                  fontFamily: "Roboto Medium",
-                                  fontSize: 14)),
-                        ]))
-                      ],
-                    ),
-                    checkHaschuyendiganday != 'no data'
-                        ? FutureBuilder(
-                            future: dshhTheoChuyenDiFuture,
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Expanded(
-                                  child: Center(
-                                    child: Text('Không có dữ liệu',
-                                        style: TextStyle(
-                                            fontFamily: "Roboto Regular",
-                                            fontSize: 14)),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Expanded(
-                                  child: Center(
-                                    child: Text('Lỗi',
-                                        style: TextStyle(
-                                            fontFamily: "Roboto Regular",
-                                            fontSize: 14)),
-                                  ),
-                                );
-                              } else if (snapshot.hasData) {
-                                DSHHTheoChuyenDi data = snapshot.data;
-                                List<DataDSHH> list = data.data;
-                                if (!data.status) {
-                                  return Expanded(
-                                    child: Center(
-                                      child: Text('Không có hàng trên xe',
-                                          style: TextStyle(
-                                              fontFamily: "Roboto Regular",
-                                              fontSize: 14)),
-                                    ),
-                                  );
-                                }
-                                return Expanded(
-                                    child: ListView.builder(
-                                        itemCount: list.length,
-                                        itemBuilder: (context, index) {
-                                          giaoStatus = list[index]
-                                              .thoiGianGiaoHangThucTe;
-                                          var datetime;
-                                          if (list[index]
-                                                  .thoiGianGiaoHangThucTe ==
-                                              null) {
-                                            datetime = DateTime.parse(
-                                                    list[index]
-                                                        .thoiGianDuKienGiaoHang)
-                                                .toLocal();
-                                          } else {
-                                            datetime = DateTime.parse(
-                                                    list[index]
-                                                        .thoiGianGiaoHangThucTe)
-                                                .toLocal();
-                                          }
-                                          String timeHieuLuc =
-                                              DateFormat('kk:mm dd/MM/yyyy ')
-                                                  .format(datetime);
-                                          return Container(
-                                            margin: EdgeInsets.only(
-                                                top: marginItemList),
-                                            decoration: BoxDecoration(
-                                                color: itemListColor,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.5),
-                                                      spreadRadius: 5,
-                                                      blurRadius: 7,
-                                                      offset: Offset(0, 0))
-                                                ],
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                            padding: EdgeInsets.only(
-                                                top: 10,
-                                                left: 10,
-                                                right: 10,
-                                                bottom: 0),
-                                            child: Banner(
-                                              message: giaoStatus != null
-                                                  ? 'Đã thu'
-                                                  : 'Chưa thu',
-                                              location: bannerLocation,
-                                              color: giaoStatus != null
-                                                  ? Colors.green
-                                                  : bannerColorhang,
-                                              child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        InkWell(
-                                                          onTap: () {
-                                                            print('image');
-                                                          },
-                                                          child: Image.asset(
-                                                            'asset/images/11.jpg',
-                                                            width:
-                                                                imageItemListWidth,
-                                                            height: 80,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              itemclick = index;
-                                                            });
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder: (context) => hangDetail(
-                                                                        itemclick,
-                                                                        list[index]
-                                                                            .idNhatKy)));
-                                                            print(itemclick);
-                                                          },
-                                                          child: Container(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                itemListHang(
-                                                                    'Trả tại: ',
-                                                                    '${list[index].tenDiemNhan}',
-                                                                    Colors
-                                                                        .black,
-                                                                    null),
-                                                                itemListHang(
-                                                                    'Cước: ',
-                                                                    '${list[index].donGia}đ',
-                                                                    Colors
-                                                                        .orange,
-                                                                    null),
-                                                                itemListHangPhoneCall(
-                                                                    'Người nhận: ',
-                                                                    '${list[index].soDienThoaiNguoiNhan}',
-                                                                    Colors.blue,
-                                                                    TextDecoration
-                                                                        .underline,
-                                                                    () => _callNumber(
-                                                                        list[index]
-                                                                            .soDienThoaiNguoiNhan)),
-                                                                RichText(
-                                                                    text: TextSpan(
-                                                                        children: [
-                                                                      TextSpan(
-                                                                          text:
-                                                                              '${list[index].trangThaiVanChuyen} ',
-                                                                          style: TextStyle(
-                                                                              fontFamily: 'Roboto Medium',
-                                                                              fontSize: 14,
-                                                                              color: giaoStatus != null ? Colors.green : bannerColorhang)),
-                                                                      giaoStatus !=
-                                                                              null
-                                                                          ? TextSpan(
-                                                                              text: '($timeHieuLuc)',
-                                                                              style: TextStyle(fontFamily: 'Roboto Italic', fontSize: 12, color: Colors.green))
-                                                                          : TextSpan(text: '(Dự kiến: $timeHieuLuc)', style: TextStyle(fontFamily: 'Roboto Italic', fontSize: 12, color: Colors.red)),
-                                                                    ]))
+                                                                            : unselectedColor)),
+                                                                Text(
+                                                                    '$timeHieuLuc',
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            "Roboto Medium",
+                                                                        fontSize:
+                                                                            14,
+                                                                        color: choose ==
+                                                                                index
+                                                                            ? selectedColor
+                                                                            : unselectedColor))
                                                               ],
-                                                            ),
+                                                            )),
+                                                      );
+                                                    },
+                                                    itemCount:
+                                                        lichsulist.length,
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      });
+                                });
+                              }).whenComplete(() {
+                            if (title == null || title.isEmpty) {
+                              setState(() {
+                                title = chuyendiGanday.data.maChuyenDi;
+                              });
+                            }
+                            setState(() {
+                              value = title;
+                              tongtien = 0;
+                              trangthaiCount = 0;
+                            });
+                            showDSHangTheoChuyenDi();
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Text(value != null ? '$value' : '',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: "Roboto Regular",
+                                    fontSize: 14)),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              child: RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Icon(
+                                    arrowDown,
+                                    size: arrowDownSizehang,
+                                  )),
+                            )
+                          ]),
+                        ),
+                      ),
+                      RichText(
+                          text: TextSpan(children: [
+                        TextSpan(
+                            text: 'Tổng: ',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: "Roboto Regular",
+                                fontSize: 14)),
+                        TextSpan(
+                            text: '$tongtienđ',
+                            style: TextStyle(
+                                color: tongtienColor,
+                                fontFamily: "Roboto Medium",
+                                fontSize: 14)),
+                      ]))
+                    ],
+                  ),
+                  checkHaschuyendiganday != 'no data'
+                      ? FutureBuilder(
+                          future: dshhTheoChuyenDiFuture,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Expanded(
+                                child: Center(
+                                  child: Text('Không có dữ liệu',
+                                      style: TextStyle(
+                                          fontFamily: "Roboto Regular",
+                                          fontSize: 14)),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Expanded(
+                                child: Center(
+                                  child: Text('Lỗi',
+                                      style: TextStyle(
+                                          fontFamily: "Roboto Regular",
+                                          fontSize: 14)),
+                                ),
+                              );
+                            } else if (snapshot.hasData) {
+                              DSHHTheoChuyenDi data = snapshot.data;
+                              List<DataDSHH> list = data.data;
+                              if (!data.status) {
+                                return Expanded(
+                                  child: Center(
+                                    child: Text('Không có hàng trên xe',
+                                        style: TextStyle(
+                                            fontFamily: "Roboto Regular",
+                                            fontSize: 14)),
+                                  ),
+                                );
+                              }
+                              return Expanded(
+                                  child: ListView.builder(
+                                      itemCount: list.length,
+                                      itemBuilder: (context, index) {
+                                        giaoStatus =
+                                            list[index].thoiGianGiaoHangThucTe;
+                                        var datetime;
+                                        if (list[index]
+                                                .thoiGianGiaoHangThucTe ==
+                                            null) {
+                                          datetime = DateTime.parse(list[index]
+                                                  .thoiGianDuKienGiaoHang)
+                                              .toLocal();
+                                        } else {
+                                          datetime = DateTime.parse(list[index]
+                                                  .thoiGianGiaoHangThucTe)
+                                              .toLocal();
+                                        }
+                                        String timeHieuLuc =
+                                            DateFormat('kk:mm dd/MM/yyyy ')
+                                                .format(datetime);
+                                        return Container(
+                                          margin: EdgeInsets.only(
+                                              top: marginItemList),
+                                          decoration: BoxDecoration(
+                                              color: itemListColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.5),
+                                                    spreadRadius: 5,
+                                                    blurRadius: 7,
+                                                    offset: Offset(0, 0))
+                                              ],
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          padding: EdgeInsets.only(
+                                              top: 10,
+                                              left: 10,
+                                              right: 10,
+                                              bottom: 0),
+                                          child: Banner(
+                                            message: giaoStatus != null
+                                                ? 'Đã thu'
+                                                : 'Chưa thu',
+                                            location: bannerLocation,
+                                            color: giaoStatus != null
+                                                ? Colors.green
+                                                : bannerColorhang,
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          print('image');
+                                                        },
+                                                        child: Image.asset(
+                                                          'asset/images/11.jpg',
+                                                          width:
+                                                              imageItemListWidth,
+                                                          height: 80,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            itemclick = index;
+                                                          });
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) => hangDetail(
+                                                                      itemclick,
+                                                                      list[index]
+                                                                          .idNhatKy)));
+                                                          print(itemclick);
+                                                        },
+                                                        child: Container(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              itemListHang(
+                                                                  'Trả tại: ',
+                                                                  '${list[index].tenDiemNhan}',
+                                                                  Colors.black,
+                                                                  null),
+                                                              itemListHang(
+                                                                  'Cước: ',
+                                                                  '${list[index].donGia}đ',
+                                                                  Colors.orange,
+                                                                  null),
+                                                              itemListHangPhoneCall(
+                                                                  'Người nhận: ',
+                                                                  '${list[index].soDienThoaiNguoiNhan}',
+                                                                  Colors.blue,
+                                                                  TextDecoration
+                                                                      .underline,
+                                                                  () => _callNumber(
+                                                                      list[index]
+                                                                          .soDienThoaiNguoiNhan)),
+                                                              RichText(
+                                                                  text: TextSpan(
+                                                                      children: [
+                                                                    TextSpan(
+                                                                        text:
+                                                                            '${list[index].trangThaiVanChuyen} ',
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Roboto Medium',
+                                                                            fontSize:
+                                                                                14,
+                                                                            color: giaoStatus != null
+                                                                                ? Colors.green
+                                                                                : bannerColorhang)),
+                                                                    giaoStatus !=
+                                                                            null
+                                                                        ? TextSpan(
+                                                                            text:
+                                                                                '($timeHieuLuc)',
+                                                                            style: TextStyle(
+                                                                                fontFamily:
+                                                                                    'Roboto Italic',
+                                                                                fontSize:
+                                                                                    12,
+                                                                                color: Colors
+                                                                                    .green))
+                                                                        : TextSpan(
+                                                                            text:
+                                                                                '(Dự kiến: $timeHieuLuc)',
+                                                                            style: TextStyle(
+                                                                                fontFamily: 'Roboto Italic',
+                                                                                fontSize: 12,
+                                                                                color: Colors.red)),
+                                                                  ]))
+                                                            ],
                                                           ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Divider(
-                                                      thickness: 1.5,
-                                                      height: 1,
-                                                    ),
-                                                    IntrinsicHeight(
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
-                                                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                        children: [
-                                                          FlatButton(
-                                                            onPressed: () {},
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Divider(
+                                                    thickness: 1.5,
+                                                    height: 1,
+                                                  ),
+                                                  IntrinsicHeight(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                      children: [
+                                                        FlatButton(
+                                                          onPressed: () {},
+                                                          child: Text(
+                                                              'IN PHIẾU',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Roboto Medium',
+                                                                  fontSize: 14,
+                                                                  letterSpacing:
+                                                                      1.25,
+                                                                  color: Colors
+                                                                      .blue)),
+                                                          height: 20,
+                                                          // color: Colors.black,
+                                                        ),
+                                                        VerticalDivider(
+                                                          width: 2,
+                                                          thickness: 1.5,
+                                                        ),
+                                                        FlatButton(
+                                                            onPressed:
+                                                                giaoStatus !=
+                                                                        null
+                                                                    ? null
+                                                                    : () {
+                                                                        showModalBottomSheet(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (context) {
+                                                                              return StatefulBuilder(builder: (context, setState) {
+                                                                                return Container(
+                                                                                  padding: EdgeInsets.all(15),
+                                                                                  height: 300,
+                                                                                  child: Column(
+                                                                                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                    children: [
+                                                                                      Align(
+                                                                                        alignment: Alignment.topLeft,
+                                                                                        child: GestureDetector(
+                                                                                            onTap: () {
+                                                                                              Navigator.pop(context);
+                                                                                            },
+                                                                                            child: Text(
+                                                                                              'Thoát',
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 14,
+                                                                                                color: Colors.red,
+                                                                                                fontFamily: 'Roboto Regular',
+                                                                                              ),
+                                                                                            )),
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 15,
+                                                                                      ),
+                                                                                      Text('Xác nhận trả hàng',
+                                                                                          style: TextStyle(
+                                                                                            fontFamily: 'Roboto Medium',
+                                                                                            fontSize: 20,
+                                                                                          )),
+                                                                                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                                                                        Text('Ảnh: ${image.length}/2',
+                                                                                            style: TextStyle(
+                                                                                              fontFamily: 'Roboto Regular',
+                                                                                              fontSize: 14,
+                                                                                            )),
+                                                                                        Row(children: [
+                                                                                          Checkbox(value: false, onChanged: (a) {}),
+                                                                                          Text('In phiếu',
+                                                                                              style: TextStyle(
+                                                                                                fontFamily: 'Roboto Regular',
+                                                                                                fontSize: 14,
+                                                                                              )),
+                                                                                        ]),
+                                                                                      ]),
+                                                                                      SizedBox(
+                                                                                        width: double.infinity,
+                                                                                        height: 100,
+                                                                                        child: ListView(
+                                                                                          scrollDirection: Axis.horizontal,
+                                                                                          children: [
+                                                                                            ...image.map(
+                                                                                              (e) {
+                                                                                                return itemImage(e, () {
+                                                                                                  setState(
+                                                                                                    () {
+                                                                                                      image.remove(e);
+                                                                                                      count = image.length;
+                                                                                                    },
+                                                                                                  );
+                                                                                                });
+                                                                                              },
+                                                                                            ),
+                                                                                            SizedBox(
+                                                                                              width: 5,
+                                                                                            ),
+                                                                                            image.length < 2
+                                                                                                ? Column(
+                                                                                                    children: [
+                                                                                                      SizedBox(
+                                                                                                        height: 10,
+                                                                                                      ),
+                                                                                                      GestureDetector(
+                                                                                                        child: Align(
+                                                                                                          alignment: Alignment.topLeft,
+                                                                                                          child: DottedBorder(
+                                                                                                            child: Container(
+                                                                                                              height: 75,
+                                                                                                              width: 65,
+                                                                                                              child: Center(
+                                                                                                                  child: SvgPicture.asset(
+                                                                                                                'asset/icons/camera-plus.svg',
+                                                                                                                color: Colors.black54,
+                                                                                                              )),
+                                                                                                            ),
+                                                                                                            color: Colors.black54,
+                                                                                                            strokeWidth: 1,
+                                                                                                            radius: Radius.circular(10),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        onTap: () {
+                                                                                                          return showDialog(
+                                                                                                              context: context,
+                                                                                                              builder: (context) {
+                                                                                                                return AlertDialog(
+                                                                                                                  content: Container(
+                                                                                                                    width: 60,
+                                                                                                                    child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                                                      GestureDetector(
+                                                                                                                        child: Text('Chụp ảnh mới',
+                                                                                                                            style: TextStyle(
+                                                                                                                              fontFamily: 'Roboto Regular',
+                                                                                                                              fontSize: 14,
+                                                                                                                            )),
+                                                                                                                        onTap: () async {
+                                                                                                                          print('chọn chụp ảnh');
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          imageitem = await ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                                                          if (imageitem == null) {
+                                                                                                                            return;
+                                                                                                                          }
+
+                                                                                                                          setState(() {
+                                                                                                                            image.add(imageitem);
+                                                                                                                            count = image.length;
+                                                                                                                          });
+                                                                                                                          print('count: $count');
+                                                                                                                        },
+                                                                                                                      ),
+                                                                                                                      SizedBox(
+                                                                                                                        height: 20,
+                                                                                                                      ),
+                                                                                                                      GestureDetector(
+                                                                                                                        child: Text('Chọn ảnh',
+                                                                                                                            style: TextStyle(
+                                                                                                                              fontFamily: 'Roboto Regular',
+                                                                                                                              fontSize: 14,
+                                                                                                                            )),
+                                                                                                                        onTap: () async {
+                                                                                                                          print('chọn ảnh');
+                                                                                                                          Navigator.pop(context);
+                                                                                                                          imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                                                                                                          if (imageitem == null) {
+                                                                                                                            return;
+                                                                                                                          }
+                                                                                                                          // image.add(imageitem);
+                                                                                                                          setState(() {
+                                                                                                                            image.add(imageitem);
+                                                                                                                            count = image.length;
+                                                                                                                          });
+                                                                                                                          print('count: $count');
+                                                                                                                        },
+                                                                                                                      ),
+                                                                                                                    ]),
+                                                                                                                  ),
+                                                                                                                );
+                                                                                                              });
+                                                                                                        },
+                                                                                                      ),
+                                                                                                    ],
+                                                                                                  )
+                                                                                                : Text(''),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 10,
+                                                                                      ),
+                                                                                      Divider(
+                                                                                        thickness: 1.5,
+                                                                                        height: 1,
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        height: 10,
+                                                                                      ),
+                                                                                      Align(
+                                                                                          alignment: Alignment.bottomRight,
+                                                                                          child: SizedBox(
+                                                                                              height: 28,
+                                                                                              child: ElevatedButton(
+                                                                                                  onPressed: () async {
+                                                                                                    var res = await ApiHelper.postMultipart('http://113.176.29.57:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
+                                                                                                      'idNhatKy': '${list[index].idNhatKy}',
+                                                                                                      'toaDo': ''
+                                                                                                    });
+                                                                                                    if (res == 'Uploadd') {
+                                                                                                      trangthaiCount = 0;
+                                                                                                      loadchuyendiganday();
+                                                                                                      Navigator.of(context).pop();
+                                                                                                    } else {
+                                                                                                      showDialog(
+                                                                                                        context: context, barrierDismissible: false, // user must tap button!
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return AlertDialog(
+                                                                                                            title: const Text('Lỗi',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Roboto Medium',
+                                                                                                                  fontSize: 14,
+                                                                                                                )),
+                                                                                                            content: Text('Lỗi kết nối',
+                                                                                                                style: TextStyle(
+                                                                                                                  fontFamily: 'Roboto Regular',
+                                                                                                                  fontSize: 14,
+                                                                                                                )),
+                                                                                                            actions: <Widget>[
+                                                                                                              TextButton(
+                                                                                                                child: const Text(
+                                                                                                                  'Đã hiểu',
+                                                                                                                  style: TextStyle(
+                                                                                                                    fontFamily: 'Roboto Regular',
+                                                                                                                    fontSize: 14,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                                onPressed: () {
+                                                                                                                  Navigator.of(context).pop();
+                                                                                                                },
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
+                                                                                                    }
+                                                                                                  },
+                                                                                                  child: Text(
+                                                                                                    'XÁC NHẬN',
+                                                                                                    style: TextStyle(
+                                                                                                      fontFamily: 'Roboto Medium',
+                                                                                                      fontSize: 14,
+                                                                                                      letterSpacing: 1.25,
+                                                                                                    ),
+                                                                                                  ))))
+                                                                                    ],
+                                                                                  ),
+                                                                                );
+                                                                              });
+                                                                            });
+                                                                      },
                                                             child: Text(
-                                                                'IN PHIẾU',
+                                                                'TRẢ HÀNG',
                                                                 style: TextStyle(
                                                                     fontFamily:
                                                                         'Roboto Medium',
@@ -645,316 +912,60 @@ class HangState extends State<Hang> {
                                                                         14,
                                                                     letterSpacing:
                                                                         1.25,
-                                                                    color: Colors
-                                                                        .blue)),
-                                                            height: 20,
-                                                            // color: Colors.black,
-                                                          ),
-                                                          VerticalDivider(
-                                                            width: 2,
-                                                            thickness: 1.5,
-                                                          ),
-                                                          FlatButton(
-                                                              onPressed:
-                                                                  giaoStatus !=
-                                                                          null
-                                                                      ? null
-                                                                      : () {
-                                                                          showModalBottomSheet(
-                                                                              context: context,
-                                                                              builder: (context) {
-                                                                                return StatefulBuilder(builder: (context, setState) {
-                                                                                  return Container(
-                                                                                    padding: EdgeInsets.all(15),
-                                                                                    height: 300,
-                                                                                    child: Column(
-                                                                                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                                      children: [
-                                                                                        Align(
-                                                                                          alignment: Alignment.topLeft,
-                                                                                          child: GestureDetector(
-                                                                                              onTap: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Text(
-                                                                                                'Thoát',
-                                                                                                style: TextStyle(
-                                                                                                  fontSize: 14,
-                                                                                                  color: Colors.red,
-                                                                                                  fontFamily: 'Roboto Regular',
-                                                                                                ),
-                                                                                              )),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          height: 15,
-                                                                                        ),
-                                                                                        Text('Xác nhận trả hàng',
-                                                                                            style: TextStyle(
-                                                                                              fontFamily: 'Roboto Medium',
-                                                                                              fontSize: 20,
-                                                                                            )),
-                                                                                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                                                                          Text('Ảnh: ${image.length}/2',
-                                                                                              style: TextStyle(
-                                                                                                fontFamily: 'Roboto Regular',
-                                                                                                fontSize: 14,
-                                                                                              )),
-                                                                                          Row(children: [
-                                                                                            Checkbox(value: false, onChanged: (a) {}),
-                                                                                            Text('In phiếu',
-                                                                                                style: TextStyle(
-                                                                                                  fontFamily: 'Roboto Regular',
-                                                                                                  fontSize: 14,
-                                                                                                )),
-                                                                                          ]),
-                                                                                        ]),
-                                                                                        SizedBox(
-                                                                                          width: double.infinity,
-                                                                                          height: 100,
-                                                                                          child: ListView(
-                                                                                            scrollDirection: Axis.horizontal,
-                                                                                            children: [
-                                                                                              ...image.map(
-                                                                                                (e) {
-                                                                                                  return itemImage(e, () {
-                                                                                                    setState(
-                                                                                                      () {
-                                                                                                        image.remove(e);
-                                                                                                        count = image.length;
-                                                                                                      },
-                                                                                                    );
-                                                                                                  });
-                                                                                                },
-                                                                                              ),
-                                                                                              SizedBox(
-                                                                                                width: 5,
-                                                                                              ),
-                                                                                              image.length < 2
-                                                                                                  ? Column(
-                                                                                                      children: [
-                                                                                                        SizedBox(
-                                                                                                          height: 10,
-                                                                                                        ),
-                                                                                                        GestureDetector(
-                                                                                                          child: Align(
-                                                                                                            alignment: Alignment.topLeft,
-                                                                                                            child: DottedBorder(
-                                                                                                              child: Container(
-                                                                                                                height: 75,
-                                                                                                                width: 65,
-                                                                                                                child: Center(
-                                                                                                                    child: SvgPicture.asset(
-                                                                                                                  'asset/icons/camera-plus.svg',
-                                                                                                                  color: Colors.black54,
-                                                                                                                )),
-                                                                                                              ),
-                                                                                                              color: Colors.black54,
-                                                                                                              strokeWidth: 1,
-                                                                                                              radius: Radius.circular(10),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                          onTap: () {
-                                                                                                            return showDialog(
-                                                                                                                context: context,
-                                                                                                                builder: (context) {
-                                                                                                                  return AlertDialog(
-                                                                                                                    content: Container(
-                                                                                                                      width: 60,
-                                                                                                                      child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                                                        GestureDetector(
-                                                                                                                          child: Text('Chụp ảnh mới',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontFamily: 'Roboto Regular',
-                                                                                                                                fontSize: 14,
-                                                                                                                              )),
-                                                                                                                          onTap: () async {
-                                                                                                                            print('chọn chụp ảnh');
-                                                                                                                            Navigator.pop(context);
-                                                                                                                            imageitem = await ImagePicker().pickImage(source: ImageSource.camera);
-                                                                                                                            if (imageitem == null) {
-                                                                                                                              return;
-                                                                                                                            }
-
-                                                                                                                            setState(() {
-                                                                                                                              image.add(imageitem);
-                                                                                                                              count = image.length;
-                                                                                                                            });
-                                                                                                                            print('count: $count');
-                                                                                                                          },
-                                                                                                                        ),
-                                                                                                                        SizedBox(
-                                                                                                                          height: 20,
-                                                                                                                        ),
-                                                                                                                        GestureDetector(
-                                                                                                                          child: Text('Chọn ảnh',
-                                                                                                                              style: TextStyle(
-                                                                                                                                fontFamily: 'Roboto Regular',
-                                                                                                                                fontSize: 14,
-                                                                                                                              )),
-                                                                                                                          onTap: () async {
-                                                                                                                            print('chọn ảnh');
-                                                                                                                            Navigator.pop(context);
-                                                                                                                            imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                                                                                                            if (imageitem == null) {
-                                                                                                                              return;
-                                                                                                                            }
-                                                                                                                            // image.add(imageitem);
-                                                                                                                            setState(() {
-                                                                                                                              image.add(imageitem);
-                                                                                                                              count = image.length;
-                                                                                                                            });
-                                                                                                                            print('count: $count');
-                                                                                                                          },
-                                                                                                                        ),
-                                                                                                                      ]),
-                                                                                                                    ),
-                                                                                                                  );
-                                                                                                                });
-                                                                                                          },
-                                                                                                        ),
-                                                                                                      ],
-                                                                                                    )
-                                                                                                  : Text(''),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          height: 10,
-                                                                                        ),
-                                                                                        Divider(
-                                                                                          thickness: 1.5,
-                                                                                          height: 1,
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          height: 10,
-                                                                                        ),
-                                                                                        Align(
-                                                                                            alignment: Alignment.bottomRight,
-                                                                                            child: SizedBox(
-                                                                                                height: 28,
-                                                                                                child: ElevatedButton(
-                                                                                                    onPressed: () async {
-                                                                                                      var res = await ApiHelper.postMultipart('http://113.176.29.57:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
-                                                                                                        'idNhatKy': '${list[index].idNhatKy}',
-                                                                                                        'toaDo': ''
-                                                                                                      });
-                                                                                                      if (res == 'Uploadd') {
-                                                                                                        trangthaiCount = 0;
-                                                                                                        loadchuyendiganday();
-                                                                                                        Navigator.of(context).pop();
-                                                                                                      } else {
-                                                                                                        showDialog(
-                                                                                                          context: context, barrierDismissible: false, // user must tap button!
-                                                                                                          builder: (BuildContext context) {
-                                                                                                            return AlertDialog(
-                                                                                                              title: const Text('Lỗi',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontFamily: 'Roboto Medium',
-                                                                                                                    fontSize: 14,
-                                                                                                                  )),
-                                                                                                              content: Text('Lỗi kết nối',
-                                                                                                                  style: TextStyle(
-                                                                                                                    fontFamily: 'Roboto Regular',
-                                                                                                                    fontSize: 14,
-                                                                                                                  )),
-                                                                                                              actions: <Widget>[
-                                                                                                                TextButton(
-                                                                                                                  child: const Text(
-                                                                                                                    'Đã hiểu',
-                                                                                                                    style: TextStyle(
-                                                                                                                      fontFamily: 'Roboto Regular',
-                                                                                                                      fontSize: 14,
-                                                                                                                    ),
-                                                                                                                  ),
-                                                                                                                  onPressed: () {
-                                                                                                                    Navigator.of(context).pop();
-                                                                                                                  },
-                                                                                                                ),
-                                                                                                              ],
-                                                                                                            );
-                                                                                                          },
-                                                                                                        );
-                                                                                                      }
-                                                                                                    },
-                                                                                                    child: Text(
-                                                                                                      'XÁC NHẬN',
-                                                                                                      style: TextStyle(
-                                                                                                        fontFamily: 'Roboto Medium',
-                                                                                                        fontSize: 14,
-                                                                                                        letterSpacing: 1.25,
-                                                                                                      ),
-                                                                                                    ))))
-                                                                                      ],
-                                                                                    ),
-                                                                                  );
-                                                                                });
-                                                                              });
-                                                                        },
-                                                              child: Text(
-                                                                  'TRẢ HÀNG',
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Roboto Medium',
-                                                                      fontSize:
-                                                                          14,
-                                                                      letterSpacing:
-                                                                          1.25,
-                                                                      color: giaoStatus !=
-                                                                              null
-                                                                          ? Colors
-                                                                              .grey
-                                                                          : Colors
-                                                                              .blue)),
-                                                              height: 20)
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ]),
-                                            ),
-                                          );
-                                        }));
-                              }
-                              return Expanded(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            })
-                        : Expanded(
-                            child: Center(
-                            child: Text('Không tìm thấy chuyến đi',
-                                style: TextStyle(
-                                    fontFamily: "Roboto Regular",
-                                    fontSize: 14)),
-                          ))
+                                                                    color: giaoStatus !=
+                                                                            null
+                                                                        ? Colors
+                                                                            .grey
+                                                                        : Colors
+                                                                            .blue)),
+                                                            height: 20)
+                                                      ],
+                                                    ),
+                                                  )
+                                                ]),
+                                          ),
+                                        );
+                                      }));
+                            }
+                            return Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          })
+                      : Expanded(
+                          child: Center(
+                          child: Text('Không tìm thấy chuyến đi',
+                              style: TextStyle(
+                                  fontFamily: "Roboto Regular", fontSize: 14)),
+                        ))
                 ],
               ),
             ),
             floatingActionButton: checkHaschuyendiganday != 'no data'
-                  ? FloatingActionButton.extended(
-                      elevation: 6,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => layhangInfo(
-                                    chuyendiGanday.data.guidLoTrinh,
-                                    chooseChuyenDi)));
-                      },
-                      label: Text('LẤY HÀNG',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontFamily: 'Roboto Medium',
-                              letterSpacing: 1.25)),
-                      icon: SvgPicture.asset(
-                        "asset/icons/goods.svg",
-                        width: 16,
-                        height: 16,
-                        color: Colors.black,
-                      ),
-                      backgroundColor: Colors.white,
-                    )
-                  : null,
+                ? FloatingActionButton.extended(
+                    elevation: 6,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => layhangInfo(
+                                  chuyendiGanday.data.guidLoTrinh,
+                                  chooseChuyenDi)));
+                    },
+                    label: Text('LẤY HÀNG',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Roboto Medium',
+                            letterSpacing: 1.25)),
+                    icon: SvgPicture.asset(
+                      "asset/icons/goods.svg",
+                      width: 16,
+                      height: 16,
+                      color: Colors.black,
+                    ),
+                    backgroundColor: Colors.white,
+                  )
+                : null,
           ))
         : SafeArea(
             child: Scaffold(

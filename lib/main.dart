@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_kit/Login.dart';
+import 'package:flutter_ui_kit/checkAccount.dart';
 import 'package:flutter_ui_kit/componentsFuture/thanhtoanbanve.dart';
 import 'package:flutter_ui_kit/home/Home.dart';
 import 'package:flutter_ui_kit/lenh/AnhLenh.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: Login()
+      home: checkAccount()
     );
   }
 }

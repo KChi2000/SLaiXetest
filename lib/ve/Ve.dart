@@ -13,6 +13,7 @@ import 'package:flutter_ui_kit/model/tang.dart';
 import 'package:flutter_ui_kit/model/tangJson.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/ve/banve.dart';
+import 'package:flutter_ui_kit/ve/banveXeNoSoDoCho.dart';
 import 'package:flutter_ui_kit/ve/banveghephu.dart';
 import 'package:image_picker/image_picker.dart';
 import '../componentsFuture/bottomshetHK.dart';
@@ -26,8 +27,6 @@ import '../model/chuyendiganday.dart';
 import '../model/sodocho.dart';
 import '../model/sodochoJson.dart';
 import 'package:intl/intl.dart';
-
-
 
 class Ve extends StatefulWidget {
   @override
@@ -51,6 +50,7 @@ class VeState extends State<Ve> {
   int pos;
   var TrangThaiChoNgoiFuture;
   String checkHaschuyendiganday = 'has data';
+
   var chuyendigandayFuture;
   chuyendiganday chuyendiGanday;
   var LichSuChuyenDiFuture;
@@ -86,29 +86,30 @@ class VeState extends State<Ve> {
   }
 
   void loadLichSuChuyenDi() async {
-    try{
+    try {
       chuyendigandayFuture = ApiHelper.getchuyendiganday();
-    chuyendiGanday = await chuyendigandayFuture;
-    if (chuyendiGanday.status) {
-      value = chuyendiGanday.data.maChuyenDi;
-      changeSodocho = chuyendiGanday.data.guidChuyenDi;
-      print('changesodocho $changeSodocho');
-      LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
-          ApiHelper.API_ChuyenDi+'lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
-      lichsuChuyenDi = await LichSuChuyenDiFuture;
-      loadTrangThaiChoNgoi(changeSodocho);
-      loadchongoi();
-      loadslve(changeSodocho);
-      if (this.mounted) {
-        setState(() {});
+      chuyendiGanday = await chuyendigandayFuture;
+      if (chuyendiGanday.status) {
+        value = chuyendiGanday.data.maChuyenDi;
+        changeSodocho = chuyendiGanday.data.guidChuyenDi;
+        print('changesodocho $changeSodocho');
+        LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(ApiHelper
+                .API_ChuyenDi +
+            'lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+        lichsuChuyenDi = await LichSuChuyenDiFuture;
+        loadTrangThaiChoNgoi(changeSodocho);
+        loadchongoi();
+        loadslve(changeSodocho);
+        if (this.mounted) {
+          setState(() {});
+        }
+      } else {
+        setState(() {
+          checkHaschuyendiganday = 'no data';
+          hasTangdata = 'no data';
+        });
       }
-    } else {
-      setState(() {
-        checkHaschuyendiganday = 'no data';
-        hasTangdata = 'no data';
-      });
-    }
-    }catch(ex){
+    } catch (ex) {
       setState(() {
         checkHaschuyendiganday = 'no data';
         hasTangdata = 'no data';
@@ -141,6 +142,7 @@ class VeState extends State<Ve> {
     } else {
       setState(() {
         sodochoFuture = null;
+        // hasTangdata = 'no data';
       });
     }
   }
@@ -189,7 +191,8 @@ class VeState extends State<Ve> {
                                         Text(titleBottomSheet,
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontFamily: 'Roboto Medium',fontSize: 20)),
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 20)),
                                         SizedBox(
                                           height: spaceBetween,
                                         ),
@@ -239,20 +242,28 @@ class VeState extends State<Ve> {
                                                                       index
                                                                   ? selectedColor
                                                                   : unselectedColor,
-                                                                  fontFamily: 'Roboto Regular',fontSize: 14),
+                                                              fontFamily:
+                                                                  'Roboto Regular',
+                                                              fontSize: 14),
                                                         ),
                                                         Text(' | ',
                                                             style: TextStyle(
                                                                 color: choose ==
                                                                         index
                                                                     ? selectedColor
-                                                                    : unselectedColor,fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                    : unselectedColor,
+                                                                fontFamily:
+                                                                    'Roboto Regular',
+                                                                fontSize: 14)),
                                                         Text('$timeHieuLuc',
                                                             style: TextStyle(
                                                                 color: choose ==
                                                                         index
                                                                     ? selectedColor
-                                                                    : unselectedColor,fontFamily: 'Roboto Regular',fontSize: 14))
+                                                                    : unselectedColor,
+                                                                fontFamily:
+                                                                    'Roboto Regular',
+                                                                fontSize: 14))
                                                       ],
                                                     )),
                                               );
@@ -296,11 +307,9 @@ class VeState extends State<Ve> {
                 Text(
                   "$value",
                   style: TextStyle(
-                    color: appBartextColor,
-                    fontFamily: 'Roboto Regular',
-                    fontSize: 14
-
-                  ),
+                      color: appBartextColor,
+                      fontFamily: 'Roboto Regular',
+                      fontSize: 14),
                 ),
                 SizedBox(
                   width: 10,
@@ -351,10 +360,11 @@ class VeState extends State<Ve> {
                               child: Center(
                                   child: Text(
                                 '0',
-                                style: TextStyle(color: Colors.white,
-                                fontFamily: 'Roboto Regular',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Roboto Regular',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
                               )),
                             ),
                             onTap: () {
@@ -364,12 +374,12 @@ class VeState extends State<Ve> {
                                     List<DataSLVe> listslve = slve.data;
                                     List<TrangThaiData> listTrangThai =
                                         trangthaichongoi.data;
-                                        List<TrangThaiData> listtemp = trangthaichongoi.data;
+                                    List<TrangThaiData> listtemp =
+                                        trangthaichongoi.data;
                                     TrangThaiData item1 = listtemp[0];
                                     listTrangThai.removeWhere(
                                         (item) => item.idTrangThai == 1);
 
-                                   
                                     return Container(
                                       padding: EdgeInsets.all(20),
                                       height: 225,
@@ -383,7 +393,12 @@ class VeState extends State<Ve> {
                                             height: 8,
                                           ),
                                           Text(
-                                              ' Vé bán tại bến: ${listslve.first.soLuong}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),)
+                                            ' Vé bán tại bến: ${listslve.first.soLuong}',
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400),
+                                          )
                                         ],
                                       ),
                                     );
@@ -425,13 +440,14 @@ class VeState extends State<Ve> {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        }
-                        else if(hasTangdata == 'no data'){
-                          return  Center(
-                            child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                        } else if (hasTangdata == 'no data') {
+                          return Center(
+                            child: Text('Không có dữ liệu',
+                                style: TextStyle(
+                                    fontFamily: 'Roboto Regular',
+                                    fontSize: 14)),
                           );
-                        }
-                       else if (hasTangdata == 'Thành công') {
+                        } else if (hasTangdata == 'Thành công') {
                           if (snapshot.hasData) {
                             sodocho datatemp = snapshot.data;
 
@@ -612,9 +628,17 @@ class VeState extends State<Ve> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Xe của bạn hiện chưa có sơ đồ chỗ',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
                                 Text(
-                                    'Vui lòng liên hệ Công ty của bạn để được cập nhật',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                  'Xe của bạn hiện chưa có sơ đồ chỗ',
+                                  style: TextStyle(
+                                      fontFamily: 'Roboto Regular',
+                                      fontSize: 14),
+                                ),
+                                Text(
+                                    'Vui lòng liên hệ Công ty của bạn để được cập nhật',
+                                    style: TextStyle(
+                                        fontFamily: 'Roboto Regular',
+                                        fontSize: 14)),
                               ]),
                         );
                       },
@@ -623,10 +647,33 @@ class VeState extends State<Ve> {
                 ),
               )
             : Center(
-                child: Text('Không tìm thấy chuyến đi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                child: Text('Không tìm thấy chuyến đi',
+                    style:
+                        TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
               ),
         floatingActionButton: checkHaschuyendiganday != 'no data'
-            ? SpeedDial(
+            ?  hasTangdata == 'Không tìm thấy dữ liệu'?FloatingActionButton.extended(
+                      elevation: 6,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => banveXeNoSoDoCho(chuyendiGanday.data.guidLoTrinh, chuyendiGanday.data.guidXe)));
+                      },
+                      label: Text('BÁN VÉ',
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.blue,
+                              fontFamily: 'Roboto Medium',
+                              letterSpacing: 1.25)),
+                      icon: SvgPicture.asset(
+                        "asset/icons/v.svg",
+                        width: 18,
+                        height: 18,
+                        color: Colors.blue,
+                      ),
+                      backgroundColor: Colors.white,
+                    ) :SpeedDial(
                 overlayColor: Colors.grey,
                 backgroundColor: activeColor,
                 activeBackgroundColor: inactiveColor,
@@ -670,220 +717,270 @@ class VeState extends State<Ve> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return StatefulBuilder(builder: (context,setState){
+                              return StatefulBuilder(
+                                  builder: (context, setState) {
                                 return Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 15),
-                                height: 300,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text('Hủy',
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 15)),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 30, vertical: 15),
+                                  height: 300,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text('Hủy',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 15)),
+                                        ),
                                       ),
-                                    ),
-                                    Text('Khách mua vé ghế phụ',
-                                        style: TextStyle(
+                                      Text('Khách mua vé ghế phụ',
+                                          style: TextStyle(
                                             fontFamily: 'Roboto Medium',
                                             fontSize: 20,
-                                            )),
-                                    FutureBuilder(
-                                        future: dshanhkhachghephuFuture,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          } else if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
-                                            );
-                                          } else if (snapshot.hasData) {
-                                            DSHanhKhachGhePhu
-                                                dshanhkhachghephu =
-                                                snapshot.data;
-                                            List<DataDSHanhKhachGhePhu> listds =
-                                                dshanhkhachghephu.data;
-                                            if (listds.length == 0) {
+                                          )),
+                                      FutureBuilder(
+                                          future: dshanhkhachghephuFuture,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            } else if (snapshot.hasError) {
+                                              return Center(
+                                                child: Text('Lỗi',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14)),
+                                              );
+                                            } else if (snapshot.hasData) {
+                                              DSHanhKhachGhePhu
+                                                  dshanhkhachghephu =
+                                                  snapshot.data;
+                                              List<DataDSHanhKhachGhePhu>
+                                                  listds =
+                                                  dshanhkhachghephu.data;
+                                              if (listds.length == 0) {
+                                                return Expanded(
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Không có dữ liệu để hiển thị',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Roboto Regular',
+                                                          fontSize: 12,
+                                                          color:
+                                                              Colors.grey[700]),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                               return Expanded(
-                                                child: Center(
-                                                  child: Text('Không có dữ liệu để hiển thị',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 12,color: Colors.grey[700]),),
-                                                ),
+                                                child: ListView.builder(
+                                                    itemCount: listds.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Row(
+                                                        children: [
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 15,
+                                                              ),
+                                                              Row(children: [
+                                                                Text(
+                                                                    'Số điện thoại: ',
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Roboto Regular',
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400)),
+                                                                Text(
+                                                                    '${listds[index].soDienThoai}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          'Roboto Medium',
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .green,
+                                                                    )),
+                                                              ]),
+                                                              SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              Row(children: [
+                                                                Text('Giá vé: ',
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Roboto Regular',
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400)),
+                                                                Text(
+                                                                    '${NumberFormat('#,###').format(listds[index].giaVe)}đ',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          'Roboto Medium',
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    )),
+                                                              ]),
+                                                              SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              Row(children: [
+                                                                Text(
+                                                                    'Điểm xuống: ',
+                                                                    style: TextStyle(
+                                                                        fontFamily:
+                                                                            'Roboto Regular',
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400)),
+                                                                Text(
+                                                                    '${listds[index].diemXuong}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          'Roboto Medium',
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                    )),
+                                                              ]),
+                                                              Divider(
+                                                                color: Colors
+                                                                    .black,
+                                                                height: 1,
+                                                                thickness: 0.5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            width: 40,
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons.print,
+                                                                color: Colors
+                                                                    .black54,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              InkWell(
+                                                                onTap:
+                                                                    () async {
+                                                                  var resp = await ApiHelper.post(
+                                                                      ApiHelper
+                                                                              .API_DoiSoat +
+                                                                          'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
+                                                                      {
+                                                                        'guidXe': chuyendiGanday
+                                                                            .data
+                                                                            .guidXe,
+                                                                        'maChuyenDi':
+                                                                            value,
+                                                                        'maDatCho':
+                                                                            listds[index].maDatCho,
+                                                                        'toaDo':
+                                                                            ""
+                                                                      });
+                                                                  if (resp[
+                                                                      'status']) {
+                                                                    setState(
+                                                                        () {
+                                                                      loadDSGhePhu();
+                                                                    });
+
+                                                                    // Navigator.pop(
+                                                                    //     context);
+                                                                  } else {
+                                                                    showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      barrierDismissible:
+                                                                          false, // user must tap button!
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return AlertDialog(
+                                                                          title:
+                                                                              const Text('Lỗi'),
+                                                                          content:
+                                                                              Text('${resp['message']}'),
+                                                                          actions: <
+                                                                              Widget>[
+                                                                            TextButton(
+                                                                              child: const Text('Đã hiểu'),
+                                                                              onPressed: () {
+                                                                                Navigator.of(context).pop();
+                                                                              },
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    );
+                                                                  }
+                                                                },
+                                                                child: SvgPicture.asset(
+                                                                    'asset/icons/arrowdown.svg',
+                                                                    width: 20,
+                                                                    height: 20,
+                                                                    color: Colors
+                                                                        .black54),
+                                                              )
+                                                            ],
+                                                          )
+                                                        ],
+                                                      );
+                                                    }),
                                               );
                                             }
                                             return Expanded(
-                                              child: ListView.builder(
-                                                  itemCount: listds.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Row(
-                                                      children: [
-                                                        Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 15,
-                                                            ),
-                                                            Row(children: [
-                                                              Text(
-                                                                  'Số điện thoại: ',
-                                                                  style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400)),
-                                                              Text(
-                                                                  '${listds[index].soDienThoai}',
-                                                                  style: TextStyle(
-                                                                      fontFamily: 'Roboto Medium',fontSize: 14,
-                                                                      color: Colors
-                                                                          .green,
-                                                                      )),
-                                                            ]),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Row(children: [
-                                                              Text('Giá vé: ',
-                                                                  style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400)),
-                                                              Text(
-                                                                  '${NumberFormat('#,###').format(listds[index].giaVe)}đ',
-                                                                  style: TextStyle(
-                                                                      fontFamily: 'Roboto Medium',fontSize: 14,
-                                                                      color: Colors
-                                                                          .red,
-                                                                      )),
-                                                            ]),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Row(children: [
-                                                              Text(
-                                                                  'Điểm xuống: ',
-                                                                  style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400)),
-                                                              Text(
-                                                                  '${listds[index].diemXuong}',
-                                                                  style: TextStyle(
-                                                                      fontFamily: 'Roboto Medium',fontSize: 14,
-                                                                      color: Colors
-                                                                          .orange,
-                                                                      )),
-                                                            ]),
-                                                            Divider(
-                                                              color:
-                                                                  Colors.black,
-                                                              height: 1,
-                                                              thickness: 0.5,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          width: 40,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons.print,
-                                                              color: Colors
-                                                                  .black54,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () async {
-                                                                var resp =
-                                                                    await ApiHelper
-                                                                        .post(
-                                                                           ApiHelper.API_DoiSoat+ 'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
-                                                                            {
-                                                                      'guidXe': chuyendiGanday
-                                                                          .data
-                                                                          .guidXe,
-                                                                      'maChuyenDi':
-                                                                          value,
-                                                                      'maDatCho':
-                                                                          listds[index]
-                                                                              .maDatCho,
-                                                                      'toaDo':
-                                                                          ""
-                                                                    });
-                                                                if (resp[
-                                                                    'status']) {
-                                                                  setState(() {
-                                                                    loadDSGhePhu();
-                                                                  });
-
-                                                                  // Navigator.pop(
-                                                                  //     context);
-                                                                } else {
-                                                                  showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    barrierDismissible:
-                                                                        false, // user must tap button!
-                                                                    builder:
-                                                                        (BuildContext
-                                                                            context) {
-                                                                      return AlertDialog(
-                                                                        title: const Text(
-                                                                            'Lỗi'),
-                                                                        content:
-                                                                            Text('${resp['message']}'),
-                                                                        actions: <
-                                                                            Widget>[
-                                                                          TextButton(
-                                                                            child:
-                                                                                const Text('Đã hiểu'),
-                                                                            onPressed:
-                                                                                () {
-                                                                              Navigator.of(context).pop();
-                                                                            },
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  );
-                                                                }
-                                                              },
-                                                              child: SvgPicture.asset(
-                                                                  'asset/icons/arrowdown.svg',
-                                                                  width: 20,
-                                                                  height: 20,
-                                                                  color: Colors
-                                                                      .black54),
-                                                            )
-                                                          ],
-                                                        )
-                                                      ],
-                                                    );
-                                                  }),
+                                              child: Center(
+                                                child: Text(
+                                                  'Không có dữ liệu',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        'Roboto Regular',
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
                                             );
-                                          }
-                                          return Expanded(
-                                            child: Center(
-                                              child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,),),
-                                            ),
-                                          );
-                                        }),
-                                    SizedBox(
-                                      height: 40,
-                                    ),
-                                  ],
-                                ),
-                              );
+                                          }),
+                                      SizedBox(
+                                        height: 40,
+                                      ),
+                                    ],
+                                  ),
+                                );
                               });
                             });
                         print('dung hanh trinh');
@@ -892,7 +989,7 @@ class VeState extends State<Ve> {
                       child: Icon(Icons.chair_alt, color: Colors.black))
                 ],
               )
-            : null);
+             :null);
   }
 
   Column seatItem1(String num, List<sodochoData> listdata, int cot, int hang) {
@@ -952,7 +1049,12 @@ class VeState extends State<Ve> {
                           color: Colors.white,
                           border: Border.all(color: Colors.grey[350]),
                           borderRadius: BorderRadius.circular(4)),
-                      child: Center(child: Text(num,style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),)),
+                      child: Center(
+                          child: Text(
+                        num,
+                        style: TextStyle(
+                            fontFamily: 'Roboto Regular', fontSize: 14),
+                      )),
                     ),
                   ),
                   Positioned(
@@ -1041,12 +1143,15 @@ class VeState extends State<Ve> {
                                                   child: Text('Hủy',
                                                       style: TextStyle(
                                                           color: Colors.red,
-                                                          fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                          fontFamily:
+                                                              'Roboto Regular',
+                                                          fontSize: 14)),
                                                 ),
                                               ),
                                               Text('Thông tin hành khách',
                                                   style: TextStyle(
-                                                      fontFamily: 'Roboto Bold',fontSize: 20)),
+                                                      fontFamily: 'Roboto Bold',
+                                                      fontSize: 20)),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -1065,7 +1170,12 @@ class VeState extends State<Ve> {
                                                       Text(
                                                         '${data.soDienThoai}',
                                                         style: TextStyle(
-                                                            fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w700,color: Colors.blue),
+                                                            fontFamily:
+                                                                'Roboto Regular',
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: Colors.blue),
                                                       ),
                                                     ],
                                                   ),
@@ -1102,8 +1212,10 @@ class VeState extends State<Ve> {
                                                                             Alignment.topLeft,
                                                                         child: Text(
                                                                             'Hủy',
-                                                                            style:
-                                                                                TextStyle(color: Colors.red, fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                            style: TextStyle(
+                                                                                color: Colors.red,
+                                                                                fontFamily: 'Roboto Regular',
+                                                                                fontSize: 14)),
                                                                       ),
                                                                     ),
                                                                     Text(
@@ -1204,15 +1316,17 @@ class VeState extends State<Ve> {
                                                                             Text(
                                                                               'Thanh toán',
                                                                               style: TextStyle(
-                                                                                  fontFamily: 'Roboto Regular',fontSize: 14,
-                                                                                  ),
+                                                                                fontFamily: 'Roboto Regular',
+                                                                                fontSize: 14,
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         ),
                                                                         Text(
                                                                           '${data.trangThaiThanhToan.tenTrangThai}',
                                                                           style: TextStyle(
-                                                                              fontFamily: 'Roboto Medium',fontSize: 14,
+                                                                              fontFamily: 'Roboto Medium',
+                                                                              fontSize: 14,
                                                                               color: Colors.black),
                                                                         )
                                                                       ],
@@ -1233,16 +1347,15 @@ class VeState extends State<Ve> {
                                                                             ),
                                                                             Text(
                                                                               'Điểm xuống',
-                                                                              style: TextStyle(
-                                                                                  fontFamily: 'Roboto Regular',fontSize: 14
-                                                                                  ),
+                                                                              style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14),
                                                                             ),
                                                                           ],
                                                                         ),
                                                                         Text(
                                                                           '${data.tenDiemXuong}',
                                                                           style: TextStyle(
-                                                                              fontFamily: 'Roboto Medium',fontSize: 14,
+                                                                              fontFamily: 'Roboto Medium',
+                                                                              fontSize: 14,
                                                                               color: Colors.black),
                                                                         )
                                                                       ],
@@ -1255,7 +1368,8 @@ class VeState extends State<Ve> {
                                                                       onPressed:
                                                                           () async {
                                                                         var resp = await ApiHelper.post(
-                                                                           ApiHelper.API_DonHang+ 'thuc-hien-sua-thong-tin-hanh-khach',
+                                                                            ApiHelper.API_DonHang +
+                                                                                'thuc-hien-sua-thong-tin-hanh-khach',
                                                                             {
                                                                               'guidChoNgoi': data.guidChoNgoi,
                                                                               'guidChuyenDi': changeSodocho,
@@ -1267,7 +1381,7 @@ class VeState extends State<Ve> {
                                                                             });
                                                                         if (resp[
                                                                             'status']) {
-                                                                              loadLichSuChuyenDi();
+                                                                          loadLichSuChuyenDi();
                                                                           Navigator.pop(
                                                                               context);
                                                                         } else {
@@ -1279,11 +1393,14 @@ class VeState extends State<Ve> {
                                                                             builder:
                                                                                 (BuildContext context) {
                                                                               return AlertDialog(
-                                                                                title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
+                                                                                title: const Text(
+                                                                                  'Lỗi',
+                                                                                  style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14),
+                                                                                ),
                                                                                 content: Text('${resp['message']}'),
                                                                                 actions: <Widget>[
                                                                                   TextButton(
-                                                                                    child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                                    child: const Text('Đã hiểu', style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
                                                                                     onPressed: () {
                                                                                       Navigator.of(context).pop();
                                                                                     },
@@ -1298,8 +1415,12 @@ class VeState extends State<Ve> {
                                                                           Text(
                                                                         'XÁC NHẬN',
                                                                         style: TextStyle(
-                                                                          fontFamily: 'Roboto Medium',fontSize: 14,
-                                                                          letterSpacing: 1.25,
+                                                                            fontFamily:
+                                                                                'Roboto Medium',
+                                                                            fontSize:
+                                                                                14,
+                                                                            letterSpacing:
+                                                                                1.25,
                                                                             color:
                                                                                 Colors.white),
                                                                       ),
@@ -1329,7 +1450,9 @@ class VeState extends State<Ve> {
                                                     '${data.hoTen}',
                                                     style: TextStyle(
                                                         // fontWeight: fontStyleListItem,
-                                                        fontFamily: 'Roboto Regular',fontSize: 14),
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14),
                                                   ),
                                                 ],
                                               ),
@@ -1353,16 +1476,25 @@ class VeState extends State<Ve> {
                                                       Text(
                                                         'Thanh toán',
                                                         style: TextStyle(
-                                                            fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400
-                                                            ),
+                                                            fontFamily:
+                                                                'Roboto Regular',
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                       ),
                                                     ],
                                                   ),
                                                   Text(
                                                     '${data.trangThaiThanhToan.tenTrangThai}',
                                                     style: TextStyle(
-                                                        fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400,
-                                                        color: HexColor.fromHex('#00FF00')),
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: HexColor.fromHex(
+                                                            '#00FF00')),
                                                   )
                                                 ],
                                               ),
@@ -1383,15 +1515,23 @@ class VeState extends State<Ve> {
                                                       Text(
                                                         'Điểm xuống',
                                                         style: TextStyle(
-                                                            fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400
-                                                            ),
+                                                            fontFamily:
+                                                                'Roboto Regular',
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                       ),
                                                     ],
                                                   ),
                                                   Text(
                                                     '${data.tenDiemXuong}',
                                                     style: TextStyle(
-                                                        fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400,
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w400,
                                                         color: Colors.black),
                                                   )
                                                 ],
@@ -1416,15 +1556,20 @@ class VeState extends State<Ve> {
                                                       child: Text(
                                                         'IN VÉ',
                                                         style: TextStyle(
-                                                          fontFamily: 'Roboto Medium',fontSize: 14,fontWeight: FontWeight.w400,
+                                                            fontFamily:
+                                                                'Roboto Medium',
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w400,
                                                             color: Colors.blue),
                                                       )),
                                                   FlatButton(
                                                     onPressed: () async {
-                                                      var resp =
-                                                          await ApiHelper.post(
-                                                             ApiHelper.API_DoiSoat+ 'thuc-hien-xac-nhan-khach-xuong-xe',
-                                                              {
+                                                      var resp = await ApiHelper.post(
+                                                          ApiHelper
+                                                                  .API_DoiSoat +
+                                                              'thuc-hien-xac-nhan-khach-xuong-xe',
+                                                          {
                                                             'guidXe':
                                                                 chuyendiGanday
                                                                     .data
@@ -1451,13 +1596,23 @@ class VeState extends State<Ve> {
                                                               context) {
                                                             return AlertDialog(
                                                               title: const Text(
-                                                                  'Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                  'Lỗi',
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'Roboto Regular',
+                                                                      fontSize:
+                                                                          14)),
                                                               content: Text(
                                                                   '${resp['message']}'),
                                                               actions: <Widget>[
                                                                 TextButton(
                                                                   child: const Text(
-                                                                      'Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                      'Đã hiểu',
+                                                                      style: TextStyle(
+                                                                          fontFamily:
+                                                                              'Roboto Regular',
+                                                                          fontSize:
+                                                                              14)),
                                                                   onPressed:
                                                                       () {
                                                                     Navigator.of(
@@ -1474,8 +1629,13 @@ class VeState extends State<Ve> {
                                                     child: Text(
                                                       'XUỐNG XE',
                                                       style: TextStyle(
-                                                        fontFamily: 'Roboto Medium',fontSize: 14,fontWeight: FontWeight.w400,
-                                                          color: Colors.white,letterSpacing: 1.25),
+                                                          fontFamily:
+                                                              'Roboto Medium',
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.white,
+                                                          letterSpacing: 1.25),
                                                     ),
                                                     color: Colors.blue,
                                                   )
@@ -1486,11 +1646,17 @@ class VeState extends State<Ve> {
                                         );
                                       } else if (snapshot.hasError) {
                                         return Center(
-                                          child: Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                          child: Text('Lỗi',
+                                              style: TextStyle(
+                                                  fontFamily: 'Roboto Regular',
+                                                  fontSize: 14)),
                                         );
                                       }
                                       return Center(
-                                        child: Text('Không có dữ liệu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                        child: Text('Không có dữ liệu',
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 14)),
                                       );
                                     });
                               });
@@ -1655,19 +1821,28 @@ Container itemBottomSheet(TrangThaiData data) {
           child: Center(
               child: Text(
             data.soLuong.toString(),
-            style: TextStyle(color: Colors.white,
-            fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Roboto Regular',
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
           )),
         ),
         Text(
           '${data.tenTrangThai}: ',
-          style: TextStyle(color: Colors.black,
-          fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Roboto Regular',
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
         ),
         Text(
           data.soLuong.toString(),
-          style: TextStyle(color: Colors.black,
-          fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Roboto Regular',
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
         ),
       ],
     ),
@@ -1691,19 +1866,28 @@ Container itemBottomSheet1(TrangThaiData data) {
           child: Center(
               child: Text(
             data.soLuong.toString(),
-            style: TextStyle(color: Colors.black,
-            fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+            style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'Roboto Regular',
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
           )),
         ),
         Text(
           '${data.tenTrangThai}: ',
-          style: TextStyle(color: Colors.black,
-          fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Roboto Regular',
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
         ),
         Text(
           data.soLuong.toString(),
-          style: TextStyle(color: Colors.black,
-          fontFamily: 'Roboto Regular',fontSize: 14,fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Roboto Regular',
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
         ),
       ],
     ),

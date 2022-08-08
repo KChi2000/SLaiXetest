@@ -28,7 +28,7 @@ import '../model/TrangThaiChoNgoi.dart';
 import '../model/chuyendiganday.dart';
 import '../model/sodocho.dart';
 
-final backend_url = 'https://api.qc03.vedientu.sonphat.dev/';
+final backend_url = 'https://api-ve.nguyencongtuyen.sonphat.dev/';
 
 // Theo quy ước, các backends hiện tại đều hỗ trợ định dạng dữ liệu json vả input và output.
 class ApiHelper {
@@ -38,19 +38,19 @@ class ApiHelper {
   static final API_TuyenDuong = backend_url + 'be_api/tuyenduong/';
   static final API_ThanhToan = backend_url + 'be_api/thanhtoan/';
   static final API_PhongChongDich = backend_url + 'be_api/phongchongdich/';
-  static final API_DoiSoat = backend_url + 'be_api/doisoat/';
+  static final API_DoiSoat = backend_url + 'be_api/chuyendi/doi-soat/';
   static final API_ThongTin = backend_url + 'api/';
   static final API_PhienBan = backend_url + 'PhienBan/api/';
-  static final API_HangHoa = 'https://hanghoa.qc03.vedientu.sonphat.dev/api/';
-  static final API_LenhDienTu = 'https://api.qc03.lenh.sonphat.dev/api/Driver/';
-  static final API_File = 'https://file.qc03.vedientu.sonphat.dev/api/';
+  static final API_HangHoa = 'https://api-hanghoa.nguyencongtuyen.sonphat.dev/api/';
+  static final API_LenhDienTu = 'https://api-lenhdientu.nguyencongtuyen.sonphat.dev/api/Driver/';
+  static final API_File = 'https://file-ve.nguyencongtuyen.sonphat.dev/api/';
   static final API_DoanhNghiepVanTai = backend_url + 'be_api/doanhnghiepvantai/';
   static final API_CauHinhHeThong = backend_url + 'be_api/cauhinhhethong/';
   static final API_BaoCao = backend_url + 'be_api/baocao/';
   static final API_Ve = backend_url + 'be_api/ve/';
-  static final API_Xe = backend_url + 'e_api/xe/';
-  static final API_TaiKhoan = backend_url + 'be_api/taikhoan/';
-  static final API_ChuyenDi = backend_url + 'be_api/chuyendi/';
+  static final API_Xe = backend_url + 'be_api/xe/';
+  static final API_TaiKhoan = backend_url + 'api/taikhoan/';
+  static final API_ChuyenDi = backend_url + 'be_api/chuyendi/ChuyenDi/';
   static final API_DiemXuongCuaKhachHang = backend_url;
   static final API_Default_BaseUrl = backend_url + 'be_api/chuyendi/';
   static final API_DonHang = backend_url + 'be_api/donhang/';
@@ -179,7 +179,7 @@ class ApiHelper {
   static Future<tang> gettang(String idChuyenDi) async {
     return await http.get(
         Uri.parse(
-            API_ThongTin+'dat-ve/danh-sach-tang-xe?IdChuyenDi=${idChuyenDi}'),
+            API_BaseUrl+'dat-ve/danh-sach-tang-xe?IdChuyenDi=${idChuyenDi}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {
@@ -310,7 +310,7 @@ class ApiHelper {
       String guidlotrinh) async {
     return await http.get(
         Uri.parse(
-            API_ThongTin+'DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
+            API_TuyenDuong+'DiemDung/lay-danh-sach-diem-xuong-cua-lo-trinh?guidLoTrinh=${guidlotrinh}'),
         headers: {
           "authorization": "Bearer ${LoginHelper.Default.access_token}",
         }).then((resp) {

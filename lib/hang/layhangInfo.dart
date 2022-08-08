@@ -75,6 +75,7 @@ class _layhangInfoState extends State<layhangInfo> {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasError) {
+              return Center(child: Text('Lỗi'),);
             } else if (snapshot.hasData) {
               int errorCode;
               DSDiemXuongLoTrinh dsdiemxuong = snapshot.data;

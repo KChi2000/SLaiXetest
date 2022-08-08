@@ -15,36 +15,35 @@ import '../componentsFuture/bottomshetHK.dart';
 import '../model/DSDiemxuongLotrinh.dart';
 import '../model/DonGiaTheoTuyen.dart';
 
-class banveghephu extends StatefulWidget {
+class banveXeNoSoDoCho extends StatefulWidget {
   String guidlotrinh;
   String guidchuyendi;
-  banveghephu(this.guidlotrinh, this.guidchuyendi);
+  banveXeNoSoDoCho(this.guidlotrinh, this.guidchuyendi);
 
   @override
-  State<banveghephu> createState() => _banveState();
+  State<banveXeNoSoDoCho> createState() => _banveState();
 }
 
-class _banveState extends State<banveghephu> {
+class _banveState extends State<banveXeNoSoDoCho> {
   final formkey = GlobalKey<FormState>();
   final formkey1 = GlobalKey<FormState>();
   final formTTHK = GlobalKey<FormState>();
   final abc = GlobalKey<FormState>();
   List<DataDSDiemXuongLoTrinh> diemxuong = [];
-  final lowPrice =
-     TextEditingController(text: '0đ');
+  final lowPrice = TextEditingController(text: '0đ');
   final sdtController = TextEditingController();
   bool cash = true;
   bool bank = false;
   bool checkbox = false;
   DataDSDiemXuongLoTrinh diemxuongObject;
-  String ve = '1', sdt = null, giave = '0,00VNĐ';
+  String ve = '1', sdt, giave = '0đ';
   final veController = TextEditingController(text: '1');
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
   var dsdiemxuongFuture;
   DonGiaTheoTuyen DonGia;
   List<DataDonGiaTheoTuyen> data = [];
-   static const _locale = 'en';
+  static const _locale = 'en';
   String _formatNumber(String s) =>
       NumberFormat.decimalPattern(_locale).format(int.parse(s));
   String get _currency =>
@@ -89,7 +88,11 @@ class _banveState extends State<banveghephu> {
                 );
               } else if (snapshot.hasError) {
                 return Center(
-                  child: Text('Lỗi',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular',)),
+                  child: Text('Lỗi',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Roboto Regular',
+                      )),
                 );
               } else if (snapshot.hasData) {
                 data = DonGia.data;
@@ -99,7 +102,11 @@ class _banveState extends State<banveghephu> {
                 String initdropdown;
                 if (diemxuong.length == 0) {
                   return Center(
-                    child: Text('Không có dữ liệu',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular',)),
+                    child: Text('Không có dữ liệu',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Roboto Regular',
+                        )),
                   );
                 }
 
@@ -131,7 +138,10 @@ class _banveState extends State<banveghephu> {
                             onChanged: (vl) {
                               setState(() {
                                 ve = vl;
+                                print(ve);
+                                 xacnhan();
                               });
+                             
                             },
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
@@ -166,7 +176,10 @@ class _banveState extends State<banveghephu> {
                             onChanged: (vl1) {
                               setState(() {
                                 sdt = vl1;
+                                print(sdt);
+                                xacnhan();
                               });
+                              
                             },
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
@@ -188,7 +201,9 @@ class _banveState extends State<banveghephu> {
                           onChanged: (t1) {
                             setState(() {
                               diemxuongObject = t1;
+                               xacnhan();
                             });
+                           
                           },
                           menuMaxHeight: 200,
                           validator: (vl1) {
@@ -215,16 +230,18 @@ class _banveState extends State<banveghephu> {
                               return null;
                             },
                             onChanged: (vl2) {
-                               vl2 = '${_formatNumber(vl2.replaceAll(',', ''))}';
+                              vl2 = '${_formatNumber(vl2.replaceAll(',', ''))}';
                               lowPrice.value = TextEditingValue(
                                 text: vl2,
                                 selection:
                                     TextSelection.collapsed(offset: vl2.length),
                               );
-                              xacnhan();
-                              // setState(() {
-                              //   giave = vl2;
-                              // });
+
+                              setState(() {
+                                giave = vl2;
+                                xacnhan();
+                                print(giave);
+                              });
                             },
                           ),
                         ),
@@ -234,8 +251,8 @@ class _banveState extends State<banveghephu> {
                                       onTap: () {
                                         print(e.giaVe);
                                         setState(() {
-                                           lowPrice.text = NumberFormat('#,###')
-                                                .format(e.giaVe) ;
+                                          lowPrice.text = NumberFormat('#,###')
+                                              .format(e.giaVe);
                                           giave = e.giaVe.toString();
                                         });
                                       },
@@ -243,7 +260,11 @@ class _banveState extends State<banveghephu> {
                                           margin: EdgeInsets.symmetric(
                                               horizontal: 5),
                                           child: Chip(
-                                            label: Text(e.giaVe.toString(),style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14,)),
+                                            label: Text(e.giaVe.toString(),
+                                                style: TextStyle(
+                                                  fontFamily: 'Roboto Regular',
+                                                  fontSize: 14,
+                                                )),
                                             backgroundColor: Colors.grey[320],
                                           )),
                                     ))
@@ -372,7 +393,8 @@ class _banveState extends State<banveghephu> {
                                   String money = lowPrice.text
                                       .replaceAll(RegExp('[^0-9]'), '');
                                   var resp = await ApiHelper.post(
-                                      ApiHelper.API_DonHang+'DonHang/thuc-hien-ban-ve-cho-ghe-phu',
+                                      ApiHelper.API_DonHang +
+                                          'DonHang/thuc-hien-ban-ve-cho-xe-khong-so-do-cho',
                                       {
                                         'ToaDo': '',
                                         'giaVe': int.parse(money),
@@ -388,12 +410,17 @@ class _banveState extends State<banveghephu> {
                                             '${diemxuongObject.tenDiemXuong}'
                                       });
                                   if (resp['status']) {
-                                     Navigator.of(context).popUntil((route) => route.isFirst);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                banvethanhcong(money, sdtController.text, cash?'TIỀN MẶT/CASH\nCHANGE':'BANKING...')));
+                                            builder: (context) => banvethanhcong(
+                                                money,
+                                                sdtController.text,
+                                                cash
+                                                    ? 'TIỀN MẶT/CASH\nCHANGE'
+                                                    : 'BANKING...')));
                                   } else {
                                     showDialog(
                                       context: context,
@@ -419,14 +446,22 @@ class _banveState extends State<banveghephu> {
                               : null,
                           child: Text(
                             'BÁN VÉ',
-                           style: TextStyle(fontSize: 14,fontFamily: 'Roboto Medium',letterSpacing: 1.25, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Roboto Medium',
+                                letterSpacing: 1.25,
+                                color: Colors.white),
                           ),
                         )
                       ],
                     ));
               }
               return Center(
-                child: Text('Không có dữ liệu',style: TextStyle(fontSize: 14,fontFamily: 'Roboto Regular',)),
+                child: Text('Không có dữ liệu',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Roboto Regular',
+                    )),
               );
             }),
       ),
@@ -434,15 +469,15 @@ class _banveState extends State<banveghephu> {
   }
 
   bool xacnhan() {
-    if (giave == '0đ' ||
-        lowPrice.text == '0đ' ||
-        diemxuongObject == null ||
-        ve == null ||
-        ve.isEmpty ||
-        sdt == null ||
-        sdt.isEmpty) {
-      return false;
-    } else
+    if (ve != null &&
+        veController.text != null &&
+        sdtController.text != null &&
+        sdt != null &&
+        diemxuongObject != null &&
+        giave != '0đ' &&
+        lowPrice.text != null) {
       return true;
+    } else
+      return false;
   }
 }

@@ -17,7 +17,7 @@ class LoginHelper {
 // Cái này tạo thông tin chung, cấu hình theo mặc định, để toàn bộ chương trình, chố nào cũng có thể dung
 // Đoạn này cũng áp dụng tương đối theo mô hình signleton, nhưng anh không lock hàm khởi tạo của class
   static LoginHelper Default = LoginHelper(
-      "https://dangnhap.qc03.qlbx.sonphat.dev/auth", "Sbus.vn", "BanVeTaiBen");
+      "https://dangnhap.sonphat.dev/auth", "Sbus.vn", "BanVeTaiBen");
 
   String URL; // Thông tin server đăng nhập
   String Realm; // Thông tin cấu hình vùng dữ liệu đăng nhập
@@ -171,5 +171,26 @@ class UserTokenModel {
   String given_name;
   String name;
   String preferred_username;
+  UserTokenModel({this.GuidDoanhNghiep,this.TenDoanhNghiep,this.ID_BenXeSuDung,this.SuDungDichVu,this.given_name,this.name,this.preferred_username});
+ UserTokenModel.fromJson(Map<String, dynamic> json) {
+    GuidDoanhNghiep = json['GuidDoanhNghiep'];
+    TenDoanhNghiep = json['TenDoanhNghiep'];
+    ID_BenXeSuDung = json['ID_BenXeSuDung'];
+    SuDungDichVu = json['SuDungDichVu'];
+    given_name = json['given_name'];
+    name = json['name'];
+    preferred_username = json['preferred_username'];
+  }
+  Map<String,dynamic> toJson(){
+    final Map<String,dynamic> data = new Map<String,dynamic>();
+    data['GuidDoanhNghiep'] = this.GuidDoanhNghiep;
+    data['TenDoanhNghiep'] =this.TenDoanhNghiep;
+    data['ID_BenXeSuDung'] = this.ID_BenXeSuDung;
+    data['SuDungDichVu'] = this.SuDungDichVu;
+    data['given_name'] = this.given_name;
+    data['name'] = this.name;
+    data['preferred_username'] = this.preferred_username;
+    return data;
+  }
  
 }
