@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../model/LayChiTietNhatKyVanChuyen.dart';
 import 'package:intl/intl.dart';
@@ -21,17 +25,17 @@ class hangDetail extends StatefulWidget {
 
 class _hangDetailState extends State<hangDetail> {
   var chitietnhatkyFuture;
- XFile imageitem;
-  final image = [];
+  XFile imageitem;
+  List<XFile> image = [];
   int count;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('ahihi '+widget.idnhatki);
-   if(widget.idnhatki != null || !(widget.idnhatki.isEmpty)){
-     loadchitietNhatky(widget.idnhatki);
-   }
+    print('ahihi ' + widget.idnhatki);
+    if (widget.idnhatki != null || !(widget.idnhatki.isEmpty)) {
+      loadchitietNhatky(widget.idnhatki);
+    }
   }
 
   void loadchitietNhatky(String idNhatKi) {
@@ -59,12 +63,14 @@ class _hangDetailState extends State<hangDetail> {
             LayChiTietNhatKyVanChuyen chitietnhatky = snapshot.data;
             DataNhatKyChiTiet datachitiet = chitietnhatky.data;
             var datetime;
-            if(datachitiet.thoiGianGiaoHangThucTe == null || datachitiet.thoiGianGiaoHangThucTe.isEmpty){
+            if (datachitiet.thoiGianGiaoHangThucTe == null ||
+                datachitiet.thoiGianGiaoHangThucTe.isEmpty) {
               print('nulllllll');
-              datetime = DateTime.parse(datachitiet.thoiGianGiaoHangDuKien).toLocal();
-            } else{
               datetime =
-                DateTime.parse(datachitiet.thoiGianGiaoHangThucTe).toLocal();
+                  DateTime.parse(datachitiet.thoiGianGiaoHangDuKien).toLocal();
+            } else {
+              datetime =
+                  DateTime.parse(datachitiet.thoiGianGiaoHangThucTe).toLocal();
             }
             String datetimegiaohang =
                 DateFormat('kk:mm dd/MM/yyyy ').format(datetime);
@@ -83,31 +89,30 @@ class _hangDetailState extends State<hangDetail> {
                       SizedBox(
                         height: 15,
                       ),
-                      Image.asset(
-                        'asset/images/qrimage.png',
-                        width: 150,
-                        height: 150,
-                      ),
+                     
+                      Center(child: QrImage(data: datachitiet.linkTraCuu,size: 150,)),
                       Center(
                         child: RichText(
                             text: TextSpan(children: [
                           TextSpan(
                               text: '${datachitiet.trangThaiVanChuyen}',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Roboto Medium',
                                   color:
                                       datachitiet.thoiGianGiaoHangThucTe != null
                                           ? Colors.green
-                                          :Colors.red )),
+                                          : Colors.red)),
                           TextSpan(
-                        text: datachitiet.thoiGianGiaoHangThucTe != null?'($datetimegiaohang)' :'(Dự kiến: $datetimegiaohang)',
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 12,
-                            color: datachitiet.thoiGianGiaoHangThucTe != null
+                              text: datachitiet.thoiGianGiaoHangThucTe != null
+                                  ? '($datetimegiaohang)'
+                                  : ' ( Dự kiến: $datetimegiaohang)',
+                              style: TextStyle(
+                                  fontFamily: 'Roboto Italic',
+                                  fontSize: 12,
+                                  color:
+                                      datachitiet.thoiGianGiaoHangThucTe != null
                                           ? Colors.green
-                                          :Colors.red)),
-                        
+                                          : Colors.red)),
                         ])),
                       ),
                       SizedBox(
@@ -169,7 +174,7 @@ class _hangDetailState extends State<hangDetail> {
                             height: 20,
                             width: 20,
                           ),
-                          'SĐT người gửi: ${datachitiet.soDienThoaiGui != null ? datachitiet.soDienThoaiGui :'' }'),
+                          'SĐT người gửi: ${datachitiet.soDienThoaiGui != null ? datachitiet.soDienThoaiGui : ''}'),
                       Expanded(
                         child: Align(
                           alignment: Alignment.bottomCenter,
@@ -188,12 +193,13 @@ class _hangDetailState extends State<hangDetail> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       FlatButton(
-                                        onPressed: () {
-                                          // html.window.open('https://www.google.com/search?q=kimi+lin&oq=kimi+lin&aqs=chrome..69i57j46i512j0i22i30l8.3083j0j7&sourceid=chrome&ie=UTF-8', 'abc');
-                                        },
+                                        onPressed: () {},
                                         child: Text('IN PHIẾU',
-                                            style:
-                                                TextStyle(color: Colors.blue)),
+                                            style: TextStyle(
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 14,
+                                                letterSpacing: 1.25,
+                                                color: Colors.blue)),
                                         height: 20,
                                         // color: Colors.black,
                                       ),
@@ -202,178 +208,275 @@ class _hangDetailState extends State<hangDetail> {
                                       //     thickness: 2,
                                       //   ),
                                       GestureDetector(
-                                        onTap: datachitiet.trangThaiVanChuyen ==
-                                                'Đã giao'
-                                            ? null
-                                            : () {
-                                                showModalBottomSheet(
-                                                                context: context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return Container(
-                                                                    padding:
-                                                                        EdgeInsets
-                                                                            .all(
-                                                                                15),
-                                                                    height: 300,
-                                                                    child: Column(
-                                                                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                      children: [
-                                                                        Align(
-                                                                          alignment:
-                                                                              Alignment.topLeft,
-                                                                          child: GestureDetector(
-                                                                              onTap: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Text(
-                                                                                'Thoát',
-                                                                                style: TextStyle(fontSize: 15, color: Colors.red),
-                                                                              )),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              15,
-                                                                        ),
-                                                                        Text(
-                                                                          'Xác nhận trả hàng',
-                                                                          style: TextStyle(
-                                                                              fontWeight:
-                                                                                  FontWeight.bold,
-                                                                              fontSize: 18),
-                                                                        ),
-                                                                        Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Text('Ảnh: 0/2'),
-                                                                              Row(children: [
-                                                                                Checkbox(value: false, onChanged: (a) {}),
-                                                                                Text('In phiếu'),
-                                                                              ]),
-                                                                            ]),
-                                                                        Align(
-                                                                          alignment:
-                                                                              Alignment.topLeft,
-                                                                          child:
-                                                                              DottedBorder(
-                                                                            child:
-                                                                                GestureDetector(
-                                                                              child:
-                                                                                  Container(
-                                                                                height: 75,
-                                                                                width: 65,
-                                                                                child: Center(
-                                                                                    child: SvgPicture.asset(
-                                                                                  'asset/icons/camera-plus.svg',
-                                                                                  color: Colors.black54,
-                                                                                )),
-                                                                              ),
-                                                                              onTap:
-                                                                                  () {
-                                                                                return showDialog(
-                                                                                    context: context,
-                                                                                    builder: (context) {
-                                                                                      return AlertDialog(
-                                                                                        content: Container(
-                                                                                          width: 60,
-                                                                                          child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                                            GestureDetector(
-                                                                                              child: Text('Chụp ảnh mới'),
-                                                                                              onTap: () async {
-                                                                                                print('chọn chụp ảnh');
-                                                                                                Navigator.pop(context);
-                                                                                                await ImagePicker().pickImage(source: ImageSource.camera);
-                                                                                              },
-                                                                                            ),
-                                                                                            SizedBox(
-                                                                                              height: 20,
-                                                                                            ),
-                                                                                            GestureDetector(
-                                                                                              child: Text('Chọn ảnh'),
-                                                                                              onTap: () async {
-                                                                                                print('chọn ảnh');
-                                                                                                Navigator.pop(context);
-                                                                                                imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                                                                                if (imageitem == null) {
-                                                                                                  return;
-                                                                                                }
-                                                                                                image.add(imageitem);
-                                                                                                setState(() {
-                                                                                                  count = image.length;
-                                                                                                });
-                                                                                              },
-                                                                                            ),
-                                                                                          ]),
-                                                                                        ),
-                                                                                      );
-                                                                                    });
-                                                                              },
-                                                                            ),
+                                        onTap:
+                                            datachitiet.trangThaiVanChuyen ==
+                                                    'Đã giao'
+                                                ? null
+                                                : () {
+                                                    showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return StatefulBuilder(
+                                                              builder: (context,
+                                                                  setState) {
+                                                            return Container(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(15),
+                                                              height: 300,
+                                                              child: Column(
+                                                                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                children: [
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    child: GestureDetector(
+                                                                        onTap: () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child: Text(
+                                                                          'Thoát',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                14,
                                                                             color:
-                                                                                Colors.black54,
-                                                                            strokeWidth:
-                                                                                1,
-                                                                            radius:
-                                                                                Radius.circular(10),
+                                                                                Colors.red,
+                                                                            fontFamily:
+                                                                                'Roboto Regular',
                                                                           ),
+                                                                        )),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 15,
+                                                                  ),
+                                                                  Text(
+                                                                      'Xác nhận trả hàng',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontFamily:
+                                                                            'Roboto Medium',
+                                                                        fontSize:
+                                                                            20,
+                                                                      )),
+                                                                  Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Text(
+                                                                            'Ảnh: ${image.length}/2',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontFamily: 'Roboto Regular',
+                                                                              fontSize: 14,
+                                                                            )),
+                                                                        Row(
+                                                                            children: [
+                                                                              Checkbox(value: false, onChanged: (a) {}),
+                                                                              Text('In phiếu',
+                                                                                  style: TextStyle(
+                                                                                    fontFamily: 'Roboto Regular',
+                                                                                    fontSize: 14,
+                                                                                  )),
+                                                                            ]),
+                                                                      ]),
+                                                                  SizedBox(
+                                                                    width: double
+                                                                        .infinity,
+                                                                    height: 100,
+                                                                    child:
+                                                                        ListView(
+                                                                      scrollDirection:
+                                                                          Axis.horizontal,
+                                                                      children: [
+                                                                        ...image
+                                                                            .map(
+                                                                          (e) {
+                                                                            return itemImage(e,
+                                                                                () {
+                                                                              setState(
+                                                                                () {
+                                                                                  image.remove(e);
+                                                                                  count = image.length;
+                                                                                },
+                                                                              );
+                                                                            });
+                                                                          },
                                                                         ),
                                                                         SizedBox(
-                                                                          height:
-                                                                              10,
+                                                                          width:
+                                                                              5,
                                                                         ),
-                                                                        Divider(
-                                                                          thickness:
-                                                                              1.5,
-                                                                          height:
-                                                                              1,
-                                                                        ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              10,
-                                                                        ),
-                                                                        Align(
-                                                                            alignment:
-                                                                                Alignment.bottomRight,
-                                                                            child: SizedBox(
-                                                                                height: 28,
-                                                                                child: ElevatedButton(
-                                                                                    onPressed: () async {
-                                                                                    
-                                                                                      var res = await ApiHelper.postMultipart('http://113.176.29.57:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
-                                                                                        'idNhatKy': '${widget.idnhatki}',
-                                                                                        'toaDo': ''
-                                                                                      });
-                                                                                      if (res == 'Uploadd') {
-                                                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UIKitPage(3)));
-                                                                                      } else {
-                                                                                        showDialog(
-                                                                                          context: context, barrierDismissible: false, // user must tap button!
-                                                                                          builder: (BuildContext context) {
+                                                                        image.length <
+                                                                                2
+                                                                            ? Column(
+                                                                                children: [
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    child: Align(
+                                                                                      alignment: Alignment.topLeft,
+                                                                                      child: DottedBorder(
+                                                                                        child: Container(
+                                                                                          height: 75,
+                                                                                          width: 65,
+                                                                                          child: Center(
+                                                                                              child: SvgPicture.asset(
+                                                                                            'asset/icons/camera-plus.svg',
+                                                                                            color: Colors.black54,
+                                                                                          )),
+                                                                                        ),
+                                                                                        color: Colors.black54,
+                                                                                        strokeWidth: 1,
+                                                                                        radius: Radius.circular(10),
+                                                                                      ),
+                                                                                    ),
+                                                                                    onTap: () {
+                                                                                      return showDialog(
+                                                                                          context: context,
+                                                                                          builder: (context) {
                                                                                             return AlertDialog(
-                                                                                              title: const Text('Lỗi'),
-                                                                                              content: 
-                                                                                               Text('Lỗi kết nối'),
-                                                                                              
-                                                                                              actions: <Widget>[
-                                                                                                TextButton(
-                                                                                                  child: const Text('Đã hiểu'),
-                                                                                                  onPressed: () {
-                                                                                                    Navigator.of(context).pop();
-                                                                                                  },
-                                                                                                ),
-                                                                                              ],
+                                                                                              content: Container(
+                                                                                                width: 60,
+                                                                                                child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                                                  GestureDetector(
+                                                                                                    child: Text('Chụp ảnh mới',
+                                                                                                        style: TextStyle(
+                                                                                                          fontFamily: 'Roboto Regular',
+                                                                                                          fontSize: 14,
+                                                                                                        )),
+                                                                                                    onTap: () async {
+                                                                                                      print('chọn chụp ảnh');
+                                                                                                      Navigator.pop(context);
+                                                                                                      imageitem = await ImagePicker().pickImage(source: ImageSource.camera);
+                                                                                                      if (imageitem == null) {
+                                                                                                        return;
+                                                                                                      }
+
+                                                                                                      setState(() {
+                                                                                                        image.add(imageitem);
+                                                                                                        count = image.length;
+                                                                                                      });
+                                                                                                      print('count: $count');
+                                                                                                    },
+                                                                                                  ),
+                                                                                                  SizedBox(
+                                                                                                    height: 20,
+                                                                                                  ),
+                                                                                                  GestureDetector(
+                                                                                                    child: Text('Chọn ảnh',
+                                                                                                        style: TextStyle(
+                                                                                                          fontFamily: 'Roboto Regular',
+                                                                                                          fontSize: 14,
+                                                                                                        )),
+                                                                                                    onTap: () async {
+                                                                                                      print('chọn ảnh');
+                                                                                                      Navigator.pop(context);
+                                                                                                      imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                                                                                      if (imageitem == null) {
+                                                                                                        return;
+                                                                                                      }
+                                                                                                      // image.add(imageitem);
+                                                                                                      setState(() {
+                                                                                                        image.add(imageitem);
+                                                                                                        count = image.length;
+                                                                                                      });
+                                                                                                      print('count: $count');
+                                                                                                    },
+                                                                                                  ),
+                                                                                                ]),
+                                                                                              ),
                                                                                             );
-                                                                                          },
-                                                                                        );
-                                                                                      }
+                                                                                          });
                                                                                     },
-                                                                                    child: Text('XÁC NHẬN'))))
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            : Text(''),
                                                                       ],
                                                                     ),
-                                                                  );
-                                                                });
-                                              },
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  Divider(
+                                                                    thickness:
+                                                                        1.5,
+                                                                    height: 1,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .bottomRight,
+                                                                      child: SizedBox(
+                                                                          height: 28,
+                                                                          child: ElevatedButton(
+                                                                              onPressed: () async {
+                                                                                var res = await ApiHelper.postMultipart(servicesAPI.API_HangHoa + 'HangHoa/thuc-hien-giao-tra-hang-hoa', {
+                                                                                  'idNhatKy': '${widget.idnhatki}',
+                                                                                  'toaDo': ''
+                                                                                });
+                                                                                if (res == 'Uploadd') {
+                                                                                  // trangthaiCount = 0;
+                                                                                  // loadchuyendiganday();
+                                                                                  Navigator.of(context).pop();
+                                                                                  Navigator.of(context).popUntil((route) => route.isFirst);
+                                                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UIKitPage(3)));
+                                                                                } else {
+                                                                                  showDialog(
+                                                                                    context: context, barrierDismissible: false, // user must tap button!
+                                                                                    builder: (BuildContext context) {
+                                                                                      return AlertDialog(
+                                                                                        title: const Text('Lỗi',
+                                                                                            style: TextStyle(
+                                                                                              fontFamily: 'Roboto Medium',
+                                                                                              fontSize: 14,
+                                                                                            )),
+                                                                                        content: Text('Lỗi kết nối',
+                                                                                            style: TextStyle(
+                                                                                              fontFamily: 'Roboto Regular',
+                                                                                              fontSize: 14,
+                                                                                            )),
+                                                                                        actions: <Widget>[
+                                                                                          TextButton(
+                                                                                            child: const Text(
+                                                                                              'Đã hiểu',
+                                                                                              style: TextStyle(
+                                                                                                fontFamily: 'Roboto Regular',
+                                                                                                fontSize: 14,
+                                                                                              ),
+                                                                                            ),
+                                                                                            onPressed: () {
+                                                                                              Navigator.of(context).pop();
+                                                                                            },
+                                                                                          ),
+                                                                                        ],
+                                                                                      );
+                                                                                    },
+                                                                                  );
+                                                                                }
+                                                                              },
+                                                                              child: Text(
+                                                                                'XÁC NHẬN',
+                                                                                style: TextStyle(
+                                                                                  fontFamily: 'Roboto Medium',
+                                                                                  fontSize: 14,
+                                                                                  letterSpacing: 1.25,
+                                                                                ),
+                                                                              ))))
+                                                                ],
+                                                              ),
+                                                            );
+                                                          });
+                                                        });
+                                                  },
                                         child: Container(
                                           height: 50,
                                           width: MediaQuery.of(context)
@@ -386,8 +489,14 @@ class _hangDetailState extends State<hangDetail> {
                                                       'Đã giao'
                                                   ? Colors.grey[400]
                                                   : Colors.blue),
-                                          child:
-                                              Center(child: Text('TRẢ HÀNG')),
+                                          child: Center(
+                                              child: Text('TRẢ HÀNG',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Medium',
+                                                      fontSize: 14,
+                                                      letterSpacing: 1.25,
+                                                      color: Colors.white))),
                                         ),
                                       )
                                     ]),
@@ -401,7 +510,8 @@ class _hangDetailState extends State<hangDetail> {
             );
           }
           return Center(
-            child: Text('Không có dữ liệu'),
+            child: Text('Không có dữ liệu',
+                style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
           );
         },
       ),
@@ -410,6 +520,38 @@ class _hangDetailState extends State<hangDetail> {
 
 //
 //
+  Stack itemImage(XFile imagedata, Function onDelete) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            height: 79,
+            width: 65,
+            child: Image.file(
+              File(imagedata.path),
+              height: 50,
+              width: 45,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 66,
+          left: 49,
+          child: IconButton(
+            icon: SvgPicture.asset(
+              'asset/icons/cancel.svg',
+              width: 20,
+              height: 20,
+            ),
+            onPressed: onDelete,
+          ),
+        )
+      ],
+    );
+  }
+
   Row rowItemDetail(SvgPicture image, String title) {
     return Row(children: [
       image,
@@ -417,7 +559,10 @@ class _hangDetailState extends State<hangDetail> {
         width: 5,
       ),
       Expanded(
-        child: Text('$title', overflow: TextOverflow.ellipsis, maxLines: 1),
+        child: Text('$title',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
       )
     ]);
   }

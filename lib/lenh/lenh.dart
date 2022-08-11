@@ -9,6 +9,7 @@ import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/lenh/AnhLenh.dart';
 import 'package:flutter_ui_kit/lenh/dunglenhthanhcong.dart';
 import 'package:flutter_ui_kit/model/KhachTrenXe.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../lenh/chuyendoilenh.dart';
@@ -18,6 +19,8 @@ import '../other/homeConstant.dart';
 import 'package:intl/intl.dart';
 
 class Lenh extends StatefulWidget {
+  ChiTietLenh chitietlenh;
+  Lenh(this.chitietlenh);
   @override
   LenhState createState() {
     return LenhState();
@@ -31,7 +34,7 @@ class LenhState extends State<Lenh> {
   final formkey = GlobalKey<FormState>();
   final lidoController = TextEditingController();
   var chitietlenhFuture;
-  ChiTietLenh chitietlenh;
+  // ChiTietLenh chitietlenh;
   var khachTrenXeFuture;
   KhachTrenXe khachtrenxe;
   var datetime;
@@ -45,27 +48,25 @@ class LenhState extends State<Lenh> {
   }
 
   void loadChiTietLenh() async {
-    chitietlenhFuture = ApiHelper.getChiTietLenh(
-        ApiHelper.API_LenhDienTu + 'lay-chi-tiet-lenh-dang-thuc-hien');
-    chitietlenh = await chitietlenhFuture;
+  
+
     convertDateTime();
-    print('object ${chitietlenh.data.guidLenh}');
-    if (chitietlenh != null) {
-      khachTrenXeFuture = ApiHelper.getKhachTrenXe(ApiHelper.API_ThongTin +
-          'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${chitietlenh.data.guidLenh}');
+    print('object ${widget.chitietlenh.data.guidLenh}');
+    if (widget.chitietlenh != null) {
+      khachTrenXeFuture = ApiHelper.getKhachTrenXe(widget.chitietlenh.data.guidLenh);
     }
     setState(() {});
-    print(' chi tiet lenh ${chitietlenh.data.maTuyen}');
+    print(' chi tiet lenh ${widget.chitietlenh.data.maTuyen}');
   }
 
   void convertDateTime() {
-    datetime = DateTime.parse(chitietlenh.data.hieuLucDenNgay).toLocal();
+    datetime = DateTime.parse(widget.chitietlenh.data.hieuLucDenNgay).toLocal();
     timeHieuLuc = DateFormat('kk:mm dd-MM-yyyy ').format(datetime);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: Text(
             appbarTitle,
@@ -99,7 +100,7 @@ class LenhState extends State<Lenh> {
             } else if (snapshot.hasData) {
               KhachTrenXe snapshotdata = snapshot.data;
               return Banner(
-                message: '${chitietlenh.data.trangThai}',
+                message: '${widget.chitietlenh.data.trangThai}',
                 location: bannerLocation,
                 color: bannerColor,
                 child: Container(
@@ -117,10 +118,10 @@ class LenhState extends State<Lenh> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      AnhLenh(chitietlenh.data.guidLenh)));
+                                      AnhLenh(widget.chitietlenh.data.guidLenh)));
                         },
                         child: Text(
-                          '${chitietlenh.data.maLenh}',
+                          '${widget.chitietlenh.data.maLenh}',
                           style: TextStyle(
                               color: Colors.blue,
                               fontFamily: 'Roboto Medium',
@@ -130,10 +131,10 @@ class LenhState extends State<Lenh> {
                         ),
                       ),
                       QrImage(
-                        data: chitietlenh.data.qrCode.toString(),
+                        data: widget.chitietlenh.data.qrCode.toString(),
                         size: 185,
                       ),
-                      Text('${chitietlenh.data.bienKiemSoat}',
+                      Text('${widget.chitietlenh.data.bienKiemSoat}',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Roboto Medium',
@@ -148,17 +149,17 @@ class LenhState extends State<Lenh> {
                       SizedBox(
                         height: 10,
                       ),
-                      itemRowLenh('Mã tuyến', '${chitietlenh.data.maTuyen}',
+                      itemRowLenh('Mã tuyến', '${widget.chitietlenh.data.maTuyen}',
                           valueTextColor),
                       SizedBox(
                         height: spacerItem,
                       ),
-                      itemRowLenh('Tên bến đi', '${chitietlenh.data.benDi}',
+                      itemRowLenh('Tên bến đi', '${widget.chitietlenh.data.benDi}',
                           valueTextColor),
                       SizedBox(
                         height: spacerItem,
                       ),
-                      itemRowLenh('Tên bến đến', '${chitietlenh.data.benDen}',
+                      itemRowLenh('Tên bến đến', '${widget.chitietlenh.data.benDen}',
                           valueTextColor),
                       SizedBox(
                         height: spacerItem,
@@ -191,7 +192,7 @@ class LenhState extends State<Lenh> {
             );
           },
         ),
-        floatingActionButton: chitietlenh != null
+        floatingActionButton: widget.chitietlenh != null
             ? SpeedDial(
                 overlayColor: Colors.grey,
                 backgroundColor: activeColor,
@@ -221,7 +222,7 @@ class LenhState extends State<Lenh> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    chuyndoilenh(chitietlenh.data.guidLenh)));
+                                    chuyndoilenh(widget.chitietlenh.data.guidLenh)));
                       },
                       label: 'Chuyển đổi lệnh',
                       child: Icon(
@@ -276,7 +277,7 @@ class LenhState extends State<Lenh> {
                                                 fontFamily: 'Roboto Regular',
                                                 fontSize: 12,
                                               )),
-                                          Text('${chitietlenh.data.maLenh}',
+                                          Text('${widget.chitietlenh.data.maLenh}',
                                               style: TextStyle(
                                                 fontFamily: 'Roboto Regular',
                                                 fontSize: 16,
@@ -445,15 +446,15 @@ class LenhState extends State<Lenh> {
                                           ),
                                         ),
                                         RaisedButton(
-                                          onPressed: () {
+                                          onPressed: ()async {
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var resp = ApiHelper.postMultipart(
-                                                  ApiHelper.API_LenhDienTu +
+                                              var resp = await ApiHelper.postMultipart(
+                                                  servicesAPI.API_LenhDienTu +
                                                       'lai-xe-dung-hanh-trinh',
                                                   {
                                                     'guidLenh':
-                                                        '${chitietlenh.data.guidLenh}',
+                                                        '${widget.chitietlenh.data.guidLenh}',
                                                     'lyDo':
                                                         '${lidoController.text}',
                                                     'ToaDo': ''
@@ -464,7 +465,9 @@ class LenhState extends State<Lenh> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            dunglenhthanhcong(chitietlenh.data.tenDoanhNghiep)));
+                                                            dunglenhthanhcong(
+                                                                widget.chitietlenh.data
+                                                                    .tenDoanhNghiep)));
                                               } else {
                                                 Navigator.pop(context);
                                                 showDialog(

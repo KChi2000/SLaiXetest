@@ -167,6 +167,8 @@ class _MyWidgetState extends State<Login> {
                         final storage = new FlutterSecureStorage();
                         await storage.write(key: 'token', value: token);
                         await storage.write(key: 'userModel', value: jsonEncode(userStorage.toJson()));
+                        var tokenStorage = await storage.read(key: 'token');
+                        print('storage token : $tokenStorage');
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

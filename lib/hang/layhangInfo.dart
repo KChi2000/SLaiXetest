@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -36,13 +37,16 @@ class _layhangInfoState extends State<layhangInfo> {
       text: DateFormat(' kk:mm, dd-MM-yyyy').format(DateTime.now()));
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
-  String nhan;
-  String cuoc;
+  String nhan='';
+  String cuoc='0đ';
   String giacuoc;
   XFile imageitem;
   String Dropdownselected;
   final lowPrice =
-      MoneyMaskedTextController(rightSymbol: 'VNĐ', initialValue: 0);
+      TextEditingController(text: '0đ');
+      static const _locale = 'en';
+      String _formatNumber(String s) =>
+      NumberFormat.decimalPattern(_locale).format(int.parse(s));
   List<XFile> image = [];
   int count = 0;
   var dsdiemxuongFuture;
@@ -52,7 +56,7 @@ class _layhangInfoState extends State<layhangInfo> {
     super.initState();
     loadDSdiemxuong();
     print(widget.idchuyendi);
-    cuoc = lowPrice.text;
+    // cuoc = lowPrice.text;
   }
 
   void loadDSdiemxuong() {
@@ -112,8 +116,9 @@ class _layhangInfoState extends State<layhangInfo> {
                           controller: sdtNhanController,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            // FilteringTextInputFormatter.deny(RegExp(r'/^\+[1-9]{2}(?!0+$)[\d +-]{4,23}$/')),
                             FilteringTextInputFormatter.deny(
-                                RegExp(r'^[1-9]+')),
+                                RegExp(r'^[1-9]')),
                             LengthLimitingTextInputFormatter(10)
                           ],
                           validator: (sodt) {
@@ -126,22 +131,12 @@ class _layhangInfoState extends State<layhangInfo> {
                             return null;
                           },
                           onChanged: (phone) {
-                            print(phone);
+                            setState(() {
+                              nhan = phone;
+                            });
                             xacnhan();
-                            print('xac nhan ${xacnhan()}');
-                            if (phone.length == 10) {
-                              setState(() {
-                                phone.replaceAll(' ', '');
-                                nhan = phone;
-
-                                print(phone);
-                                // formkey.currentState.activate();
-                              });
-                            } else {
-                              setState(() {
-                                nhan = null;
-                              });
-                            }
+                            
+                            
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                         ),
@@ -159,11 +154,12 @@ class _layhangInfoState extends State<layhangInfo> {
                         }).toList(),
                         // value: 'Bến xe Hà Nam',
                         onChanged: (DataDSDiemXuongLoTrinh t1) {
-                          xacnhan();
+                         
                           setState(() {
                             Dropdownselected = t1.tenDiemXuong;
-                            xacnhan();
+                            
                           });
+                          xacnhan();
                         },
                         hint: Text('chọn điểm trả hàng', style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                         menuMaxHeight: 200,
@@ -190,23 +186,18 @@ class _layhangInfoState extends State<layhangInfo> {
                             return null;
                           },
                           onChanged: (gia) {
-                            String filter = gia.substring(0, gia.length - 3);
-                            print('filter $filter');
-                            print(gia);
-
                             setState(() {
-                              // cuoc = double.parse(gia);
-                              gia.replaceAll(' ', '');
-                              cuoc = filter;
-
-                              print('xac nhan ${xacnhan()}');
-
-                              // filter.replaceAll(RegExp(r','), '');
-                              // cuoc = double.tryParse(filter);
-                              // print(filter);
-                              // print('aaa: '+cuoc.toString());
+                              cuoc=gia;
                             });
                             xacnhan();
+                           gia = '${_formatNumber(gia.replaceAll(',', ''))}';
+                                lowPrice.value = TextEditingValue(
+                                  text: gia,
+                                  selection:
+                                      TextSelection.collapsed(offset: gia.length),
+                                );
+
+                            
                           },
                         ),
                       ),
@@ -482,7 +473,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                 print(sendDatetime);
                                 print(sendDatetime.toUtc().toIso8601String());
                                 var resp = await ApiHelper.postMultipart(
-                                    ApiHelper.API_HangHoa+'HangHoa/thuc-hien-nhan-van-chuyen-hang-hoa',
+                                    servicesAPI.API_HangHoa+'HangHoa/thuc-hien-nhan-van-chuyen-hang-hoa',
                                     {
                                       'idChuyenDi': '${widget.idchuyendi}',
                                       'tongTien':
@@ -561,14 +552,12 @@ class _layhangInfoState extends State<layhangInfo> {
     return false;
   }
 
-  bool xacnhan() {
-    if (nhan != null &&
-        cuoc != '0,00' &&
-        lowPrice.text != '0,00VNĐ' &&
-        Dropdownselected != null) {
-      return true;
+ 
+  bool xacnhan(){
+    if(nhan.length <10 || cuoc.isEmpty || cuoc == '0đ' || Dropdownselected==null){
+      return false;
     }
-    return false;
+    return true;
   }
 
   Stack itemImage(XFile imagedata, Function onDelete) {

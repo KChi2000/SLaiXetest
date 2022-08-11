@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_ui_kit/model/DSHanhKhachMuaVe.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:intl/intl.dart';
 
 import '../helpers/ApiHelper.dart';
@@ -60,7 +61,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        ApiHelper.API_LenhDienTu + 'lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
+        servicesAPI.API_LenhDienTu + 'lay-danh-sach-lenh-dien-tu-chua-thuc-hien',
         postdata);
 
     setState(() {});
@@ -208,7 +209,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                             ),
                           );
                         }
-                        List<Lenh> listdata = datatemp.list;
+                        List<LenhData> listdata = datatemp.list;
                         return Expanded(
                           child: ListView.builder(
                               itemCount: listdata.length,
@@ -246,7 +247,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
     );
   }
 
-  Container itemWhenAccepted(String timeHieuLuc, List<Lenh> listdata, int index,
+  Container itemWhenAccepted(String timeHieuLuc, List<LenhData> listdata, int index,
       BuildContext context, double widthScreen) {
     return Container(
       margin: EdgeInsets.all(10),
@@ -562,7 +563,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                           print(
                                               'idlenh moi: ${listdata.first.guidLenh}');
                                           var resp = await ApiHelper.post(
-                                             ApiHelper.API_LenhDienTu+ 'lai-xe-chuyen-doi-chuyen-di',
+                                             servicesAPI.API_LenhDienTu+ 'lai-xe-chuyen-doi-chuyen-di',
                                               {
                                                 'ToaDo': '',
                                                 'idDonHangs': iddonhang,

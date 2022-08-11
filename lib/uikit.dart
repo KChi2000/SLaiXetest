@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/lenh/lenhMain.dart';
 import 'Taikhoan/Taikhoan.dart';
 import 'hang/Hang.dart';
 import 'home/Home.dart';
@@ -22,7 +23,7 @@ class _UIKitPageState extends State<UIKitPage> {
   final _tabPages = [
     Home(),
     Ve(),
-    Lenh(),
+    lenhMain(),
     Hang(),
     Thongbao(),
     Taikhoan(),

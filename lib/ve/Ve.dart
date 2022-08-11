@@ -12,6 +12,7 @@ import 'package:flutter_ui_kit/model/TrangThaiChoNgoi.dart';
 import 'package:flutter_ui_kit/model/tang.dart';
 import 'package:flutter_ui_kit/model/tangJson.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/ve/banve.dart';
 import 'package:flutter_ui_kit/ve/banveXeNoSoDoCho.dart';
 import 'package:flutter_ui_kit/ve/banveghephu.dart';
@@ -77,7 +78,11 @@ class VeState extends State<Ve> {
   }
 
   void loadslve(String guidchuyendi) async {
-    slve = await ApiHelper.getSLVe(guidchuyendi);
+    try{
+      slve = await ApiHelper.getSLVe(guidchuyendi);
+    }catch(ex){
+      print(ex);
+    }
   }
 
   void loadThongTinKhachNgoi(String maChuyendi, guidChongoi) {
@@ -93,9 +98,7 @@ class VeState extends State<Ve> {
         value = chuyendiGanday.data.maChuyenDi;
         changeSodocho = chuyendiGanday.data.guidChuyenDi;
         print('changesodocho $changeSodocho');
-        LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(ApiHelper
-                .API_ChuyenDi +
-            'lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+        LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(chuyendiGanday.data.guidChuyenDi);
         lichsuChuyenDi = await LichSuChuyenDiFuture;
         loadTrangThaiChoNgoi(changeSodocho);
         loadchongoi();
@@ -658,7 +661,7 @@ class VeState extends State<Ve> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => banveXeNoSoDoCho(chuyendiGanday.data.guidLoTrinh, chuyendiGanday.data.guidXe)));
+                                builder: (context) => banveXeNoSoDoCho(chuyendiGanday.data.guidLoTrinh, changeSodocho)));
                       },
                       label: Text('BÁN VÉ',
                           style: TextStyle(
@@ -897,7 +900,7 @@ class VeState extends State<Ve> {
                                                                 onTap:
                                                                     () async {
                                                                   var resp = await ApiHelper.post(
-                                                                      ApiHelper
+                                                                      servicesAPI
                                                                               .API_DoiSoat +
                                                                           'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
                                                                       {
@@ -1368,7 +1371,7 @@ class VeState extends State<Ve> {
                                                                       onPressed:
                                                                           () async {
                                                                         var resp = await ApiHelper.post(
-                                                                            ApiHelper.API_DonHang +
+                                                                            servicesAPI.API_DonHang +
                                                                                 'thuc-hien-sua-thong-tin-hanh-khach',
                                                                             {
                                                                               'guidChoNgoi': data.guidChoNgoi,
@@ -1566,7 +1569,7 @@ class VeState extends State<Ve> {
                                                   FlatButton(
                                                     onPressed: () async {
                                                       var resp = await ApiHelper.post(
-                                                          ApiHelper
+                                                          servicesAPI
                                                                   .API_DoiSoat +
                                                               'thuc-hien-xac-nhan-khach-xuong-xe',
                                                           {

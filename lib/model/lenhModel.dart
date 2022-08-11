@@ -38,7 +38,7 @@ class DSLenh {
 }
 
 class Data {
-  List<Lenh> list;
+  List<LenhData> list;
   int totalCount;
   int groupCount;
   Null summary;
@@ -47,9 +47,9 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      list = <Lenh>[];
+      list = <LenhData>[];
       json['data'].forEach((v) {
-        list.add(new Lenh.fromJson(v));
+        list.add(new LenhData.fromJson(v));
       });
     }
     totalCount = json['totalCount'];
@@ -69,7 +69,7 @@ class Data {
   }
 }
 
-class Lenh {
+class LenhData {
   String guidLenh;
   String maLenh;
   String thoiGianXuatBenKeHoach;
@@ -82,7 +82,7 @@ class Lenh {
   String tenTrangThai;
   String maMauTrangThai;
 
-  Lenh(
+  LenhData(
       {this.guidLenh,
       this.maLenh,
       this.thoiGianXuatBenKeHoach,
@@ -95,7 +95,7 @@ class Lenh {
       this.tenTrangThai,
       this.maMauTrangThai});
 
-  Lenh.fromJson(Map<String, dynamic> json) {
+  LenhData.fromJson(Map<String, dynamic> json) {
     guidLenh = json['guidLenh'];
     maLenh = json['maLenh'];
     thoiGianXuatBenKeHoach = json['thoiGianXuatBenKeHoach'];

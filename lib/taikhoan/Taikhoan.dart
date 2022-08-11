@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_ui_kit/Login.dart';
+import 'package:flutter_ui_kit/checkAccount.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/Huyen.dart';
 import 'package:flutter_ui_kit/model/thongtincanhan.dart';
 import 'package:flutter_ui_kit/other/constant.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
 import 'package:flutter_ui_kit/other/imgConst.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/ApiHelper.dart';
 import '../model/Tinh.dart';
 import 'package:collection/collection.dart';
@@ -54,7 +57,7 @@ class TaikhoanState extends State<Taikhoan> {
   var huyenfuture;
   void Function(void Function()) setstatedialog;
   Huyen dataHuyen;
-  final imagePicker = ImagePicker();
+SharedPreferences prefs;
   // Future getImage() async {
   //   final image = await imagePicker.getImage(source: ImageSource.camera);
   //   setState(() {
@@ -67,20 +70,25 @@ class TaikhoanState extends State<Taikhoan> {
     // TODO: implement initState
 
     super.initState();
+  loadPic();
     loadInfo();
     // print('${infoMap.}');
   }
-
+void loadPic()async{
+   prefs = await SharedPreferences.getInstance();
+  imageitem =  XFile(prefs.getString(LoginHelper.Default.userToken.preferred_username));
+}
   void loadInfo() async {
+    
     datafuture =
-        ApiHelper.get(ApiHelper.API_LenhDienTu + 'lay-thong-tin-ca-nhan');
+        ApiHelper.get(servicesAPI.API_LenhDienTu + 'lay-thong-tin-ca-nhan');
     data = await datafuture;
     if (data != null) {
       tinh = '';
       idTinh = data['data']['idTinh'];
       print('ttttt ${data['data']['idTinh']}');
       tinhfuture = ApiHelper.getProvince(
-          ApiHelper.API_LenhDienTu + "lay-danh-sach-tinh");
+         );
       dataTinh = await tinhfuture;
       province = dataTinh.data;
       if (idTinh != null) {
@@ -92,7 +100,7 @@ class TaikhoanState extends State<Taikhoan> {
 
   void loadHuyen(bool checksetState) async {
     huyenfuture = ApiHelper.getDistrict(
-        ApiHelper.API_LenhDienTu + "lay-danh-sach-huyen?IdTinh=$idTinh");
+        idTinh);
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
@@ -155,7 +163,8 @@ class TaikhoanState extends State<Taikhoan> {
                                 size: 10,
                                 color: Colors.white,
                               ),
-                              onTap: () {
+                              onTap: ()async {
+                                
                                 return showDialog(
                                     context: context,
                                     builder: (context) {
@@ -189,8 +198,10 @@ class TaikhoanState extends State<Taikhoan> {
                                                       return;
                                                     }
 
+                                                    
+                                                    await prefs.setString(LoginHelper.Default.userToken.preferred_username, imageitem.toString());
                                                     setState(() {
-                                                      image.add(imageitem);
+                                                      
                                                     });
                                                   },
                                                 ),
@@ -215,10 +226,11 @@ class TaikhoanState extends State<Taikhoan> {
                                                     if (imageitem == null) {
                                                       return;
                                                     }
-                                                    // image.add(imageitem);
-                                                    setState(() {
-                                                      image.add(imageitem);
-                                                    });
+                                                    print(imageitem.path);
+                                                   await prefs.setString(LoginHelper.Default.userToken.preferred_username, imageitem.path.toString());
+                                                   setState(() {
+                                                     
+                                                   });
                                                   },
                                                 ),
                                               ]),
@@ -336,7 +348,7 @@ class TaikhoanState extends State<Taikhoan> {
                                       DateFormat('dd/MM/yyyy').format(datetemp);
                                   print(formattedDate);
                                   var res = await ApiHelper.post(
-                                      ApiHelper.API_LenhDienTu +
+                                      servicesAPI.API_LenhDienTu +
                                           'chinh-sua-thong-tin-ca-nhan',
                                       {
                                         'noiDung': '${formattedDate}',
@@ -417,7 +429,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                 if (formkey.currentState
                                                     .validate()) {
                                                   var res = await ApiHelper.post(
-                                                      ApiHelper.API_LenhDienTu +
+                                                      servicesAPI.API_LenhDienTu +
                                                           'chinh-sua-thong-tin-ca-nhan',
                                                       {
                                                         'noiDung':
@@ -498,7 +510,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                 if (formkey.currentState
                                                     .validate()) {
                                                   var res = await ApiHelper.post(
-                                                      ApiHelper.API_LenhDienTu +
+                                                      servicesAPI.API_LenhDienTu +
                                                           'chinh-sua-thong-tin-ca-nhan',
                                                       {
                                                         'noiDung':
@@ -693,6 +705,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                         }
                                                         return null;
                                                       },
+                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
                                                     )
                                                   ],
                                                 )),
@@ -721,7 +734,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                   if (formkey.currentState
                                                       .validate()) {
                                                     var res = await ApiHelper.post(
-                                                        ApiHelper
+                                                        servicesAPI
                                                                 .API_LenhDienTu +
                                                             'chinh-sua-dia-chi-ca-nhan',
                                                         Mappostdata);
@@ -816,11 +829,11 @@ class TaikhoanState extends State<Taikhoan> {
                                 borderRadius: BorderRadius.circular(20)),
                             onPressed: () async{
                               print('Đăng xuất');
-                              await storage.delete(key: 'token');
+                              await storage.write(key: 'token',value: 'delete');
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Login()));
+                                      builder: (context) => checkAccount()));
                             },
                             child: Text('ĐĂNG XUẤT',
                                 style: TextStyle(

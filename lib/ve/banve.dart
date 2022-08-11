@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/model/DSDiemXuong.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 import 'package:intl/intl.dart';
 import '../componentsFuture/bottomshetHK.dart';
@@ -384,7 +385,7 @@ class _banveState extends State<banve> {
                                   String money = lowPrice.text
                                       .replaceAll(RegExp('[^0-9]'), '');
                                   var resp = await ApiHelper.post(
-                                      ApiHelper.API_DonHang+'DonHang/thuc-hien-ban-ve-tai-app-lai-xe',
+                                      servicesAPI.API_DonHang+'DonHang/thuc-hien-ban-ve-tai-app-lai-xe',
                                       {
                                         'danhSachMaSoGhe': [widget.idghe],
                                         'email': '',

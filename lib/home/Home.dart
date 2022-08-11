@@ -5,6 +5,7 @@ import 'package:flutter_ui_kit/QRScanner/QRpage.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/helpers/LoginHelper.dart';
 import 'package:flutter_ui_kit/other/homeConstant.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../model/KhachTrenXe.dart';
 import '../model/LenhHienTai.dart';
@@ -37,14 +38,14 @@ class HomeState extends State<Home> {
 
   void loadLenhHienTai() async {
     lenhHienTaiFuture = ApiHelper.getLenhHienTai(
-        ApiHelper.API_LenhDienTu+'lay-lenh-hien-tai-cua-lai-xe');
+       );
     lenhhientai = await lenhHienTaiFuture;
 
     if(lenhhientai.data.maLenh != null){
       convertDateTime();
     if (lenhhientai != null) {
       khachTrenXeFuture = ApiHelper.getKhachTrenXe(
-          ApiHelper.API_ThongTin+'QuanLyThongTin/lay-thong-tin-chuyen-di-theo-lenh?idLenhDienTu=${lenhhientai.data.idLenh}');
+         lenhhientai.data.idLenh);
     }
     }
     else{

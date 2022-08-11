@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_ui_kit/extensions/extensions.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/DSTuyenVanChuyenTheoNgay.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
+import 'package:flutter_ui_kit/uikit.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -88,7 +91,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
       },
     };
     DSLenhFuture = ApiHelper.postDsLenh(
-        ApiHelper.API_LenhDienTu + 'lay-danh-sach-tat-ca-lenh-cua-lai-xe',
+        servicesAPI.API_LenhDienTu + 'lay-danh-sach-tat-ca-lenh-cua-lai-xe',
         postdata);
     maplenh = await DSLenhFuture;
     setState(() {});
@@ -142,7 +145,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                         left: widthScreen * 0.32),
                                     child: Text('Lọc dữ liệu',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto Medium',
                                             fontSize: 18)),
                                   ),
                                   Expanded(
@@ -155,7 +158,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                         child: Text('Hủy',
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: 15)),
+                                                fontFamily: 'Roboto Regular',
+                                                fontSize: 14)),
                                       ),
                                     ),
                                   ),
@@ -308,6 +312,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                 child: Text(
                                   'XÁC NHẬN',
                                   style: TextStyle(
+                                    fontFamily: 'Roboto Medium',
+                                    fontSize: 14,
+                                    letterSpacing: 1.25,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -331,18 +338,23 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Lỗi'),
+              child: Text(
+                'Lỗi',
+                style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14),
+              ),
             );
           } else if (snapshot.hasData) {
             DSLenh getdata = snapshot.data;
             Data datatemp = getdata.data;
-            List<Lenh> listdata = datatemp.list;
+            List<LenhData> listdata = datatemp.list;
             // print('tttttt: ${listdata[0].bienKiemSoat}');
             print(datatemp.list == null);
-            if (datatemp.list.length ==0) {
+            if (datatemp.list.length == 0) {
               print('aheeeeeeee');
               return Center(
-                child: Text('Không có dữ liệu'),
+                child: Text('Không có dữ liệu',
+                    style:
+                        TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
               );
             }
             return ListView.builder(
@@ -362,7 +374,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 });
           }
           return Center(
-            child: Text('Không có dữ liệu'),
+            child: Text('Không có dữ liệu',
+                style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
           );
         }),
       ),
@@ -370,7 +383,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
   }
 
   Container itemWhenNotAccepted(
-      String timeHieuLuc, List<Lenh> listdata, int index) {
+      String timeHieuLuc, List<LenhData> listdata, int index) {
     return Container(
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -401,7 +414,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                   Text(
                     '${timeHieuLuc}',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto Medium',
+                      fontSize: 14,
                     ),
                   ),
                 ],
@@ -422,7 +436,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 TextSpan(
                     text: '${listdata[index].bienKiemSoat}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black)),
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14,
+                        color: Colors.black)),
                 TextSpan(
                     text: '(',
                     style: TextStyle(
@@ -431,7 +447,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 TextSpan(
                     text: '${listdata[index].maLenh}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.blue)),
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14,
+                        color: Colors.blue)),
                 TextSpan(
                     text: ')',
                     style: TextStyle(
@@ -452,7 +470,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenTuyen}\n(${listdata[index].maTuyen})',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontFamily: 'Roboto Medium',
+                  fontSize: 14,
+                ),
               )
             ],
           ),
@@ -468,7 +489,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenBenXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 14),
               )
             ],
           ),
@@ -484,7 +505,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenLaiXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 14),
               )
             ],
           ),
@@ -501,10 +522,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               Text(
                 '${listdata[index].tenTrangThai}',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: listdata[index].idTrangThai == 6
-                        ? Colors.red
-                        : Colors.orange),
+                    fontFamily: 'Roboto Medium',
+                    fontSize: 14,
+                    color: HexColor.fromHex(listdata[index].maMauTrangThai)),
               )
             ],
           ),
@@ -516,8 +536,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
     );
   }
 
-  Container itemWhenAccepted(String timeHieuLuc, List<Lenh> listdata, int index,
-      BuildContext context, double widthScreen) {
+  Container itemWhenAccepted(String timeHieuLuc, List<LenhData> listdata,
+      int index, BuildContext context, double widthScreen) {
     return Container(
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -545,12 +565,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    '${timeHieuLuc}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text('${timeHieuLuc}',
+                      style:
+                          TextStyle(fontFamily: 'Roboto Medium', fontSize: 14)),
                 ],
               ),
             ],
@@ -569,7 +586,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 TextSpan(
                     text: '${listdata[index].bienKiemSoat}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black)),
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14,
+                        color: Colors.black)),
                 TextSpan(
                     text: '(',
                     style: TextStyle(
@@ -578,7 +597,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                 TextSpan(
                     text: '${listdata[index].maLenh}',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.blue)),
+                        fontFamily: 'Roboto Medium',
+                        fontSize: 14,
+                        color: Colors.blue)),
                 TextSpan(
                     text: ')',
                     style: TextStyle(
@@ -599,7 +620,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenTuyen}\n(${listdata[index].maTuyen})',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 14),
               )
             ],
           ),
@@ -615,7 +636,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenBenXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 14),
               )
             ],
           ),
@@ -631,7 +652,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
               Text(
                 '${listdata[index].tenLaiXe}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 14),
               )
             ],
           ),
@@ -648,7 +669,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               Text(
                 '${listdata[index].tenTrangThai}',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.orange),
+                    fontFamily: 'Roboto Medium',
+                    fontSize: 14,
+                    color: HexColor.fromHex(listdata[index].maMauTrangThai)),
               )
             ],
           ),
@@ -694,7 +717,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                               left: widthScreen * 0.32),
                                           child: Text('Từ chối lệnh',
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Roboto Medium',
                                                   fontSize: 18)),
                                         ),
                                         Expanded(
@@ -706,8 +729,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                               },
                                               child: Text('Hủy',
                                                   style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Regular',
                                                       color: Colors.red,
-                                                      fontSize: 15)),
+                                                      fontSize: 14)),
                                             ),
                                           ),
                                         ),
@@ -718,7 +743,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                     ),
                                     Row(children: [
                                       Text('Mã số lệnh: ',
-                                          style: TextStyle(fontSize: 13)),
+                                          style: TextStyle(
+                                              fontFamily: 'Roboto Regular',
+                                              fontSize: 14)),
                                       Text('${listdata[index].maLenh}',
                                           style: TextStyle(fontSize: 16)),
                                     ]),
@@ -737,13 +764,13 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 5,
+                                      height: 20,
                                     ),
                                     RaisedButton(
                                       onPressed: () async {
                                         if (formKey.currentState.validate()) {
                                           var resp = await ApiHelper.post(
-                                              ApiHelper.API_LenhDienTu +
+                                              servicesAPI.API_LenhDienTu +
                                                   'lai-xe-huy-nhan-lenh',
                                               {
                                                 'guidLenh':
@@ -766,13 +793,21 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                                   false, // user must tap button!
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: const Text('Lỗi'),
+                                                  title: const Text('Lỗi',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Roboto Regular',
+                                                          fontSize: 14)),
                                                   content:
                                                       Text(resp['message']),
                                                   actions: <Widget>[
                                                     TextButton(
-                                                      child:
-                                                          const Text('Đã hiểu'),
+                                                      child: const Text(
+                                                          'Đã hiểu',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Roboto Regular',
+                                                              fontSize: 14)),
                                                       onPressed: () {
                                                         Navigator.of(context)
                                                             .pop();
@@ -788,8 +823,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                       child: Text(
                                         'XÁC NHẬN',
                                         style: TextStyle(
-                                          color: Colors.white,
-                                        ),
+                                            color: Colors.white,
+                                            fontFamily: 'Roboto Medium',
+                                            fontSize: 14,
+                                            letterSpacing: 1.25),
                                       ),
                                       color: Colors.blue,
                                     )
@@ -800,7 +837,12 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                           });
                         });
                   },
-                  child: Text('TỪ CHỐI', style: TextStyle(color: Colors.red)),
+                  child: Text('TỪ CHỐI',
+                      style: TextStyle(
+                          fontFamily: 'Roboto Medium',
+                          fontSize: 14,
+                          letterSpacing: 1.25,
+                          color: Colors.red)),
                   height: 18,
                   // color: Colors.black,
                 ),
@@ -815,14 +857,20 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                           builder: (context) {
                             return AlertDialog(
                               title: Text(
-                                  'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maLenh} không?'),
+                                  'Bạn có chắc chắn muốn tiếp nhận lệnh điện tử ${listdata[index].maLenh} không?',
+                                  style: TextStyle(
+                                      fontFamily: 'Roboto Regular',
+                                      fontSize: 14)),
                               actions: [
                                 TextButton(
                                   onPressed: () =>
                                       Navigator.pop(context, 'Hủy'),
                                   child: const Text(
                                     'Hủy',
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(
+                                        fontFamily: 'Roboto Regular',
+                                        fontSize: 14,
+                                        color: Colors.red),
                                   ),
                                 ),
                                 TextButton(
@@ -830,7 +878,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                     // print(listdata[index].guidLenh);
                                     Navigator.pop(context);
                                     var resp = await ApiHelper.post(
-                                        ApiHelper.API_LenhDienTu +
+                                        servicesAPI.API_LenhDienTu +
                                             'lai-xe-tiep-nhan-lenh',
                                         {
                                           'guidLenh':
@@ -838,7 +886,9 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                           'toaDo': ''
                                         });
                                     if (resp['status']) {
-                                      loadDSLenh();
+                                      // loadDSLenh();
+                                       Navigator.of(context).popUntil((route) => route.isFirst);
+                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(2)));
                                     } else {
                                       showDialog(
                                           context: context,
@@ -854,7 +904,10 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                                   child: const Text(
                                                     'Đã hiểu',
                                                     style: TextStyle(
-                                                        color: Colors.blue),
+                                                        color: Colors.blue,
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14),
                                                   ),
                                                 ),
                                               ],
@@ -862,14 +915,21 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                           });
                                     }
                                   },
-                                  child: const Text('Xác nhận'),
+                                  child: const Text('Xác nhận',
+                                      style: TextStyle(
+                                          fontFamily: 'Roboto Regular',
+                                          fontSize: 14)),
                                 ),
                               ],
                             );
                           });
                     },
-                    child:
-                        Text('TIẾP NHẬN', style: TextStyle(color: Colors.blue)),
+                    child: Text('TIẾP NHẬN',
+                        style: TextStyle(
+                            fontFamily: 'Roboto Medium',
+                            fontSize: 14,
+                            letterSpacing: 1.25,
+                            color: Colors.blue)),
                     height: 18)
               ],
             ),

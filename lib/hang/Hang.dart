@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/chuyendiList.dart';
+import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../model/DSHHTheoChuyenDi.dart';
@@ -73,7 +74,8 @@ class HangState extends State<Hang> {
 
   void loadchuyendiganday() async {
     try {
-      chuyendigandayFuture = ApiHelper.getchuyendiganday();
+      chuyendigandayFuture = ApiHelper.getchuyendiganday(
+          );
       chuyendiGanday = await chuyendigandayFuture;
       if (chuyendiGanday.status) {
         setState(() {
@@ -95,8 +97,7 @@ class HangState extends State<Hang> {
   }
 
   void loadDSTrangThai() async {
-    dsTrangThaiFuture = ApiHelper.getDSTrangThai(ApiHelper.API_HangHoa +
-        'HangHoa/lay-danh-sach-trang-thai-van-chuyen?idChuyenDi=${chooseChuyenDi}');
+    dsTrangThaiFuture = ApiHelper.getDSTrangThai(chooseChuyenDi);
     dsTrangThai = await dsTrangThaiFuture;
     setState(() {
       for (int i = 0; i < dsTrangThai.data.length; i++) {
@@ -116,18 +117,21 @@ class HangState extends State<Hang> {
   }
 
   void loadLichSuChuyenDi() async {
-    LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(
-        'http://113.176.29.57:19666/api/ChuyenDi/lay-danh-sach-lich-su-chuyen-di-cua-lai-xe?GuidChuyenDi=${chuyendiGanday.data.guidChuyenDi}');
+    LichSuChuyenDiFuture =
+        ApiHelper.getLichSuChuyenDi(chuyendiGanday.data.guidChuyenDi);
     lichsuChuyenDi = await LichSuChuyenDiFuture;
   }
 
   void loadshh(String vl, String s) async {
     tongtien = 0;
-    dshhTheoChuyenDiFuture = ApiHelper.getDSHHTheoChuyenDi(
-        'http://113.176.29.57:19666/api/HangHoa/lay-danh-sach-hang-hoa-theo-chuyen-di?idChuyenDi=${vl}&timKiem=${s}');
-    dshhTheoChuyenDi = await dshhTheoChuyenDiFuture;
-    for (int k = 0; k < dshhTheoChuyenDi.data.length; k++) {
-      tongtien += dshhTheoChuyenDi.data[k].donGia;
+    try {
+      dshhTheoChuyenDiFuture = ApiHelper.getDSHHTheoChuyenDi(vl,s);
+      dshhTheoChuyenDi = await dshhTheoChuyenDiFuture;
+      for (int k = 0; k < dshhTheoChuyenDi.data.length; k++) {
+        tongtien += dshhTheoChuyenDi.data[k].donGia;
+      }
+    } catch (ex) {
+      // trangthaiCount=0
     }
   }
 
@@ -221,15 +225,15 @@ class HangState extends State<Hang> {
                                             children: [
                                               itemBottomSheet(
                                                   Colors.orange,
-                                                  'Chưa giao: ',
+                                                  '${dsTrangThai.data[0].tenTrangThai}: ',
                                                   '${dsTrangThai.data[0].soLuong}'),
                                               itemBottomSheet(
                                                   Colors.green,
-                                                  'Đã giao: ',
+                                                  '${dsTrangThai.data[1].tenTrangThai}: ',
                                                   '${dsTrangThai.data[1].soLuong}'),
                                               itemBottomSheet(
                                                   Colors.red,
-                                                  'Hủy: ',
+                                                  '${dsTrangThai.data[2].tenTrangThai}: ',
                                                   '${dsTrangThai.data[2].soLuong}'),
                                             ],
                                           ))
@@ -346,7 +350,7 @@ class HangState extends State<Hang> {
                                                                   ' ${lichsulist[index].maChuyenDi}',
                                                                   style: TextStyle(
                                                                       fontFamily:
-                                                                          "Roboto Medium",
+                                                                          "Roboto Regular",
                                                                       fontSize:
                                                                           14,
                                                                       color: choose ==
@@ -357,7 +361,7 @@ class HangState extends State<Hang> {
                                                                 Text(' | ',
                                                                     style: TextStyle(
                                                                         fontFamily:
-                                                                            "Roboto Medium",
+                                                                            "Roboto Regular",
                                                                         fontSize:
                                                                             14,
                                                                         color: choose ==
@@ -368,7 +372,7 @@ class HangState extends State<Hang> {
                                                                     '$timeHieuLuc',
                                                                     style: TextStyle(
                                                                         fontFamily:
-                                                                            "Roboto Medium",
+                                                                            "Roboto Regular",
                                                                         fontSize:
                                                                             14,
                                                                         color: choose ==
@@ -407,6 +411,7 @@ class HangState extends State<Hang> {
                               trangthaiCount = 0;
                             });
                             showDSHangTheoChuyenDi();
+                            loadDSTrangThai();
                           });
                         },
                         child: Container(
@@ -540,10 +545,10 @@ class HangState extends State<Hang> {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          print('image');
+                                                          print('imageeeee');
                                                         },
                                                         child: Image.asset(
-                                                          'asset/images/11.jpg',
+                                                          'asset/images/logo.png',
                                                           width:
                                                               imageItemListWidth,
                                                           height: 80,
@@ -847,7 +852,7 @@ class HangState extends State<Hang> {
                                                                                               height: 28,
                                                                                               child: ElevatedButton(
                                                                                                   onPressed: () async {
-                                                                                                    var res = await ApiHelper.postMultipart('http://113.176.29.57:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
+                                                                                                    var res = await ApiHelper.postMultipart(servicesAPI.API_HangHoa + 'HangHoa/thuc-hien-giao-tra-hang-hoa', {
                                                                                                       'idNhatKy': '${list[index].idNhatKy}',
                                                                                                       'toaDo': ''
                                                                                                     });
@@ -1020,7 +1025,7 @@ class HangState extends State<Hang> {
                           child: Center(
                               child: Text(
                             '${trangthaiCount}',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(color: Colors.white),
                           )),
                         ),
                         onTap: () {
@@ -1038,13 +1043,15 @@ class HangState extends State<Hang> {
                                           children: [
                                             itemBottomSheet(
                                                 Colors.orange,
-                                                'Chưa giao: ',
+                                                '${dsTrangThai.data[0].tenTrangThai}: ',
                                                 '${dsTrangThai.data[0].soLuong}'),
                                             itemBottomSheet(
                                                 Colors.green,
-                                                'Đã giao: ',
+                                                '${dsTrangThai.data[1].tenTrangThai}: ',
                                                 '${dsTrangThai.data[1].soLuong}'),
-                                            itemBottomSheet(Colors.red, 'Hủy: ',
+                                            itemBottomSheet(
+                                                Colors.red,
+                                                '${dsTrangThai.data[2].tenTrangThai}: ',
                                                 '${dsTrangThai.data[2].soLuong}'),
                                           ],
                                         ))
@@ -1167,7 +1174,7 @@ class HangState extends State<Hang> {
                                                                     ' ${lichsulist[index].maChuyenDi}',
                                                                     style: TextStyle(
                                                                         fontFamily:
-                                                                            "Roboto Medium",
+                                                                            "Roboto Regular",
                                                                         fontSize:
                                                                             14,
                                                                         color: choose ==
@@ -1178,7 +1185,7 @@ class HangState extends State<Hang> {
                                                                   Text(' | ',
                                                                       style: TextStyle(
                                                                           fontFamily:
-                                                                              "Roboto Medium",
+                                                                              "Roboto Regular",
                                                                           fontSize:
                                                                               14,
                                                                           color: choose == index
@@ -1188,7 +1195,7 @@ class HangState extends State<Hang> {
                                                                       '$timeHieuLuc',
                                                                       style: TextStyle(
                                                                           fontFamily:
-                                                                              "Roboto Medium",
+                                                                              "Roboto Regular",
                                                                           fontSize:
                                                                               14,
                                                                           color: choose == index
@@ -1226,6 +1233,7 @@ class HangState extends State<Hang> {
                                 trangthaiCount = 0;
                               });
                               showDSHangTheoChuyenDi();
+                              loadDSTrangThai();
                             });
                           },
                           child: Container(
@@ -1366,7 +1374,7 @@ class HangState extends State<Hang> {
                                                             print('image');
                                                           },
                                                           child: Image.asset(
-                                                            'asset/images/11.jpg',
+                                                            'asset/images/logo.png',
                                                             width:
                                                                 imageItemListWidth,
                                                             height: 80,
@@ -1654,7 +1662,7 @@ class HangState extends State<Hang> {
                                                                                                 height: 28,
                                                                                                 child: ElevatedButton(
                                                                                                     onPressed: () async {
-                                                                                                      var res = await ApiHelper.postMultipart('http://113.176.29.57:19666/api/HangHoa/thuc-hien-giao-tra-hang-hoa', {
+                                                                                                      var res = await ApiHelper.postMultipart(servicesAPI.API_HangHoa + 'HangHoa/thuc-hien-giao-tra-hang-hoa', {
                                                                                                         'idNhatKy': '${list[index].idNhatKy}',
                                                                                                         'toaDo': ''
                                                                                                       });
