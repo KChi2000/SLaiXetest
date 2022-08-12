@@ -797,7 +797,7 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                                       style: TextStyle(
                                                           fontFamily:
                                                               'Roboto Regular',
-                                                          fontSize: 14)),
+                                                          fontSize: 18,color: Colors.red)),
                                                   content:
                                                       Text(resp['message']),
                                                   actions: <Widget>[

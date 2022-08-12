@@ -12,7 +12,7 @@ import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 import 'package:flutter_ui_kit/ve/banvethanhcong.dart';
 import 'package:intl/intl.dart';
-import '../componentsFuture/bottomshetHK.dart';
+
 import '../model/DSDiemxuongLotrinh.dart';
 import '../model/DonGiaTheoTuyen.dart';
 
@@ -410,11 +410,11 @@ class _banveState extends State<banveghephu> {
                                             false, // user must tap button!
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: const Text('Lỗi'),
-                                            content: Text('${resp['message']}'),
+                                            title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 18,color: Colors.red)),
+                                            content: Text('${resp['message']}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                             actions: <Widget>[
                                               TextButton(
-                                                child: const Text('Đã hiểu'),
+                                                child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },

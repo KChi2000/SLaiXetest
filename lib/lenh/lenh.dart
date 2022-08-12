@@ -12,6 +12,7 @@ import 'package:flutter_ui_kit/model/KhachTrenXe.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../components/chooseImage.dart';
 import '../lenh/chuyendoilenh.dart';
 import '../lenh/lenhvanchuyenList.dart';
 import '../model/lenhModel.dart';
@@ -48,12 +49,11 @@ class LenhState extends State<Lenh> {
   }
 
   void loadChiTietLenh() async {
-  
-
     convertDateTime();
     print('object ${widget.chitietlenh.data.guidLenh}');
     if (widget.chitietlenh != null) {
-      khachTrenXeFuture = ApiHelper.getKhachTrenXe(widget.chitietlenh.data.guidLenh);
+      khachTrenXeFuture =
+          ApiHelper.getKhachTrenXe(widget.chitietlenh.data.guidLenh);
     }
     setState(() {});
     print(' chi tiet lenh ${widget.chitietlenh.data.maTuyen}');
@@ -66,7 +66,7 @@ class LenhState extends State<Lenh> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(
             appbarTitle,
@@ -117,8 +117,8 @@ class LenhState extends State<Lenh> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      AnhLenh(widget.chitietlenh.data.guidLenh)));
+                                  builder: (context) => AnhLenh(
+                                      widget.chitietlenh.data.guidLenh)));
                         },
                         child: Text(
                           '${widget.chitietlenh.data.maLenh}',
@@ -149,18 +149,18 @@ class LenhState extends State<Lenh> {
                       SizedBox(
                         height: 10,
                       ),
-                      itemRowLenh('Mã tuyến', '${widget.chitietlenh.data.maTuyen}',
-                          valueTextColor),
+                      itemRowLenh('Mã tuyến',
+                          '${widget.chitietlenh.data.maTuyen}', valueTextColor),
                       SizedBox(
                         height: spacerItem,
                       ),
-                      itemRowLenh('Tên bến đi', '${widget.chitietlenh.data.benDi}',
-                          valueTextColor),
+                      itemRowLenh('Tên bến đi',
+                          '${widget.chitietlenh.data.benDi}', valueTextColor),
                       SizedBox(
                         height: spacerItem,
                       ),
-                      itemRowLenh('Tên bến đến', '${widget.chitietlenh.data.benDen}',
-                          valueTextColor),
+                      itemRowLenh('Tên bến đến',
+                          '${widget.chitietlenh.data.benDen}', valueTextColor),
                       SizedBox(
                         height: spacerItem,
                       ),
@@ -221,8 +221,8 @@ class LenhState extends State<Lenh> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    chuyndoilenh(widget.chitietlenh.data.guidLenh)));
+                                builder: (context) => chuyndoilenh(
+                                    widget.chitietlenh.data.guidLenh)));
                       },
                       label: 'Chuyển đổi lệnh',
                       child: Icon(
@@ -277,7 +277,8 @@ class LenhState extends State<Lenh> {
                                                 fontFamily: 'Roboto Regular',
                                                 fontSize: 12,
                                               )),
-                                          Text('${widget.chitietlenh.data.maLenh}',
+                                          Text(
+                                              '${widget.chitietlenh.data.maLenh}',
                                               style: TextStyle(
                                                 fontFamily: 'Roboto Regular',
                                                 fontSize: 16,
@@ -312,7 +313,7 @@ class LenhState extends State<Lenh> {
                                                     fontSize: 14,
                                                   )),
                                               TextSpan(
-                                                  text: '$count/3',
+                                                  text: '${image.length}/3',
                                                   style: TextStyle(
                                                     fontFamily:
                                                         'Roboto Regular',
@@ -336,7 +337,6 @@ class LenhState extends State<Lenh> {
                                                       setState(
                                                         () {
                                                           image.remove(e);
-                                                          count = image.length;
                                                         },
                                                       );
                                                     });
@@ -351,93 +351,12 @@ class LenhState extends State<Lenh> {
                                                           SizedBox(
                                                             height: 10,
                                                           ),
-                                                          GestureDetector(
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topLeft,
-                                                              child:
-                                                                  DottedBorder(
-                                                                child:
-                                                                    Container(
-                                                                  height: 55,
-                                                                  width: 50,
-                                                                  child: Center(
-                                                                      child: SvgPicture
-                                                                          .asset(
-                                                                    'asset/icons/camera-plus.svg',
-                                                                    color: Colors
-                                                                        .black54,
-                                                                  )),
-                                                                ),
-                                                                color: Colors
-                                                                    .black54,
-                                                                strokeWidth: 1,
-                                                                radius: Radius
-                                                                    .circular(
-                                                                        10),
-                                                              ),
-                                                            ),
-                                                            onTap: () {
-                                                              return showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return AlertDialog(
-                                                                      content:
-                                                                          Container(
-                                                                        width:
-                                                                            60,
-                                                                        child: Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              GestureDetector(
-                                                                                child: Text('Chụp ảnh mới', style: TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
-                                                                                onTap: () async {
-                                                                                  print('chọn chụp ảnh');
-                                                                                  Navigator.pop(context);
-                                                                                  imageitem = await ImagePicker().pickImage(source: ImageSource.camera);
-                                                                                  if (imageitem == null) {
-                                                                                    return;
-                                                                                  }
-
-                                                                                  setState(() {
-                                                                                    image.add(imageitem);
-                                                                                    count = image.length;
-                                                                                  });
-                                                                                  print('count: $count');
-                                                                                },
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 20,
-                                                                              ),
-                                                                              GestureDetector(
-                                                                                child: Text('Chọn ảnh', style: TextStyle(fontSize: 14, fontFamily: 'Roboto Regular')),
-                                                                                onTap: () async {
-                                                                                  print('chọn ảnh');
-                                                                                  Navigator.pop(context);
-                                                                                  imageitem = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                                                                  if (imageitem == null) {
-                                                                                    return;
-                                                                                  }
-                                                                                  // image.add(imageitem);
-                                                                                  setState(() {
-                                                                                    image.add(imageitem);
-                                                                                    count = image.length;
-                                                                                  });
-                                                                                  print('count: $count');
-                                                                                },
-                                                                              ),
-                                                                            ]),
-                                                                      ),
-                                                                    );
-                                                                  });
-                                                            },
-                                                          ),
+                                                          chooseImage(
+                                                              50,
+                                                              55,
+                                                              imageitem,
+                                                              image,
+                                                              setState)
                                                         ],
                                                       )
                                                     : Text(''),
@@ -446,13 +365,15 @@ class LenhState extends State<Lenh> {
                                           ),
                                         ),
                                         RaisedButton(
-                                          onPressed: ()async {
+                                          onPressed: () async {
                                             if (formkey.currentState
                                                 .validate()) {
-                                              var resp = await ApiHelper.postMultipart(
-                                                  servicesAPI.API_LenhDienTu +
-                                                      'lai-xe-dung-hanh-trinh',
-                                                  {
+                                              var resp =
+                                                  await ApiHelper.postMultipart(
+                                                      servicesAPI
+                                                              .API_LenhDienTu +
+                                                          'lai-xe-dung-hanh-trinh',
+                                                      {
                                                     'guidLenh':
                                                         '${widget.chitietlenh.data.guidLenh}',
                                                     'lyDo':
@@ -465,9 +386,10 @@ class LenhState extends State<Lenh> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            dunglenhthanhcong(
-                                                                widget.chitietlenh.data
-                                                                    .tenDoanhNghiep)));
+                                                            dunglenhthanhcong(widget
+                                                                .chitietlenh
+                                                                .data
+                                                                .tenDoanhNghiep)));
                                               } else {
                                                 Navigator.pop(context);
                                                 showDialog(
@@ -479,7 +401,7 @@ class LenhState extends State<Lenh> {
                                                     return AlertDialog(
                                                       title: const Text('Lỗi',
                                                           style: TextStyle(
-                                                              fontSize: 14,
+                                                              fontSize: 18,color: Colors.red,
                                                               fontFamily:
                                                                   'Roboto Regular')),
                                                       content: Text(
@@ -587,143 +509,3 @@ class LenhState extends State<Lenh> {
 }
 
 
-
-
-
-
-
-
-
-
-//  Row(
-//                                         children: [
-//                                           Stack(
-//                                             children: [
-//                                               Container(
-//                                                 padding: EdgeInsets.all(10),
-//                                                 child: Container(
-//                                                   height: 60,
-//                                                   width: 50,
-//                                                   child: Image.asset(
-//                                                     'asset/images/6.jpg',
-//                                                     width: 60,
-//                                                     height: 50,
-//                                                     fit: BoxFit.cover,
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                               Positioned(
-//                                                 bottom: 45,
-//                                                 left: 35,
-//                                                 child: IconButton(
-//                                                   icon: SvgPicture.asset(
-//                                                     'asset/icons/cancel.svg',
-//                                                     width: 20,
-//                                                     height: 20,
-//                                                   ),
-//                                                   onPressed: () {},
-//                                                 ),
-//                                               )
-//                                             ],
-//                                           ),
-//                                           itemImage(),
-//                                           SizedBox(
-//                                             width: 10,
-//                                           ),
-//                                           Align(
-//                                             alignment: Alignment.topLeft,
-//                                             child: DottedBorder(
-//                                               child: GestureDetector(
-//                                                 child: Container(
-//                                                   height: 55,
-//                                                   width: 50,
-//                                                   child: Center(
-//                                                       child: SvgPicture.asset(
-//                                                     'asset/icons/camera-plus.svg',
-//                                                     color: Colors.black54,
-//                                                   )),
-//                                                 ),
-//                                                 onTap: () {
-//                                                   return showDialog(
-//                                                       context: context,
-//                                                       builder: (context) {
-//                                                         return AlertDialog(
-//                                                           content: Container(
-//                                                             width: 60,
-//                                                             child: Column(
-//                                                                 mainAxisSize:
-//                                                                     MainAxisSize
-//                                                                         .min,
-//                                                                 mainAxisAlignment:
-//                                                                     MainAxisAlignment
-//                                                                         .spaceBetween,
-//                                                                 crossAxisAlignment:
-//                                                                     CrossAxisAlignment
-//                                                                         .start,
-//                                                                 children: [
-//                                                                   GestureDetector(
-//                                                                     child: Text(
-//                                                                         'Chụp ảnh mới'),
-//                                                                     onTap:
-//                                                                         () async {
-//                                                                       print(
-//                                                                           'chọn chụp ảnh');
-//                                                                       Navigator.pop(
-//                                                                           context);
-//                                                                    imageitem=   await ImagePicker().pickImage(
-//                                                                           source:
-//                                                                               ImageSource.camera);
-//                                                                                if (imageitem ==
-//                                                                           null) {
-//                                                                         return;
-//                                                                       }
-                                                                     
-//                                                                       setState(
-//                                                                           () {
-//                                                                         image.add(imageitem);
-//                                                                         count = image.length;
-//                                                                       });
-//                                                                       print('count: $count');
-//                                                                     },
-//                                                                   ),
-//                                                                   SizedBox(
-//                                                                     height: 20,
-//                                                                   ),
-//                                                                   GestureDetector(
-//                                                                     child: Text(
-//                                                                         'Chọn ảnh'),
-//                                                                     onTap:
-//                                                                         () async {
-//                                                                       print(
-//                                                                           'chọn ảnh');
-//                                                                       Navigator.pop(
-//                                                                           context);
-//                                                                       imageitem =
-//                                                                           await ImagePicker()
-//                                                                               .pickImage(source: ImageSource.gallery);
-//                                                                       if (imageitem ==
-//                                                                           null) {
-//                                                                         return;
-//                                                                       }
-//                                                                       // image.add(imageitem);
-//                                                                       setState(
-//                                                                           () {
-//                                                                         image.add(imageitem);
-//                                                                         count = image.length;
-//                                                                       });
-//                                                                       print('count: $count');
-//                                                                     },
-//                                                                   ),
-//                                                                 ]),
-//                                                           ),
-//                                                         );
-//                                                       });
-//                                                 },
-//                                               ),
-//                                               color: Colors.black54,
-//                                               strokeWidth: 1,
-//                                               radius: Radius.circular(10),
-//                                             ),
-//                                           ),
-//                                         ],
-//                                       ),

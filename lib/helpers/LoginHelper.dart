@@ -158,7 +158,7 @@ var decoded = base64Url.decode("$b64");
     userToken.preferred_username = tokenParsed["preferred_username"];
     userToken.name = tokenParsed["name"];
     userToken.given_name = tokenParsed["given_name"];
-    
+    userToken.exp = tokenParsed['exp'];
     // ngoài thông tin chung, có thể bổ sung thuộc tính vào class UserTokenModel và lấy thêm.
   }
 }
@@ -171,7 +171,8 @@ class UserTokenModel {
   String given_name;
   String name;
   String preferred_username;
-  UserTokenModel({this.GuidDoanhNghiep,this.TenDoanhNghiep,this.ID_BenXeSuDung,this.SuDungDichVu,this.given_name,this.name,this.preferred_username});
+  int exp;
+  UserTokenModel({this.GuidDoanhNghiep,this.TenDoanhNghiep,this.ID_BenXeSuDung,this.SuDungDichVu,this.given_name,this.name,this.preferred_username,this.exp});
  UserTokenModel.fromJson(Map<String, dynamic> json) {
     GuidDoanhNghiep = json['GuidDoanhNghiep'];
     TenDoanhNghiep = json['TenDoanhNghiep'];
@@ -180,6 +181,7 @@ class UserTokenModel {
     given_name = json['given_name'];
     name = json['name'];
     preferred_username = json['preferred_username'];
+    exp =json['exp'];
   }
   Map<String,dynamic> toJson(){
     final Map<String,dynamic> data = new Map<String,dynamic>();
@@ -190,6 +192,7 @@ class UserTokenModel {
     data['given_name'] = this.given_name;
     data['name'] = this.name;
     data['preferred_username'] = this.preferred_username;
+    data['exp'] = this.exp;
     return data;
   }
  

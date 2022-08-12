@@ -829,7 +829,7 @@ void loadPic()async{
                                 borderRadius: BorderRadius.circular(20)),
                             onPressed: () async{
                               print('Đăng xuất');
-                              await storage.write(key: 'token',value: 'delete');
+                              await storage.deleteAll();
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(

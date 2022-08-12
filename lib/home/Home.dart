@@ -37,7 +37,8 @@ class HomeState extends State<Home> {
   }
 
   void loadLenhHienTai() async {
-    lenhHienTaiFuture = ApiHelper.getLenhHienTai(
+    try{
+      lenhHienTaiFuture = ApiHelper.getLenhHienTai(
        );
     lenhhientai = await lenhHienTaiFuture;
 
@@ -52,6 +53,11 @@ class HomeState extends State<Home> {
       checklenh = 'no data';
     }
     setState(() {});
+    }catch(ex){
+      setState(() {
+        checklenh = 'no data';
+      });
+    }
   }
 
   void convertDateTime() {
@@ -124,6 +130,13 @@ class HomeState extends State<Home> {
                           ))),
                   onTap: ()async {
                   result= await  Navigator.push(context, MaterialPageRoute(builder: (context)=> QRpage()));
+                  if(result.code != null || !result.code.isEmpty){
+                    ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(content: Text('aaaaaaaaaaaaaa'), actions: [
+                      TextButton(onPressed: (){
+                        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                      }, child: Text('dismiss'))
+                  ]));
+                  }
                   print(result.code);
                   },
                 )

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -5,9 +6,11 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_ui_kit/Login.dart';
+import 'package:flutter_ui_kit/main.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:time_span/time_span.dart';
 
 import 'helpers/LoginHelper.dart';
 
@@ -17,16 +20,17 @@ class checkAccount extends StatefulWidget {
   @override
   State<checkAccount> createState() => _checkAccountState();
 }
-
+ final storage = new FlutterSecureStorage();
 class _checkAccountState extends State<checkAccount> {
-  final storage = new FlutterSecureStorage();
+ 
   var userModel;
   var token;
-
   var waitingFlag;
-
+  Timer timer;
+  int timespan;
   @override
   void initState() {
+    checkExpire();
     waitingFlag = checkLogined();
     // TODO: implement initState
     super.initState();
@@ -67,7 +71,7 @@ class _checkAccountState extends State<checkAccount> {
               } else {
                 print(token);
                 print(userModel);
-                if (token == 'delete' ||
+                if (
                     token == null ||
                     token == "" ||
                     userModel == null ||
@@ -88,5 +92,20 @@ class _checkAccountState extends State<checkAccount> {
             }),
       ),
     );
+  }
+checkExpire() {
+    
+    timer = Timer.periodic(Duration(seconds: 30), (Timer timer) async{
+      timespan = DateTime.now().millisecondsSinceEpoch;
+      int cal = (timespan / 1000).toInt();
+      print(DateTime.fromMillisecondsSinceEpoch(1660301736 * 1000));
+      print('i am working still ^_^');
+      if (cal > LoginHelper.Default.userToken.exp) {
+       await storage.deleteAll().then((value) {
+        print('expireeeeeeeeeeeeeeeeeeee');
+        RestartWidget.restartApp(context);
+       });
+      }
+    });
   }
 }

@@ -46,7 +46,7 @@ class _lenhMainState extends State<lenhMain> {
         return Lenh(chitietlenh);
         }
       }
-      return null;
+      return Lenh(chitietlenh);
     });
   }
 }

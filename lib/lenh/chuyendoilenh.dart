@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../helpers/ApiHelper.dart';
 import '../model/lenhModel.dart';
+import '../uikit.dart';
 
 class chuyndoilenh extends StatefulWidget {
   String idLenhdientu;
@@ -574,11 +575,14 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                               });
                                           if (resp['status']) {
                                             Navigator.pop(context);
-                                            setState(
-                                              () {
-                                                loadDSLenh();
-                                              },
-                                            );
+                                           
+                                                 Navigator.of(context).popUntil((route) => route.isFirst);
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UIKitPage(2)));
+                                            
                                           } else {
                                             Navigator.pop(context);
 
@@ -593,7 +597,7 @@ class _chuyndoilenhState extends State<chuyndoilenh> {
                                                     style: TextStyle(
                                                         fontFamily:
                                                             'Roboto Regular',
-                                                        fontSize: 14),
+                                                        fontSize: 18,color: Colors.red),
                                                   ),
                                                   content: Text(resp['message'],
                                                       style: TextStyle(

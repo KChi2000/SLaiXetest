@@ -7,6 +7,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_ui_kit/components/chooseImage.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
@@ -340,7 +341,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                   setState(
                                     () {
                                       image.remove(e);
-                                      count = image.length;
+                                       
                                     },
                                   );
                                 });
@@ -355,103 +356,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      GestureDetector(
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: DottedBorder(
-                                            child: Container(
-                                              height: 55,
-                                              width: 50,
-                                              child: Center(
-                                                  child: SvgPicture.asset(
-                                                'asset/icons/camera-plus.svg',
-                                                color: Colors.black54,
-                                              )),
-                                            ),
-                                            color: Colors.black54,
-                                            strokeWidth: 1,
-                                            radius: Radius.circular(10),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          return showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: Container(
-                                                    width: 60,
-                                                    child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          GestureDetector(
-                                                            child: Text(
-                                                                'Chụp ảnh mới',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
-                                                            onTap: () async {
-                                                              print(
-                                                                  'chọn chụp ảnh');
-                                                              Navigator.pop(
-                                                                  context);
-                                                              imageitem = await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .camera);
-                                                              if (imageitem ==
-                                                                  null) {
-                                                                return;
-                                                              }
-
-                                                              setState(() {
-                                                                image.add(
-                                                                    imageitem);
-                                                                count = image
-                                                                    .length;
-                                                              });
-                                                              print(
-                                                                  'count: $count');
-                                                            },
-                                                          ),
-                                                          SizedBox(
-                                                            height: 20,
-                                                          ),
-                                                          GestureDetector(
-                                                            child: Text(
-                                                                'Chọn ảnh',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
-                                                            onTap: () async {
-                                                              print('chọn ảnh');
-                                                              Navigator.pop(
-                                                                  context);
-                                                              imageitem = await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .gallery);
-                                                              if (imageitem ==
-                                                                  null) {
-                                                                return;
-                                                              }
-                                                              // image.add(imageitem);
-                                                              setState(() {
-                                                                image.add(
-                                                                    imageitem);
-                                                                count = image
-                                                                    .length;
-                                                              });
-                                                              print(
-                                                                  'count: $count');
-                                                            },
-                                                          ),
-                                                        ]),
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                      ),
+                                     chooseImage(50, 55, imageitem, image, setState)
                                     ],
                                   )
                                 : Text(''),
@@ -505,7 +410,7 @@ class _layhangInfoState extends State<layhangInfo> {
                                         false, // user must tap button!
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                        title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 18,color: Colors.red)),
                                         content: Text('Lỗi kết nối',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                         actions: <Widget>[
                                           TextButton(

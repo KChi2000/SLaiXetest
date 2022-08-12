@@ -183,7 +183,7 @@ class _MyWidgetState extends State<Login> {
                                   content: Text("${LoginHelper.Default.error}"),
                                   actions: <Widget>[
                                     TextButton(
-                                      child: const Text('Đã hiểu'),
+                                      child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },

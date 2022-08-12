@@ -12,7 +12,7 @@ import 'package:flutter_ui_kit/model/DSDiemXuong.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/uikit.dart';
 import 'package:intl/intl.dart';
-import '../componentsFuture/bottomshetHK.dart';
+
 import '../model/DonGiaTheoTuyen.dart';
 import '../other/homeConstant.dart';
 
@@ -421,7 +421,7 @@ class _banveState extends State<banve> {
                                                   false, // user must tap button!
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14),),
+                                                  title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 18,color: Colors.red),),
                                                   content:
                                                       Text(resp['message'],style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                   actions: <Widget>[

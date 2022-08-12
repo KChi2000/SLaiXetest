@@ -17,7 +17,6 @@ import 'package:flutter_ui_kit/ve/banve.dart';
 import 'package:flutter_ui_kit/ve/banveXeNoSoDoCho.dart';
 import 'package:flutter_ui_kit/ve/banveghephu.dart';
 import 'package:image_picker/image_picker.dart';
-import '../componentsFuture/bottomshetHK.dart';
 import '../model/DSHanhKhachGhePhu.dart';
 import '../model/LichSuChuyenDi.dart';
 import '../model/SLVe.dart';
@@ -78,9 +77,9 @@ class VeState extends State<Ve> {
   }
 
   void loadslve(String guidchuyendi) async {
-    try{
+    try {
       slve = await ApiHelper.getSLVe(guidchuyendi);
-    }catch(ex){
+    } catch (ex) {
       print(ex);
     }
   }
@@ -98,7 +97,8 @@ class VeState extends State<Ve> {
         value = chuyendiGanday.data.maChuyenDi;
         changeSodocho = chuyendiGanday.data.guidChuyenDi;
         print('changesodocho $changeSodocho');
-        LichSuChuyenDiFuture = ApiHelper.getLichSuChuyenDi(chuyendiGanday.data.guidChuyenDi);
+        LichSuChuyenDiFuture =
+            ApiHelper.getLichSuChuyenDi(chuyendiGanday.data.guidChuyenDi);
         lichsuChuyenDi = await LichSuChuyenDiFuture;
         loadTrangThaiChoNgoi(changeSodocho);
         loadchongoi();
@@ -655,344 +655,332 @@ class VeState extends State<Ve> {
                         TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
               ),
         floatingActionButton: checkHaschuyendiganday != 'no data'
-            ?  hasTangdata == 'Không tìm thấy dữ liệu'?FloatingActionButton.extended(
-                      elevation: 6,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => banveXeNoSoDoCho(chuyendiGanday.data.guidLoTrinh, changeSodocho)));
-                      },
-                      label: Text('BÁN VÉ',
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.blue,
-                              fontFamily: 'Roboto Medium',
-                              letterSpacing: 1.25)),
-                      icon: SvgPicture.asset(
-                        "asset/icons/v.svg",
-                        width: 18,
-                        height: 18,
-                        color: Colors.blue,
-                      ),
-                      backgroundColor: Colors.white,
-                    ) :SpeedDial(
-                overlayColor: Colors.grey,
-                backgroundColor: activeColor,
-                activeBackgroundColor: inactiveColor,
-                activeIcon: activeIcon,
-                animationAngle: 3.14 / 2,
-                buttonSize: activefab
-                    ? Size(activeButtonSize, activeButtonSize)
-                    : Size(inactiveButtonSize, inactiveButtonSize),
-                icon: inactiveIcon,
-                onOpen: () {
-                  setState(() {
-                    activefab = true;
-                  });
-                },
-                onClose: () {
-                  setState(() {
-                    activefab = false;
-                  });
-                },
-                children: [
-                  SpeedDialChild(
-                      backgroundColor: chuyendoilenhButtonColor,
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => banveghephu(
-                                    chuyendiGanday.data.guidLoTrinh,
-                                    changeSodocho)));
-                      },
-                      label: 'Bán vé ghế phụ',
-                      child: SvgPicture.asset(
-                        'asset/icons/ticket.svg',
-                        width: 20,
-                        height: 20,
-                      )),
-                  SpeedDialChild(
-                      // backgroundColor: Colors.red,
-                      onTap: () {
-                        loadDSGhePhu();
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return StatefulBuilder(
-                                  builder: (context, setState) {
-                                return Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 15),
-                                  height: 300,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text('Hủy',
+            ? hasTangdata == 'Không tìm thấy dữ liệu'
+                ? FloatingActionButton.extended(
+                    elevation: 6,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => banveXeNoSoDoCho(
+                                  chuyendiGanday.data.guidLoTrinh,
+                                  changeSodocho)));
+                    },
+                    label: Text('BÁN VÉ',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue,
+                            fontFamily: 'Roboto Medium',
+                            letterSpacing: 1.25)),
+                    icon: SvgPicture.asset(
+                      "asset/icons/v.svg",
+                      width: 18,
+                      height: 18,
+                      color: Colors.blue,
+                    ),
+                    backgroundColor: Colors.white,
+                  )
+                : SpeedDial(
+                    overlayColor: Colors.grey,
+                    backgroundColor: activeColor,
+                    activeBackgroundColor: inactiveColor,
+                    activeIcon: activeIcon,
+                    animationAngle: 3.14 / 2,
+                    buttonSize: activefab
+                        ? Size(activeButtonSize, activeButtonSize)
+                        : Size(inactiveButtonSize, inactiveButtonSize),
+                    icon: inactiveIcon,
+                    onOpen: () {
+                      setState(() {
+                        activefab = true;
+                      });
+                    },
+                    onClose: () {
+                      setState(() {
+                        activefab = false;
+                      });
+                    },
+                    children: [
+                      SpeedDialChild(
+                          backgroundColor: chuyendoilenhButtonColor,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => banveghephu(
+                                        chuyendiGanday.data.guidLoTrinh,
+                                        changeSodocho)));
+                          },
+                          label: 'Bán vé ghế phụ',
+                          child: SvgPicture.asset(
+                            'asset/icons/ticket.svg',
+                            width: 20,
+                            height: 20,
+                          )),
+                      SpeedDialChild(
+                          // backgroundColor: Colors.red,
+                          onTap: () {
+                            loadDSGhePhu();
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return StatefulBuilder(
+                                      builder: (context, setState) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 15),
+                                      height: 300,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text('Hủy',
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 15)),
+                                            ),
+                                          ),
+                                          Text('Khách mua vé ghế phụ',
                                               style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 15)),
-                                        ),
-                                      ),
-                                      Text('Khách mua vé ghế phụ',
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto Medium',
-                                            fontSize: 20,
-                                          )),
-                                      FutureBuilder(
-                                          future: dshanhkhachghephuFuture,
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            } else if (snapshot.hasError) {
-                                              return Center(
-                                                child: Text('Lỗi',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            'Roboto Regular',
-                                                        fontSize: 14)),
-                                              );
-                                            } else if (snapshot.hasData) {
-                                              DSHanhKhachGhePhu
-                                                  dshanhkhachghephu =
-                                                  snapshot.data;
-                                              List<DataDSHanhKhachGhePhu>
-                                                  listds =
-                                                  dshanhkhachghephu.data;
-                                              if (listds.length == 0) {
+                                                fontFamily: 'Roboto Medium',
+                                                fontSize: 20,
+                                              )),
+                                          FutureBuilder(
+                                              future: dshanhkhachghephuFuture,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Text('Lỗi',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Roboto Regular',
+                                                            fontSize: 14)),
+                                                  );
+                                                } else if (snapshot.hasData) {
+                                                  DSHanhKhachGhePhu
+                                                      dshanhkhachghephu =
+                                                      snapshot.data;
+                                                  List<DataDSHanhKhachGhePhu>
+                                                      listds =
+                                                      dshanhkhachghephu.data;
+                                                  if (listds.length == 0) {
+                                                    return Expanded(
+                                                      child: Center(
+                                                        child: Text(
+                                                          'Không có dữ liệu để hiển thị',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Roboto Regular',
+                                                              fontSize: 12,
+                                                              color: Colors
+                                                                  .grey[700]),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Expanded(
+                                                    child: ListView.builder(
+                                                        itemCount:
+                                                            listds.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Row(
+                                                            children: [
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 15,
+                                                                  ),
+                                                                  Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            'Số điện thoại: ',
+                                                                            style: TextStyle(
+                                                                                fontFamily: 'Roboto Regular',
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w400)),
+                                                                        Text(
+                                                                            '${listds[index].soDienThoai}',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontFamily: 'Roboto Medium',
+                                                                              fontSize: 14,
+                                                                              color: Colors.green,
+                                                                            )),
+                                                                      ]),
+                                                                  SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            'Giá vé: ',
+                                                                            style: TextStyle(
+                                                                                fontFamily: 'Roboto Regular',
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w400)),
+                                                                        Text(
+                                                                            '${NumberFormat('#,###').format(listds[index].giaVe)}đ',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontFamily: 'Roboto Medium',
+                                                                              fontSize: 14,
+                                                                              color: Colors.red,
+                                                                            )),
+                                                                      ]),
+                                                                  SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            'Điểm xuống: ',
+                                                                            style: TextStyle(
+                                                                                fontFamily: 'Roboto Regular',
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w400)),
+                                                                        Text(
+                                                                            '${listds[index].diemXuong}',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontFamily: 'Roboto Medium',
+                                                                              fontSize: 14,
+                                                                              color: Colors.orange,
+                                                                            )),
+                                                                      ]),
+                                                                  Divider(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    height: 1,
+                                                                    thickness:
+                                                                        0.5,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              SizedBox(
+                                                                width: 40,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons.print,
+                                                                    color: Colors
+                                                                        .black54,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  InkWell(
+                                                                    onTap:
+                                                                        () async {
+                                                                      var resp =
+                                                                          await ApiHelper.post(
+                                                                              servicesAPI.API_DoiSoat + 'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
+                                                                              {
+                                                                            'guidXe':
+                                                                                chuyendiGanday.data.guidXe,
+                                                                            'maChuyenDi':
+                                                                                value,
+                                                                            'maDatCho':
+                                                                                listds[index].maDatCho,
+                                                                            'toaDo':
+                                                                                ""
+                                                                          });
+                                                                      if (resp[
+                                                                          'status']) {
+                                                                        setState(
+                                                                            () {
+                                                                          loadDSGhePhu();
+                                                                        });
+
+                                                                        // Navigator.pop(
+                                                                        //     context);
+                                                                      } else {
+                                                                        showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          barrierDismissible:
+                                                                              false, // user must tap button!
+                                                                          builder:
+                                                                              (BuildContext context) {
+                                                                            return AlertDialog(
+                                                                              title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 18,color: Colors.red)),
+                                                                              content: Text('${resp['message']}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                              actions: <Widget>[
+                                                                                TextButton(
+                                                                                  child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                                                  onPressed: () {
+                                                                                    Navigator.of(context).pop();
+                                                                                  },
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                      }
+                                                                    },
+                                                                    child: SvgPicture.asset(
+                                                                        'asset/icons/arrowdown.svg',
+                                                                        width:
+                                                                            20,
+                                                                        height:
+                                                                            20,
+                                                                        color: Colors
+                                                                            .black54),
+                                                                  )
+                                                                ],
+                                                              )
+                                                            ],
+                                                          );
+                                                        }),
+                                                  );
+                                                }
                                                 return Expanded(
                                                   child: Center(
                                                     child: Text(
-                                                      'Không có dữ liệu để hiển thị',
+                                                      'Không có dữ liệu',
                                                       style: TextStyle(
-                                                          fontFamily:
-                                                              'Roboto Regular',
-                                                          fontSize: 12,
-                                                          color:
-                                                              Colors.grey[700]),
+                                                        fontFamily:
+                                                            'Roboto Regular',
+                                                        fontSize: 14,
+                                                      ),
                                                     ),
                                                   ),
                                                 );
-                                              }
-                                              return Expanded(
-                                                child: ListView.builder(
-                                                    itemCount: listds.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Row(
-                                                        children: [
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 15,
-                                                              ),
-                                                              Row(children: [
-                                                                Text(
-                                                                    'Số điện thoại: ',
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            'Roboto Regular',
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w400)),
-                                                                Text(
-                                                                    '${listds[index].soDienThoai}',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontFamily:
-                                                                          'Roboto Medium',
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )),
-                                                              ]),
-                                                              SizedBox(
-                                                                height: 5,
-                                                              ),
-                                                              Row(children: [
-                                                                Text('Giá vé: ',
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            'Roboto Regular',
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w400)),
-                                                                Text(
-                                                                    '${NumberFormat('#,###').format(listds[index].giaVe)}đ',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontFamily:
-                                                                          'Roboto Medium',
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Colors
-                                                                          .red,
-                                                                    )),
-                                                              ]),
-                                                              SizedBox(
-                                                                height: 5,
-                                                              ),
-                                                              Row(children: [
-                                                                Text(
-                                                                    'Điểm xuống: ',
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            'Roboto Regular',
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w400)),
-                                                                Text(
-                                                                    '${listds[index].diemXuong}',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontFamily:
-                                                                          'Roboto Medium',
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Colors
-                                                                          .orange,
-                                                                    )),
-                                                              ]),
-                                                              Divider(
-                                                                color: Colors
-                                                                    .black,
-                                                                height: 1,
-                                                                thickness: 0.5,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            width: 40,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.print,
-                                                                color: Colors
-                                                                    .black54,
-                                                              ),
-                                                              SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              InkWell(
-                                                                onTap:
-                                                                    () async {
-                                                                  var resp = await ApiHelper.post(
-                                                                      servicesAPI
-                                                                              .API_DoiSoat +
-                                                                          'thuc-hien-xac-nhan-khach-xuong-xe-ghe-phu',
-                                                                      {
-                                                                        'guidXe': chuyendiGanday
-                                                                            .data
-                                                                            .guidXe,
-                                                                        'maChuyenDi':
-                                                                            value,
-                                                                        'maDatCho':
-                                                                            listds[index].maDatCho,
-                                                                        'toaDo':
-                                                                            ""
-                                                                      });
-                                                                  if (resp[
-                                                                      'status']) {
-                                                                    setState(
-                                                                        () {
-                                                                      loadDSGhePhu();
-                                                                    });
-
-                                                                    // Navigator.pop(
-                                                                    //     context);
-                                                                  } else {
-                                                                    showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      barrierDismissible:
-                                                                          false, // user must tap button!
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return AlertDialog(
-                                                                          title:
-                                                                              const Text('Lỗi'),
-                                                                          content:
-                                                                              Text('${resp['message']}'),
-                                                                          actions: <
-                                                                              Widget>[
-                                                                            TextButton(
-                                                                              child: const Text('Đã hiểu'),
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                            ),
-                                                                          ],
-                                                                        );
-                                                                      },
-                                                                    );
-                                                                  }
-                                                                },
-                                                                child: SvgPicture.asset(
-                                                                    'asset/icons/arrowdown.svg',
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    color: Colors
-                                                                        .black54),
-                                                              )
-                                                            ],
-                                                          )
-                                                        ],
-                                                      );
-                                                    }),
-                                              );
-                                            }
-                                            return Expanded(
-                                              child: Center(
-                                                child: Text(
-                                                  'Không có dữ liệu',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        'Roboto Regular',
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                      SizedBox(
-                                        height: 40,
+                                              }),
+                                          SizedBox(
+                                            height: 40,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                );
-                              });
-                            });
-                        print('dung hanh trinh');
-                      },
-                      label: 'Khách ngồi ghế phụ',
-                      child: Icon(Icons.chair_alt, color: Colors.black))
-                ],
-              )
-             :null);
+                                    );
+                                  });
+                                });
+                            print('dung hanh trinh');
+                          },
+                          label: 'Khách ngồi ghế phụ',
+                          child: Icon(Icons.chair_alt, color: Colors.black))
+                    ],
+                  )
+            : null);
   }
 
   Column seatItem1(String num, List<sodochoData> listdata, int cot, int hang) {
@@ -1398,9 +1386,9 @@ class VeState extends State<Ve> {
                                                                               return AlertDialog(
                                                                                 title: const Text(
                                                                                   'Lỗi',
-                                                                                  style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14),
+                                                                                  style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 18,color: Colors.red),
                                                                                 ),
-                                                                                content: Text('${resp['message']}'),
+                                                                                content: Text('${resp['message']}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                                                 actions: <Widget>[
                                                                                   TextButton(
                                                                                     child: const Text('Đã hiểu', style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
@@ -1604,9 +1592,9 @@ class VeState extends State<Ve> {
                                                                       fontFamily:
                                                                           'Roboto Regular',
                                                                       fontSize:
-                                                                          14)),
+                                                                          18,color: Colors.red)),
                                                               content: Text(
-                                                                  '${resp['message']}'),
+                                                                  '${resp['message']}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                               actions: <Widget>[
                                                                 TextButton(
                                                                   child: const Text(
