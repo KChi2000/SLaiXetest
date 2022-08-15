@@ -95,7 +95,7 @@ class _checkAccountState extends State<checkAccount> {
   }
 checkExpire() {
     
-    timer = Timer.periodic(Duration(seconds: 30), (Timer timer) async{
+    timer = Timer.periodic(Duration(seconds: 10), (Timer timer) async{
       timespan = DateTime.now().millisecondsSinceEpoch;
       int cal = (timespan / 1000).toInt();
       print(DateTime.fromMillisecondsSinceEpoch(1660301736 * 1000));

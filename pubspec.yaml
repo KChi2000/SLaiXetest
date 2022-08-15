@@ -49,6 +49,7 @@ dependencies:
   flutter_pdfview: ^1.2.3
   time_span: ^2.0.2
   lottie: ^1.4.1
+  loader_overlay: ^2.0.10
   flutter_driver:
     sdk: flutter
 dev_dependencies:

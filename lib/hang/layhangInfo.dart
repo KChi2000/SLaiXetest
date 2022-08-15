@@ -12,6 +12,7 @@ import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import '../model/DSDiemxuongLotrinh.dart';
 import '../uikit.dart';
@@ -66,7 +67,11 @@ class _layhangInfoState extends State<layhangInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return LoaderOverlay(
+     useDefaultLoading: false,
+     overlayOpacity: 0.6,
+     overlayWidget: Center(child: CircularProgressIndicator(),),
+      child: Scaffold(
       appBar: AppBar(
         title: Text('THÔNG TIN GỬI HÀNG', style: TextStyle()),
         centerTitle: true,
@@ -369,6 +374,7 @@ class _layhangInfoState extends State<layhangInfo> {
                       FlatButton(
                         onPressed: xacnhan()
                             ? () async {
+                              context.loaderOverlay.show();
                                 DateTime sendDatetime = new DateTime(
                                     date.year,
                                     date.month,
@@ -398,12 +404,14 @@ class _layhangInfoState extends State<layhangInfo> {
                                     });
 
                                 if (resp == 'Uploadd') {
+                                  context.loaderOverlay.hide();
                                   print('okkkkkkkkkkk');
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => UIKitPage(3)));
                                 } else {
+                                  context.loaderOverlay.hide();
                                   showDialog(
                                     context: context,
                                     barrierDismissible:
@@ -445,7 +453,7 @@ class _layhangInfoState extends State<layhangInfo> {
           }),
         ),
       ),
-    );
+    ));
   }
 
   bool validateMobile(String value) {
