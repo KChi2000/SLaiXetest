@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/components/chooseImage.dart';
+import 'package:flutter_ui_kit/components/printpopup.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/chuyendiList.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
@@ -15,6 +16,7 @@ import '../model/DSTrangThai.dart';
 import '../model/LichSuChuyenDi.dart';
 import '../model/ThongTinThem.dart';
 import '../model/chuyendiganday.dart';
+import '../model/printModel.dart';
 import '../other/homeConstant.dart';
 import 'hangDetail.dart';
 import 'hangDetail.dart';
@@ -1388,7 +1390,9 @@ class HangState extends State<Hang> {
                                                         // crossAxisAlignment: CrossAxisAlignment.stretch,
                                                         children: [
                                                           FlatButton(
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              printpopup.showpopup(context, listprint);
+                                                            },
                                                             child: Text(
                                                                 'IN PHIẾU',
                                                                 style: TextStyle(
@@ -1519,6 +1523,7 @@ class HangState extends State<Hang> {
                                                                                                         trangthaiCount = 0;
                                                                                                         loadchuyendiganday();
                                                                                                         Navigator.of(context).pop();
+                                                                                                        printpopup.showpopup(context, listprint);
                                                                                                       } else {
                                                                                                         showDialog(
                                                                                                           context: context, barrierDismissible: false, // user must tap button!

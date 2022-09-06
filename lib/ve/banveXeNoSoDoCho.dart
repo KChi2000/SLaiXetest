@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_ui_kit/ve/banvethanhcong.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
+import '../components/printpopup.dart';
 import '../model/DSDiemxuongLotrinh.dart';
 import '../model/DonGiaTheoTuyen.dart';
 
@@ -76,9 +78,11 @@ class _banveState extends State<banveXeNoSoDoCho> {
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
-       useDefaultLoading: false,
-     overlayOpacity: 0.6,
-     overlayWidget: Center(child: CircularProgressIndicator(),),
+      useDefaultLoading: false,
+      overlayOpacity: 0.6,
+      overlayWidget: Center(
+        child: CircularProgressIndicator(),
+      ),
       child: Scaffold(
         appBar: AppBar(
           title: Text('THANH TOÁN BÁN VÉ'),
@@ -118,7 +122,7 @@ class _banveState extends State<banveXeNoSoDoCho> {
                             )),
                       );
                     }
-    
+
                     return Container(
                         padding: EdgeInsets.all(10),
                         child: Column(
@@ -134,14 +138,15 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp(r'[0-9]')),
-                                  FilteringTextInputFormatter.deny(RegExp(r'^0+')),
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'^0+')),
                                   LengthLimitingTextInputFormatter(2)
                                 ],
                                 validator: (sodt) {
                                   if (sodt == null || sodt.isEmpty) {
                                     return 'Vé không được để trống';
                                   }
-    
+
                                   return null;
                                 },
                                 onChanged: (vl) {
@@ -164,7 +169,7 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                     labelText: 'Số điện thoại',
                                     suffixIcon:
                                         Icon(Icons.qr_code_scanner_rounded)),
-    
+
                                 // controller: sdtNhanController,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
@@ -196,7 +201,8 @@ class _banveState extends State<banveXeNoSoDoCho> {
                               decoration: InputDecoration(
                                   labelText: 'Điểm xuống',
                                   hintText: 'Chọn điểm xuống'),
-                              items: diemxuong.map((DataDSDiemXuongLoTrinh text) {
+                              items:
+                                  diemxuong.map((DataDSDiemXuongLoTrinh text) {
                                 return new DropdownMenuItem(
                                   child: Container(
                                       child: Text(text.tenDiemXuong,
@@ -236,22 +242,21 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                   return null;
                                 },
                                 onChanged: (vl2) {
-                                    setState(() {
+                                  setState(() {
                                     giave = vl2;
-                                    
                                   });
                                   xacnhan();
-                                    print(giave);
-                                  vl2 = '${_formatNumber(vl2.replaceAll(',', ''))}';
+                                  print(giave);
+                                  vl2 =
+                                      '${_formatNumber(vl2.replaceAll(',', ''))}';
                                   lowPrice.value = TextEditingValue(
                                     text: vl2,
-                                    selection:
-                                        TextSelection.collapsed(offset: vl2.length),
+                                    selection: TextSelection.collapsed(
+                                        offset: vl2.length),
                                   );
-    
-                                
                                 },
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
                               ),
                             ),
                             data.length != 0
@@ -260,8 +265,9 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                           onTap: () {
                                             print(e.giaVe);
                                             setState(() {
-                                              lowPrice.text = NumberFormat('#,###')
-                                                  .format(e.giaVe);
+                                              lowPrice.text =
+                                                  NumberFormat('#,###')
+                                                      .format(e.giaVe);
                                               giave = e.giaVe.toString();
                                             });
                                           },
@@ -271,10 +277,12 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                               child: Chip(
                                                 label: Text(e.giaVe.toString(),
                                                     style: TextStyle(
-                                                      fontFamily: 'Roboto Regular',
+                                                      fontFamily:
+                                                          'Roboto Regular',
                                                       fontSize: 14,
                                                     )),
-                                                backgroundColor: Colors.grey[320],
+                                                backgroundColor:
+                                                    Colors.grey[320],
                                               )),
                                         ))
                                   ])
@@ -283,7 +291,8 @@ class _banveState extends State<banveXeNoSoDoCho> {
                               children: [
                                 Checkbox(
                                     value: checkbox,
-                                    activeColor: Color.fromARGB(255, 21, 128, 216),
+                                    activeColor:
+                                        Color.fromARGB(255, 21, 128, 216),
                                     onChanged: (value) {
                                       setState(() {
                                         checkbox = value;
@@ -323,19 +332,20 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                     child: Container(
                                       height: 39,
                                       padding: EdgeInsets.all(5),
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.35,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.35,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           border: cash == true
                                               ? Border.all(
                                                   color: Colors.blue, width: 2)
                                               : null,
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           boxShadow: [
                                             BoxShadow(
-                                                color:
-                                                    Colors.black.withOpacity(0.12),
+                                                color: Colors.black
+                                                    .withOpacity(0.12),
                                                 offset: Offset(0, 1),
                                                 blurRadius: 0.1,
                                                 spreadRadius: 2)
@@ -370,17 +380,20 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                     child: Container(
                                         height: 39,
                                         padding: EdgeInsets.all(5),
-                                        width: MediaQuery.of(context).size.width *
-                                            0.35,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.35,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             border: bank == true
                                                 ? Border.all(
-                                                    color: Colors.blue, width: 2)
+                                                    color: Colors.blue,
+                                                    width: 2)
                                                 : Border.all(
                                                     color: Colors.grey[200],
                                                     width: 2),
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             boxShadow: [
                                               BoxShadow(
                                                   color: Colors.black
@@ -399,7 +412,7 @@ class _banveState extends State<banveXeNoSoDoCho> {
                             ElevatedButton(
                               onPressed: xacnhan()
                                   ? () async {
-                                    context.loaderOverlay.show();
+                                      context.loaderOverlay.show();
                                       String money = lowPrice.text
                                           .replaceAll(RegExp('[^0-9]'), '');
                                       var resp = await ApiHelper.post(
@@ -414,27 +427,33 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                                 '${diemxuongObject.guidDiemXuong}',
                                             'phatHanhVe':
                                                 jsonDecode(checkbox.toString()),
-                                            'soDienThoai': '${sdtController.text}',
+                                            'soDienThoai':
+                                                '${sdtController.text}',
                                             'soLuong': '${veController.text}',
                                             'tenDiemXuong':
                                                 '${diemxuongObject.tenDiemXuong}'
                                           });
-                                          print(int.parse(money));
-                                          print(widget.guidchuyendi);
-                                          print(diemxuongObject.guidDiemXuong);
+                                      print(int.parse(money));
+                                      print(widget.guidchuyendi);
+                                      print(diemxuongObject.guidDiemXuong);
                                       if (resp['status']) {
                                         context.loaderOverlay.hide();
+                                        if (Platform.isIOS) {
+                                          printpopup.showpopup(
+                                              context, listprint);
+                                        }
                                         Navigator.of(context)
                                             .popUntil((route) => route.isFirst);
                                         Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => banvethanhcong(
-                                                    money,
-                                                    sdtController.text,
-                                                    cash
-                                                        ? 'TIỀN MẶT/CASH\nCHANGE'
-                                                        : 'BANKING...')));
+                                                builder: (context) =>
+                                                    banvethanhcong(
+                                                        money,
+                                                        sdtController.text,
+                                                        cash
+                                                            ? 'TIỀN MẶT/CASH\nCHANGE'
+                                                            : 'BANKING...')));
                                       } else {
                                         context.loaderOverlay.hide();
                                         showDialog(
@@ -443,11 +462,25 @@ class _banveState extends State<banveXeNoSoDoCho> {
                                               false, // user must tap button!
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: const Text('Lỗi',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 18,color: Colors.red)),
-                                              content: Text('${resp['message']}',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                              title: const Text('Lỗi',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Regular',
+                                                      fontSize: 18,
+                                                      color: Colors.red)),
+                                              content: Text(
+                                                  '${resp['message']}',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Roboto Regular',
+                                                      fontSize: 14)),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  child: const Text('Đã hiểu',style: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
+                                                  child: const Text('Đã hiểu',
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Roboto Regular',
+                                                          fontSize: 14)),
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
@@ -486,7 +519,12 @@ class _banveState extends State<banveXeNoSoDoCho> {
   }
 
   bool xacnhan() {
-    if (ve.isEmpty || sdt.length<10 || diemxuongObject == null || giave == '0đ' || giave.isEmpty || lowPrice.text.isEmpty) {
+    if (ve.isEmpty ||
+        sdt.length < 10 ||
+        diemxuongObject == null ||
+        giave == '0đ' ||
+        giave.isEmpty ||
+        lowPrice.text.isEmpty) {
       return false;
     }
     return true;

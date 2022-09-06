@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_ui_kit/components/chooseImage.dart';
+import 'package:flutter_ui_kit/components/printpopup.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:image_picker/image_picker.dart';
@@ -405,7 +406,9 @@ class _layhangInfoState extends State<layhangInfo> {
 
                                 if (resp == 'Uploadd') {
                                   context.loaderOverlay.hide();
-                                  print('okkkkkkkkkkk');
+                                  if(Platform.isIOS){
+                                                           printpopup.showpopup(context, listprint);
+                                                        }
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(

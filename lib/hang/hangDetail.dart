@@ -12,6 +12,7 @@ import 'package:flutter_ui_kit/uikit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../components/printpopup.dart';
 import '../model/LayChiTietNhatKyVanChuyen.dart';
 import 'package:intl/intl.dart';
 
@@ -90,8 +91,11 @@ class _hangDetailState extends State<hangDetail> {
                       SizedBox(
                         height: 15,
                       ),
-                     
-                      Center(child: QrImage(data: datachitiet.linkTraCuu,size: 150,)),
+                      Center(
+                          child: QrImage(
+                        data: datachitiet.linkTraCuu,
+                        size: 150,
+                      )),
                       Center(
                         child: RichText(
                             text: TextSpan(children: [
@@ -194,7 +198,11 @@ class _hangDetailState extends State<hangDetail> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          if(Platform.isIOS){
+                                                           printpopup.showpopup(context, listprint);
+                                                        }
+                                        },
                                         child: Text('IN PHIẾU',
                                             style: TextStyle(
                                                 fontFamily: 'Roboto Medium',
@@ -318,7 +326,7 @@ class _hangDetailState extends State<hangDetail> {
                                                                                   SizedBox(
                                                                                     height: 10,
                                                                                   ),
-                                                                                chooseImage(65, 75, imageitem, image, setState),
+                                                                                  chooseImage(65, 75, imageitem, image, setState),
                                                                                 ],
                                                                               )
                                                                             : Text(''),
@@ -349,9 +357,10 @@ class _hangDetailState extends State<hangDetail> {
                                                                                   'toaDo': ''
                                                                                 });
                                                                                 if (res == 'Uploadd') {
-                                                                                  // trangthaiCount = 0;
-                                                                                  // loadchuyendiganday();
                                                                                   Navigator.of(context).pop();
+                                                                                  if (Platform.isIOS) {
+                                                                                    printpopup.showpopup(context, listprint);
+                                                                                  }
                                                                                   Navigator.of(context).popUntil((route) => route.isFirst);
                                                                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UIKitPage(3)));
                                                                                 } else {
@@ -359,11 +368,7 @@ class _hangDetailState extends State<hangDetail> {
                                                                                     context: context, barrierDismissible: false, // user must tap button!
                                                                                     builder: (BuildContext context) {
                                                                                       return AlertDialog(
-                                                                                        title: const Text('Lỗi',
-                                                                                            style: TextStyle(
-                                                                                              fontFamily: 'Roboto Medium',
-                                                                                              fontSize: 18,color: Colors.red
-                                                                                            )),
+                                                                                        title: const Text('Lỗi', style: TextStyle(fontFamily: 'Roboto Medium', fontSize: 18, color: Colors.red)),
                                                                                         content: Text('Lỗi kết nối',
                                                                                             style: TextStyle(
                                                                                               fontFamily: 'Roboto Regular',

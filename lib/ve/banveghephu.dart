@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_ui_kit/ve/banvethanhcong.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
+import '../components/printpopup.dart';
 import '../model/DSDiemxuongLotrinh.dart';
 import '../model/DonGiaTheoTuyen.dart';
 
@@ -428,6 +430,9 @@ class _banveState extends State<banveghephu> {
                                           });
                                       if (resp['status']) {
                                         context.loaderOverlay.hide();
+                                        if(Platform.isIOS){
+                                                           printpopup.showpopup(context, listprint);
+                                                        }
                                         Navigator.of(context)
                                             .popUntil((route) => route.isFirst);
                                         Navigator.pushReplacement(

@@ -10,9 +10,6 @@ import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/DSTuyenVanChuyenTheoNgay.dart';
 import 'package:flutter_ui_kit/servicesAPI.dart';
 import 'package:flutter_ui_kit/uikit.dart';
-
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_ui_kit/model/customModel.dart';
 import 'package:flutter_ui_kit/model/lenhvanchuyen.dart';
 import 'package:intl/intl.dart';

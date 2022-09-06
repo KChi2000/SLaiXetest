@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_ui_kit/QRScanner/QRpage.dart';
+import 'package:flutter_ui_kit/components/printpopup.dart';
 import 'package:flutter_ui_kit/extensions/extensions.dart';
 import 'package:flutter_ui_kit/helpers/ApiHelper.dart';
 import 'package:flutter_ui_kit/model/TrangThaiChoNgoi.dart';
@@ -880,11 +883,17 @@ class VeState extends State<Ve> {
                                                               ),
                                                               Row(
                                                                 children: [
-                                                                  Icon(
+                                                                  IconButton(onPressed: (){
+
+                                                                    if(Platform.isIOS){
+                                                                      Navigator.pop(context);
+                                                                      printpopup.showpopup(context, listprint);
+                                                                    }
+                                                                  }, icon: Icon(
                                                                     Icons.print,
                                                                     color: Colors
                                                                         .black54,
-                                                                  ),
+                                                                  )),
                                                                   SizedBox(
                                                                     width: 10,
                                                                   ),
@@ -1542,7 +1551,9 @@ class VeState extends State<Ve> {
                                                 children: [
                                                   FlatButton(
                                                       onPressed: () {
-                                                        // formTTHK.currentState.validate();
+                                                        if(Platform.isIOS){
+                                                           printpopup.showpopup(context, listprint);
+                                                        }
                                                       },
                                                       child: Text(
                                                         'IN VÉ',
