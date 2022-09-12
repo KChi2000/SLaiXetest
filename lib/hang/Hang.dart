@@ -1208,15 +1208,11 @@ class HangState extends State<Hang> {
                         ? FutureBuilder(
                             future: dshhTheoChuyenDiFuture,
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Expanded(
-                                  child: Center(
-                                    child: Text('Không có dữ liệu',
-                                        style: TextStyle(
-                                            fontFamily: "Roboto Regular",
-                                            fontSize: 14)),
-                                  ),
-                                );
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return  Expanded(
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
                               } else if (snapshot.hasError) {
                                 return Expanded(
                                   child: Center(
@@ -1597,9 +1593,14 @@ class HangState extends State<Hang> {
                                         }));
                               }
                               return Expanded(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
+                                  child: Center(
+                                    child: Text('Không có dữ liệu',
+                                        style: TextStyle(
+                                            fontFamily: "Roboto Regular",
+                                            fontSize: 14)),
+                                  ),
+                                );
+                             
                             })
                         : Expanded(
                             child: Center(

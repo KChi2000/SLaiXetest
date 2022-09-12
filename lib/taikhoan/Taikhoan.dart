@@ -57,7 +57,7 @@ class TaikhoanState extends State<Taikhoan> {
   var huyenfuture;
   void Function(void Function()) setstatedialog;
   Huyen dataHuyen;
-SharedPreferences prefs;
+  SharedPreferences prefs;
   // Future getImage() async {
   //   final image = await imagePicker.getImage(source: ImageSource.camera);
   //   setState(() {
@@ -70,37 +70,43 @@ SharedPreferences prefs;
     // TODO: implement initState
 
     super.initState();
-  loadPic();
+    loadPic();
     loadInfo();
-    // print('${infoMap.}');
   }
-void loadPic()async{
-   prefs = await SharedPreferences.getInstance();
-  imageitem =  XFile(prefs.getString(LoginHelper.Default.userToken.preferred_username));
-}
+
+  void loadPic() async {
+    prefs = await SharedPreferences.getInstance();
+    imageitem = XFile(
+        prefs.getString(LoginHelper.Default.userToken.preferred_username));
+  }
+
   void loadInfo() async {
-    
-    datafuture =
+   
+   
+    try{
+       datafuture =
         ApiHelper.get(servicesAPI.API_LenhDienTu + 'lay-thong-tin-ca-nhan');
-    data = await datafuture;
-    if (data != null) {
+       data = await datafuture;
+        if (data != null) {
       tinh = '';
       idTinh = data['data']['idTinh'];
-      print('ttttt ${data['data']['idTinh']}');
-      tinhfuture = ApiHelper.getProvince(
-         );
+
+      tinhfuture = ApiHelper.getProvince();
       dataTinh = await tinhfuture;
       province = dataTinh.data;
       if (idTinh != null) {
         loadHuyen(false);
       }
     }
+    }
+   catch(e){
+    datafuture = null;
+   }
     setState(() {});
   }
 
   void loadHuyen(bool checksetState) async {
-    huyenfuture = ApiHelper.getDistrict(
-        idTinh);
+    huyenfuture = ApiHelper.getDistrict(idTinh);
     dataHuyen = await huyenfuture;
     district = dataHuyen.data;
 
@@ -114,19 +120,12 @@ void loadPic()async{
     if (datetime != null) {
       formattedDate = DateFormat('dd/MM/yyyy').format(datetime);
     }
-    // formattedDate == DateFormat('dd-MM-yyyy').format(datetime)? null: formattedDate;
+
     print(formattedDate);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Profile",
-          // style: TextStyle(
-          //   color: titleColor,
-          //   fontFamily: 'Roboto Medium',
-          //   fontSize: 20,
-          //   fontWeight: FontWeight.bold,
-          //   letterSpacing: 0.15
-          // ),
         ),
         centerTitle: true,
         backgroundColor: Colors.blue,
@@ -143,9 +142,9 @@ void loadPic()async{
                   children: <Widget>[
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: imageitem != null  
+                      backgroundImage: imageitem != null
                           ? FileImage(File(imageitem.path))
-                          : AssetImage(IMG_HEAD) ,
+                          : AssetImage(IMG_HEAD),
                     ), //Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('edit avatar')));
                     Positioned(
                       bottom: 25 - sin(45) * 25,
@@ -163,8 +162,7 @@ void loadPic()async{
                                 size: 10,
                                 color: Colors.white,
                               ),
-                              onTap: ()async {
-                                
+                              onTap: () async {
                                 return showDialog(
                                     context: context,
                                     builder: (context) {
@@ -198,11 +196,13 @@ void loadPic()async{
                                                       return;
                                                     }
 
-                                                    
-                                                    await prefs.setString(LoginHelper.Default.userToken.preferred_username, imageitem.toString());
-                                                    setState(() {
-                                                      
-                                                    });
+                                                    await prefs.setString(
+                                                        LoginHelper
+                                                            .Default
+                                                            .userToken
+                                                            .preferred_username,
+                                                        imageitem.toString());
+                                                    setState(() {});
                                                   },
                                                 ),
                                                 SizedBox(
@@ -227,10 +227,14 @@ void loadPic()async{
                                                       return;
                                                     }
                                                     print(imageitem.path);
-                                                   await prefs.setString(LoginHelper.Default.userToken.preferred_username, imageitem.path.toString());
-                                                   setState(() {
-                                                     
-                                                   });
+                                                    await prefs.setString(
+                                                        LoginHelper
+                                                            .Default
+                                                            .userToken
+                                                            .preferred_username,
+                                                        imageitem.path
+                                                            .toString());
+                                                    setState(() {});
                                                   },
                                                 ),
                                               ]),
@@ -272,8 +276,7 @@ void loadPic()async{
               )
             ],
           ),
-          data != null
-              ? FutureBuilder<Map<String, dynamic>>(
+         FutureBuilder<Map<String, dynamic>>(
                   future: datafuture,
                   builder: (context, snapshot) {
                     // By default, show a loading spinner.
@@ -429,7 +432,8 @@ void loadPic()async{
                                                 if (formkey.currentState
                                                     .validate()) {
                                                   var res = await ApiHelper.post(
-                                                      servicesAPI.API_LenhDienTu +
+                                                      servicesAPI
+                                                              .API_LenhDienTu +
                                                           'chinh-sua-thong-tin-ca-nhan',
                                                       {
                                                         'noiDung':
@@ -510,7 +514,8 @@ void loadPic()async{
                                                 if (formkey.currentState
                                                     .validate()) {
                                                   var res = await ApiHelper.post(
-                                                      servicesAPI.API_LenhDienTu +
+                                                      servicesAPI
+                                                              .API_LenhDienTu +
                                                           'chinh-sua-thong-tin-ca-nhan',
                                                       {
                                                         'noiDung':
@@ -705,7 +710,9 @@ void loadPic()async{
                                                         }
                                                         return null;
                                                       },
-                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                      autovalidateMode:
+                                                          AutovalidateMode
+                                                              .onUserInteraction,
                                                     )
                                                   ],
                                                 )),
@@ -827,7 +834,7 @@ void loadPic()async{
                           FlatButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            onPressed: () async{
+                            onPressed: () async {
                               print('Đăng xuất');
                               await storage.deleteAll();
                               Navigator.pushReplacement(
@@ -851,13 +858,7 @@ void loadPic()async{
                             style: TextStyle(
                                 fontSize: 14, fontFamily: 'Roboto Regular')));
                   })
-              : Center(
-                  child: Text(
-                    'Lỗi 401 nhé !',
-                    style:
-                        TextStyle(fontSize: 14, fontFamily: 'Roboto Regular'),
-                  ),
-                ),
+             
         ],
       )),
     );

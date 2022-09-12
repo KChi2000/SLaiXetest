@@ -81,11 +81,7 @@ class _checkAccountState extends State<checkAccount> {
                   LoginHelper.Default.access_token = token;
                   LoginHelper.Default.userToken =
                       UserTokenModel.fromJson(jsonDecode(userModel));
-                  // WidgetsBinding.instance.addPostFrameCallback((_) {
-                  //   //When finish, call actions inside
-                  //   Navigator.pushReplacement(context,
-                  //       MaterialPageRoute(builder: (context) => UIKitPage(0)));
-                  // });
+                
                   return UIKitPage(0);
                 }
               }
