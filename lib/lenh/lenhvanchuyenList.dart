@@ -341,44 +341,45 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
               ),
             );
           } else if (snapshot.hasData) {
-            DSLenh getdata = snapshot.data;
-            Data datatemp = getdata.data;
-            List<LenhData> listdata = datatemp.list;
-            // print('tttttt: ${listdata[0].bienKiemSoat}');
-            print(datatemp.list == null);
-            if (datatemp.list.length == 0) {
-              print('aheeeeeeee');
-              return Center(
-                child: Text('Không có dữ liệu',
-                    style:
-                        TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
-              );
+         
+
+            if (snapshot.data.status) {
+              DSLenh getdata = snapshot.data;
+              Data datatemp = getdata.data;
+              List<LenhData> listdata = datatemp.list;
+              if (datatemp.list.length == 0) {
+                return WhenNoData();
+              }
+              return ListView.builder(
+                  itemCount: listdata.length,
+                  itemBuilder: (context, index) {
+                    var time;
+
+                    time =
+                        DateTime.parse(listdata[index].thoiGianXuatBenKeHoach)
+                            .toLocal();
+
+                    String timeHieuLuc =
+                        DateFormat('kk:mm dd/MM/yyyy').format(time);
+                    return listdata[index].idTrangThai == 1
+                        ? itemWhenAccepted(
+                            timeHieuLuc, listdata, index, context, widthScreen)
+                        : itemWhenNotAccepted(timeHieuLuc, listdata, index);
+                  });
             }
-            return ListView.builder(
-                itemCount: listdata.length,
-                itemBuilder: (context, index) {
-                  var time;
-
-                  time = DateTime.parse(listdata[index].thoiGianXuatBenKeHoach)
-                      .toLocal();
-
-                  String timeHieuLuc =
-                      DateFormat('kk:mm dd/MM/yyyy').format(time);
-                  return listdata[index].idTrangThai == 1
-                      ? itemWhenAccepted(
-                          timeHieuLuc, listdata, index, context, widthScreen)
-                      : itemWhenNotAccepted(timeHieuLuc, listdata, index);
-                });
+           return WhenNoData();
           }
-          return Center(
-            child: Text('Không có dữ liệu',
-                style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
-          );
+          return WhenNoData();
         }),
       ),
     );
   }
-
+  Widget WhenNoData(){
+    return Center(
+            child: Text('Không có dữ liệu !',
+                style: TextStyle(fontFamily: 'Roboto Regular', fontSize: 14)),
+          );
+  }
   Container itemWhenNotAccepted(
       String timeHieuLuc, List<LenhData> listdata, int index) {
     return Container(
@@ -794,7 +795,8 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                                       style: TextStyle(
                                                           fontFamily:
                                                               'Roboto Regular',
-                                                          fontSize: 18,color: Colors.red)),
+                                                          fontSize: 18,
+                                                          color: Colors.red)),
                                                   content:
                                                       Text(resp['message']),
                                                   actions: <Widget>[
@@ -884,8 +886,13 @@ class _lenhvanchuyenListState extends State<lenhvanchuyenList> {
                                         });
                                     if (resp['status']) {
                                       // loadDSLenh();
-                                       Navigator.of(context).popUntil((route) => route.isFirst);
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>UIKitPage(2)));
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UIKitPage(2)));
                                     } else {
                                       showDialog(
                                           context: context,

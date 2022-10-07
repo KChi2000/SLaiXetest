@@ -557,8 +557,10 @@ class TaikhoanState extends State<Taikhoan> {
                                   var tinhtemp = province.where((value) =>
                                       fetchdata['data']['idTinh'] ==
                                       value.idTinh);
-                                  if (!tinhtemp.isEmpty || tinhtemp != null) {
+                                  if (tinhtemp.length>0) {
                                     tinh = tinhtemp.first.tenTinh;
+                                  }else{
+                                    tinh=null;
                                   }
                                   var huyentemp = district.firstWhereOrNull(
                                       (value) =>
@@ -566,7 +568,7 @@ class TaikhoanState extends State<Taikhoan> {
                                           value.idHuyen);
                                   if (huyentemp != null) {
                                     huyen = huyentemp.tenHuyen;
-                                  }
+                                  }else{huyen=null;}
                                   return showDialog(
                                       context: context,
                                       builder: (context) {
@@ -595,7 +597,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                         decoration:
                                                             InputDecoration(
                                                                 labelText:
-                                                                    'tỉnh(*)'),
+                                                                    'Tỉnh(*)',labelStyle: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                         items: province
                                                             .map((text) {
                                                           return new DropdownMenuItem(
@@ -607,11 +609,10 @@ class TaikhoanState extends State<Taikhoan> {
                                                                         fontFamily:
                                                                             'Roboto Regular',
                                                                         fontSize:
-                                                                            14))),
+                                                                            16))),
                                                             value: text.tenTinh,
                                                             onTap: () {
-                                                              print(
-                                                                  'tinh moi : ${text.idTinh}  ${text.tenTinh}');
+                                                            
                                                               setStateDialog(
                                                                   () {
                                                                 idTinh =
@@ -623,7 +624,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                             },
                                                           );
                                                         }).toList(),
-                                                        value: tinh,
+                                                        value: tinh ?? null,
                                                         onChanged: (t1) {
                                                           setStateDialog(() {
                                                             tinh = t1;
@@ -650,7 +651,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                           DropdownButtonFormField(
                                                         decoration: InputDecoration(
                                                             labelText:
-                                                                'Quận/huyện(*)'),
+                                                                'Quận/huyện(*)',labelStyle: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                         items: district
                                                             .map((text) {
                                                           return new DropdownMenuItem(
@@ -673,15 +674,14 @@ class TaikhoanState extends State<Taikhoan> {
                                                                       t2 ==
                                                                       value
                                                                           .tenHuyen);
-                                                          print(
-                                                              'huyen chonj ${huyentemp.idHuyen}');
+                                                       
                                                           setStateDialog(() {
                                                             huyen = t2;
                                                           });
                                                         },
                                                         hint: Text('chọn huyện',
                                                             style: TextStyle(
-                                                                fontSize: 14,
+                                                                fontSize: 16,
                                                                 fontFamily:
                                                                     'Roboto Regular')),
                                                         menuMaxHeight: 200,
@@ -702,7 +702,7 @@ class TaikhoanState extends State<Taikhoan> {
                                                       maxLines: null,
                                                       decoration: InputDecoration(
                                                           labelText:
-                                                              'Địa chỉ cụ thể(*)'),
+                                                              'Địa chỉ cụ thể(*)',labelStyle: TextStyle(fontFamily: 'Roboto Regular',fontSize: 14)),
                                                       validator: (vl4) {
                                                         if (vl4 == null ||
                                                             vl4.isEmpty) {
@@ -719,7 +719,7 @@ class TaikhoanState extends State<Taikhoan> {
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
-                                                  loadInfo();
+
                                                   Navigator.pop(
                                                       context, 'Cancel');
                                                 },
